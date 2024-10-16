@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://ttowgqc8xgke"]
+
+[ext_resource type="Script" path="res://Scripts/proc_gen_controller.gd" id="1_stjd4"]
+[ext_resource type="Script" path="res://Scripts/proc_gen_view.gd" id="2_02xfg"]
+
+[node name="ProcGen" type="Node"]
+script = ExtResource("1_stjd4")
+
+[node name="ProcGenView" type="CanvasLayer" parent="."]
+script = ExtResource("2_02xfg")
+
+[node name="GenerateButton" type="Button" parent="ProcGenView"]
+offset_left = 518.0
+offset_top = 110.0
+offset_right = 743.0
+offset_bottom = 155.0
+text = "Generate Dungeon"
