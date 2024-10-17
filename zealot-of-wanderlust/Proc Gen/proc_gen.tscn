@@ -219,6 +219,8 @@ floor_tilemap_layer = NodePath("Floor")
 
 [node name="ProcGenAlgorithm" type="Node" parent="."]
 script = ExtResource("2_fqe3b")
+iterations = 1000
+start_randomly_each_iteration = false
 
 [node name="ProcGenView" type="CanvasLayer" parent="." node_paths=PackedStringArray("proc_gen_controller", "gen_dungeon_btn")]
 script = ExtResource("3_2tjgd")

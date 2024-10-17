@@ -10,6 +10,7 @@ func run_proc_gen() -> void:
 	var atlas_id : int = floor_tilemap_layer.atlas_id
 	var tile_pos : Vector2i = floor_tilemap_layer.base_floor_tile_atlas_position
 	
+	clear_tiles(floor_tilemap_layer)
 	paint_tiles(floor_positions, floor_tilemap_layer, atlas_id, tile_pos)
 	# for visualizing the floor in console
 	#for position in floor_positions.keys():
@@ -51,3 +52,6 @@ func paint_tiles(tile_positions : Dictionary, tilemap_layer : TileMapLayer, tile
 
 func paint_single_tile(tilemap_layer : TileMapLayer, tilemap_layer_atlas_id : int , paint_position : Vector2i, tile_atlas_position : Vector2i) -> void:
 	tilemap_layer.set_cell(paint_position, tilemap_layer_atlas_id, tile_atlas_position)
+
+func clear_tiles(tilemap_layer : TileMapLayer) -> void:
+	tilemap_layer.clear()
