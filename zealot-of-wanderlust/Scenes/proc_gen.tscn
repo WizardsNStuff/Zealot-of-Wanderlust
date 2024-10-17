@@ -1,13 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://ttowgqc8xgke"]
+[gd_scene load_steps=4 format=3 uid="uid://ttowgqc8xgke"]
 
 [ext_resource type="Script" path="res://Scripts/proc_gen_controller.gd" id="1_stjd4"]
 [ext_resource type="Script" path="res://Scripts/proc_gen_view.gd" id="2_02xfg"]
+[ext_resource type="Script" path="res://Scripts/proc_gen_algorithm.gd" id="2_a7460"]
 
-[node name="ProcGen" type="Node"]
+[node name="ProcGen" type="Node" node_paths=PackedStringArray("proc_gen_algorithm")]
 script = ExtResource("1_stjd4")
+proc_gen_algorithm = NodePath("ProcGenAlgorithm")
 
-[node name="ProcGenView" type="CanvasLayer" parent="."]
+[node name="ProcGenAlgorithm" type="Node" parent="."]
+script = ExtResource("2_a7460")
+
+[node name="ProcGenView" type="CanvasLayer" parent="." node_paths=PackedStringArray("proc_gen_controller", "gen_dungeon_btn")]
 script = ExtResource("2_02xfg")
+proc_gen_controller = NodePath("..")
+gen_dungeon_btn = NodePath("GenerateButton")
 
 [node name="GenerateButton" type="Button" parent="ProcGenView"]
 offset_left = 518.0
