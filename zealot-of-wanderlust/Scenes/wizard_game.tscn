@@ -1,9 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://cdh52imq5vw4d"]
+[gd_scene load_steps=4 format=3 uid="uid://cdh52imq5vw4d"]
 
 [ext_resource type="Script" path="res://Scripts/controller.gd" id="1_hhabl"]
 [ext_resource type="PackedScene" uid="uid://cgu6hwypoqcg3" path="res://Scenes/level.tscn" id="2_4gxgj"]
 [ext_resource type="PackedScene" uid="uid://b2hi00650vmq1" path="res://Scenes/view.tscn" id="3_eky8r"]
-[ext_resource type="PackedScene" uid="uid://m28273i40xcl" path="res://Scenes/main_menu.tscn" id="4_i3ds3"]
 
 [node name="WizardGame" type="Node"]
 script = ExtResource("1_hhabl")
@@ -11,5 +10,3 @@ script = ExtResource("1_hhabl")
 [node name="Level" parent="." instance=ExtResource("2_4gxgj")]
 
 [node name="View" parent="." instance=ExtResource("3_eky8r")]
-
-[node name="MainMenu" parent="View" instance=ExtResource("4_i3ds3")]
