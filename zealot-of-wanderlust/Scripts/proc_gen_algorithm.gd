@@ -3,7 +3,7 @@ class_name ProcGenAlogrithm
 
 # number of iterations to run the randomwalk aglo
 @export var iterations : int = 10
-# number
+# number 
 @export var walk_length : int = 10
 # start at a random position on subsequent iterations rather than startPosition
 # when true it creates larger rooms

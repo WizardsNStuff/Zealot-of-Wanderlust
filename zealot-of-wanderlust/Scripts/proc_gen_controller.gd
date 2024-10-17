@@ -2,12 +2,18 @@ extends Node
 class_name ProcGenController
 
 @export var proc_gen_algorithm : ProcGenAlogrithm
+@export var floor_tilemap_layer : FloorTileMapLayer
 
 func run_proc_gen() -> void:
 	var floor_positions : Dictionary = run_random_walk()
+	
+	var atlas_id : int = floor_tilemap_layer.atlas_id
+	var tile_pos : Vector2i = floor_tilemap_layer.base_floor_tile_atlas_position
+	
+	paint_tiles(floor_positions, floor_tilemap_layer, atlas_id, tile_pos)
 	# for visualizing the floor in console
-	for position in floor_positions.keys():
-		print_debug(position)
+	#for position in floor_positions.keys():
+		#print_debug(position)
 
 func run_random_walk() -> Dictionary:
 	var current_position : Vector2i = proc_gen_algorithm.start_position
@@ -38,3 +44,10 @@ func simple_random_walk(start_position : Vector2i, walk_length : int) -> Diction
 
 func get_random_direction() -> Vector2i:
 	return proc_gen_algorithm.direction_list[randi_range(0, proc_gen_algorithm.direction_list.size() - 1)]
+
+func paint_tiles(tile_positions : Dictionary, tilemap_layer : TileMapLayer, tilemap_layer_atlas_id : int , tile_atlas_position : Vector2i) -> void:
+	for tile_pos in tile_positions.keys():
+		paint_single_tile(tilemap_layer, tilemap_layer_atlas_id, tile_pos, tile_atlas_position)
+
+func paint_single_tile(tilemap_layer : TileMapLayer, tilemap_layer_atlas_id : int , paint_position : Vector2i, tile_atlas_position : Vector2i) -> void:
+	tilemap_layer.set_cell(paint_position, tilemap_layer_atlas_id, tile_atlas_position)

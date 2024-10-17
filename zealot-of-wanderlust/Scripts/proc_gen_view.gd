@@ -8,5 +8,5 @@ func _ready() -> void:
 	gen_dungeon_btn.pressed.connect(proc_gen_controller.run_proc_gen)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
