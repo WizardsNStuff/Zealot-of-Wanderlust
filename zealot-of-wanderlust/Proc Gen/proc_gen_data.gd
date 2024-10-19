@@ -11,6 +11,8 @@ class_name ProcGenData
 
 @export var corridor_walk_length : int = 10
 
+@export var corridor_amount : int = 5
+
 @export var room_amount_percent : float = 0.5
 
 var start_position : Vector2i = Vector2i.ZERO

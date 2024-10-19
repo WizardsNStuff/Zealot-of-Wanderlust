@@ -28,14 +28,14 @@ func run_random_walk() -> Dictionary:
 	var floor_positions = {}
 	
 	for i in range(0, proc_gen_data.room_iterations - 1):
-		var path : Dictionary = simple_random_walk(current_position, proc_gen_data.room_walk_length)
+		var path : Dictionary = simple_random_walk_room(current_position, proc_gen_data.room_walk_length)
 		floor_positions.merge(path)
 		if (proc_gen_data.room_start_randomly_each_iteration):
 			# select random position from floor_positions Dict
 			current_position = floor_positions.keys()[randi_range(0, floor_positions.size() - 1)]
 	return floor_positions
 
-func simple_random_walk(start_position : Vector2i, walk_length : int) -> Dictionary:
+func simple_random_walk_room(start_position : Vector2i, walk_length : int) -> Dictionary:
 	# walkLength : how many steps agent will do before returning
 	var path : Dictionary = {}
 	
@@ -78,3 +78,46 @@ func find_wall_edges(floor_positions : Dictionary, direction_list : Array) -> Di
 			if (floor_positions.keys().has(neighbor_position) == false):
 				wall_positions[neighbor_position] = null
 	return wall_positions
+
+func random_walk_corridor(start_position : Vector2i, corridor_length : int) -> Array:
+	var corridor : Array = []
+	var direction = get_random_direction()
+	var current_position = start_position
+	corridor.append(current_position)
+
+	for i in range(0, corridor_length):
+		current_position += direction
+		corridor.append(current_position)
+
+	return corridor
+
+# generates corridors and adds their positions to the set of floor positions
+func create_corridors(floor_positions : Dictionary) -> void:
+	var current_position = proc_gen_data.start_position
+	
+	# loop through the corridor amount to generate multiple corridors
+	for i in range(0, proc_gen_data.corridor_amount):
+		# generate a corridor using a random walk algorithm, starting from current_position
+		var corridor = random_walk_corridor(current_position, proc_gen_data.corridor_walk_length)
+		# update current_position to the end of the newly created corridor
+		current_position = corridor[corridor.size() - 1]
+		
+		# add all positions of the corridor to the set of floor positions
+		for position in corridor:
+			# add the position to the dictionary
+			floor_positions[position] = null
+
+func corridor_first_generation() -> void:
+	var floor_positions : Dictionary = {}
+	
+	create_corridors(floor_positions);
+	
+	var floor_atlas_id : int = floor_tilemap_layer.atlas_id
+	var corridor_tile_pos : Vector2i = floor_tilemap_layer.base_corridor_floor_tile_atlas_position
+	
+	var wall_atlas_id : int = wall_tilemap_layer.atlas_id
+	var corridor_wall_tile_pos : Vector2i = wall_tilemap_layer.base_corridor_wall_tile_atlas_position
+	
+	paint_tiles(floor_positions, floor_tilemap_layer, floor_atlas_id, corridor_tile_pos)
+	
+	create_walls(floor_positions, wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
