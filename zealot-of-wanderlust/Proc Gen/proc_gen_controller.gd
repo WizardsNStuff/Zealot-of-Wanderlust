@@ -91,7 +91,7 @@ func random_walk_corridor(start_position : Vector2i, corridor_length : int) -> A
 
 	return corridor
 
-# generates corridors and adds their positions to the set of floor positions
+# creates corridors and adds their positions to the set of floor positions
 func create_corridors(floor_positions : Dictionary) -> void:
 	var current_position = proc_gen_data.start_position
 	
@@ -107,17 +107,30 @@ func create_corridors(floor_positions : Dictionary) -> void:
 			# add the position to the dictionary
 			floor_positions[position] = null
 
+# generate corridors using a corridor-first approach
+# i.e. generate the corridors first and then add rooms, walls, and other features around them
 func corridor_first_generation() -> void:
+	# dictionary to store the floor tile positions
 	var floor_positions : Dictionary = {}
 	
+	# clear floor and wall tilemaps before generating new corridors
+	clear_tiles(floor_tilemap_layer)
+	clear_tiles(wall_tilemap_layer)
+	
+	# create corridors and store their positions in floor_positions
 	create_corridors(floor_positions);
 	
+	# get the atlas ID for the floor tilemap layer
 	var floor_atlas_id : int = floor_tilemap_layer.atlas_id
+	# get the position of the base corridor floor tile in the atlas
 	var corridor_tile_pos : Vector2i = floor_tilemap_layer.base_corridor_floor_tile_atlas_position
 	
+	# get the atlas ID for the wall tilemap layer
 	var wall_atlas_id : int = wall_tilemap_layer.atlas_id
+	# get the position of the base corridor wall tile in the atlas
 	var corridor_wall_tile_pos : Vector2i = wall_tilemap_layer.base_corridor_wall_tile_atlas_position
 	
+	# paint the floor tiles
 	paint_tiles(floor_positions, floor_tilemap_layer, floor_atlas_id, corridor_tile_pos)
-	
+	# create walls around the corridors using the positions stored in floor_positions
 	create_walls(floor_positions, wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
