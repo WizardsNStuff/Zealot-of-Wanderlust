@@ -3,15 +3,20 @@ class_name ProcGenController
 
 @export var proc_gen_data : ProcGenData
 @export var floor_tilemap_layer : FloorTileMapLayer
+@export var wall_tilemap_layer : WallTileMapLayer
 
 func run_proc_gen() -> void:
 	var floor_positions : Dictionary = run_random_walk()
 	
-	var atlas_id : int = floor_tilemap_layer.atlas_id
-	var tile_pos : Vector2i = floor_tilemap_layer.base_floor_tile_atlas_position
+	var floor_atlas_id : int = floor_tilemap_layer.atlas_id
+	var floor_tile_pos : Vector2i = floor_tilemap_layer.base_floor_tile_atlas_position
+	
+	var wall_atlas_id : int = wall_tilemap_layer.atlas_id
+	var wall_tile_pos : Vector2i = wall_tilemap_layer.base_wall_tile_atlas_position
 	
 	clear_tiles(floor_tilemap_layer)
-	paint_tiles(floor_positions, floor_tilemap_layer, atlas_id, tile_pos)
+	paint_tiles(floor_positions, floor_tilemap_layer, floor_atlas_id, floor_tile_pos)
+	create_walls(floor_positions, wall_tilemap_layer, wall_atlas_id, wall_tile_pos)
 	# for visualizing the floor in console
 	#for position in floor_positions.keys():
 		#print_debug(position)
@@ -55,3 +60,18 @@ func paint_single_tile(tilemap_layer : TileMapLayer, tilemap_layer_atlas_id : in
 
 func clear_tiles(tilemap_layer : TileMapLayer) -> void:
 	tilemap_layer.clear()
+
+func create_walls(floor_positions : Dictionary, tilemap_layer : TileMapLayer, tilemap_layer_atlas_id : int , tile_atlas_position : Vector2i) -> void:
+	var basic_wall_positions : Dictionary = find_walls_in_directions(floor_positions, proc_gen_data.direction_list)
+	for position in basic_wall_positions:
+		paint_single_tile(tilemap_layer, tilemap_layer_atlas_id, position, tile_atlas_position)
+
+func find_walls_in_directions(floor_positions : Dictionary, direction_list : Array) -> Dictionary:
+	var wall_positions : Dictionary = {}
+	for position in floor_positions:
+		for direction in direction_list:
+			var neighbor_position = position + direction
+			# if there is no neighbor for the current tile add wall to list of walls
+			if (floor_positions.keys().has(neighbor_position) == false):
+				wall_positions[neighbor_position] = null
+	return wall_positions
