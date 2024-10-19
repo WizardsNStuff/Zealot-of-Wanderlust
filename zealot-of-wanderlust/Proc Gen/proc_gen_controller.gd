@@ -15,6 +15,8 @@ func run_proc_gen() -> void:
 	var wall_tile_pos : Vector2i = wall_tilemap_layer.base_wall_tile_atlas_position
 	
 	clear_tiles(floor_tilemap_layer)
+	clear_tiles(wall_tilemap_layer)
+	
 	paint_tiles(floor_positions, floor_tilemap_layer, floor_atlas_id, floor_tile_pos)
 	create_walls(floor_positions, wall_tilemap_layer, wall_atlas_id, wall_tile_pos)
 	# for visualizing the floor in console
@@ -62,11 +64,12 @@ func clear_tiles(tilemap_layer : TileMapLayer) -> void:
 	tilemap_layer.clear()
 
 func create_walls(floor_positions : Dictionary, tilemap_layer : TileMapLayer, tilemap_layer_atlas_id : int , tile_atlas_position : Vector2i) -> void:
-	var basic_wall_positions : Dictionary = find_walls_in_directions(floor_positions, proc_gen_data.direction_list)
-	for position in basic_wall_positions:
+	var wall_positions : Dictionary = find_wall_edges(floor_positions, proc_gen_data.direction_list)
+	for position in wall_positions:
 		paint_single_tile(tilemap_layer, tilemap_layer_atlas_id, position, tile_atlas_position)
 
-func find_walls_in_directions(floor_positions : Dictionary, direction_list : Array) -> Dictionary:
+# finds the positions where walls should be placed based on a floors empty neighboring tiles 
+func find_wall_edges(floor_positions : Dictionary, direction_list : Array) -> Dictionary:
 	var wall_positions : Dictionary = {}
 	for position in floor_positions:
 		for direction in direction_list:
