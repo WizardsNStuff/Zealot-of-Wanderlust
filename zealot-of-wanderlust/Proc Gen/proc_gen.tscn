@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://ttowgqc8xgke"]
 
 [ext_resource type="Script" path="res://Proc Gen/proc_gen_controller.gd" id="1_5ancx"]
-[ext_resource type="Script" path="res://Proc Gen/proc_gen_algorithm.gd" id="2_fqe3b"]
+[ext_resource type="Script" path="res://Proc Gen/proc_gen_data.gd" id="2_fqe3b"]
 [ext_resource type="Script" path="res://Proc Gen/proc_gen_view.gd" id="3_2tjgd"]
 [ext_resource type="Texture2D" uid="uid://b36g8amcnnwwo" path="res://Assets/tiles.png" id="4_ay2sl"]
 [ext_resource type="Script" path="res://Proc Gen/floor_tilemap_layer.gd" id="5_r24de"]
@@ -212,15 +212,13 @@ texture = ExtResource("4_ay2sl")
 [sub_resource type="TileSet" id="TileSet_en0rj"]
 sources/0 = SubResource("TileSetAtlasSource_ut10k")
 
-[node name="ProcGen" type="Node" node_paths=PackedStringArray("proc_gen_algorithm", "floor_tilemap_layer")]
+[node name="ProcGen" type="Node" node_paths=PackedStringArray("proc_gen_data", "floor_tilemap_layer")]
 script = ExtResource("1_5ancx")
-proc_gen_algorithm = NodePath("ProcGenAlgorithm")
+proc_gen_data = NodePath("ProcGenData")
 floor_tilemap_layer = NodePath("Floor")
 
-[node name="ProcGenAlgorithm" type="Node" parent="."]
+[node name="ProcGenData" type="Node" parent="."]
 script = ExtResource("2_fqe3b")
-iterations = 1000
-start_randomly_each_iteration = false
 
 [node name="ProcGenView" type="CanvasLayer" parent="." node_paths=PackedStringArray("proc_gen_controller", "gen_dungeon_btn")]
 script = ExtResource("3_2tjgd")
