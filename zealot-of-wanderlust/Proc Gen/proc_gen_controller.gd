@@ -181,17 +181,23 @@ func random_walk_corridor(start_position : Vector2i, corridor_length : int) -> A
 # creates corridors using a random walk algorithm and adds their positions to the set of floor positions
 # generates a specified number of corridors
 # updating the floor positions and potential room positions as corridors are created.
-func create_corridors(floor_positions : Dictionary, potential_room_positions : Dictionary) -> void:
+func create_corridors(floor_positions : Dictionary, potential_room_positions : Dictionary) -> Array[Array]:
 	# set the starting position for corridor generation
 	var current_position = proc_gen_data.start_position
 
 	# mark the starting position as a potential room position
 	potential_room_positions[current_position] = null
-	
+
+	# array to store all the generated corridors
+	var corridors : Array[Array] = []
+
 	# loop through the specified corridor amount to generate multiple corridors
 	for i in range(0, proc_gen_data.corridor_amount):
 		# generate a corridor by executing a random walk from the current position
-		var corridor = random_walk_corridor(current_position, proc_gen_data.corridor_walk_length)
+		var corridor : Array = random_walk_corridor(current_position, proc_gen_data.corridor_walk_length)
+
+		# store the generated corridor in the corridors array
+		corridors.append(corridor)
 
 		# set current_position to the last position in the generated corridor (the corridor endpoint)
 		current_position = corridor[corridor.size() - 1]
@@ -204,6 +210,9 @@ func create_corridors(floor_positions : Dictionary, potential_room_positions : D
 			# include the position in the dictionary of floor positions, marking it as part of the floor layout
 			floor_positions[position] = null
 
+	# return the array of generated corridors
+	return corridors
+
 # generate corridors first then add rooms, walls, and other features around them
 func corridor_first_generation() -> void:
 	# dictionary to store the positions of all the floor tiles (corridors and rooms)
@@ -215,8 +224,10 @@ func corridor_first_generation() -> void:
 	clear_tiles(floor_tilemap_layer)
 	clear_tiles(wall_tilemap_layer)
 
-	# create corridors and store their positions in floor_positions
-	create_corridors(floor_positions, potential_room_positions);
+	# generate corridors and store their positions in floor_positions
+	# mark the end positions of these corridors as potential locations for generating rooms,
+	# storing those positions in potential_room_positions for room placement later on
+	var corridors : Array[Array] = create_corridors(floor_positions, potential_room_positions);
 
 	# create rooms based on potential room positions and store their floor tile positions in room_positions
 	var room_positions : Dictionary = create_rooms(potential_room_positions)
@@ -229,6 +240,16 @@ func corridor_first_generation() -> void:
 
 	# merge the room floor positions into the main floor_positions dictionary
 	floor_positions.merge(room_positions)
+
+	# iterate through each generated corridor
+	for i in range(0, corridors.size()):
+		# increase the size of each corridor by one (or two) tiles for more variation
+		corridors[i] = increase_corridor_size_by_one(corridors[i])
+		#corridors[i] = increase_corridor_size_by_two(corridors[i])
+
+		# add the expanded corridor tiles to the main floor_positions dictionary
+		for position in corridors[i]:
+			floor_positions[position] = null
 
 	# get the atlas ID for the floor tilemap layer
 	var floor_atlas_id : int = floor_tilemap_layer.atlas_id
@@ -317,3 +338,6 @@ func create_rooms_at_dead_ends(dead_ends : Array, room_positions : Dictionary) -
 
 			# merge the new room's floor positions into the main room_positions dictionary
 			room_positions.merge(room)
+
+func increase_corridor_size_by_one(corridor : Array) -> Array:
+	return []
