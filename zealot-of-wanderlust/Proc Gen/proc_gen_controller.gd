@@ -397,5 +397,23 @@ func increase_corridor_size_by_3_by_3(corridor : Array) -> Array:
 	# return the newly expanded corridor
 	return new_corridor
 
+# returns a vector representing a 90-degree clockwise direction from the given direction
 func get_direction_90_degrees_from(direction : Vector2i) -> Vector2i:
+	# check if the input direction is UP, and return RIGHT if true
+	if direction == Vector2i.UP:
+		return Vector2i.RIGHT
+
+	# check if the input direction is RIGHT, and return DOWN if true
+	if direction == Vector2i.RIGHT:
+		return Vector2i.DOWN
+
+	# check if the input direction is DOWN, and return LEFT if true
+	if direction == Vector2i.DOWN:
+		return Vector2i.LEFT
+
+	# check if the input direction is LEFT, and return UP if true
+	if direction == Vector2i.LEFT:
+		return Vector2i.UP
+
+	# if the direction does not match any cardinal direction, return Vector2i.ZERO
 	return Vector2i.ZERO
