@@ -112,7 +112,7 @@ func paint_single_tile(tilemap_layer : TileMapLayer, tilemap_layer_atlas_id : in
 	# set the cell at the specified position in the tilemap layer with the tile texture/sprite from the atlas (sprite sheet)
 	tilemap_layer.set_cell(paint_position, tilemap_layer_atlas_id, tile_atlas_position)
 
-# clears all tiles from the specified tilemap layer 
+# clears all tiles from the specified tilemap layer
 # removes any existing tiles in the tilemap layer, allowing for a fresh start before new tiles are painted
 func clear_tiles(tilemap_layer : TileMapLayer) -> void:
 	# call the clear method on the tilemap layer to remove all tiles
@@ -204,8 +204,7 @@ func create_corridors(floor_positions : Dictionary, potential_room_positions : D
 			# include the position in the dictionary of floor positions, marking it as part of the floor layout
 			floor_positions[position] = null
 
-# generate corridors using a corridor-first approach
-# i.e. generate the corridors first and then add rooms, walls, and other features around them
+# generate corridors first then add rooms, walls, and other features around them
 func corridor_first_generation() -> void:
 	# dictionary to store the positions of all the floor tiles (corridors and rooms)
 	var floor_positions : Dictionary = {}
@@ -221,6 +220,12 @@ func corridor_first_generation() -> void:
 
 	# create rooms based on potential room positions and store their floor tile positions in room_positions
 	var room_positions : Dictionary = create_rooms(potential_room_positions)
+
+	# find all dead-end positions in the corridors and store them in the dead_ends array
+	var dead_ends : Array = find_all_dead_ends(floor_positions)
+
+	# create rooms at the identified dead-end positions, newly generated room floor positions are merged into room_positions
+	create_rooms_at_dead_ends(dead_ends, room_positions)
 
 	# merge the room floor positions into the main floor_positions dictionary
 	floor_positions.merge(room_positions)
@@ -270,3 +275,45 @@ func create_rooms(potential_room_positions : Dictionary) -> Dictionary:
 
 	# return the final dictionary containing all the positions of the floor tiles for all rooms created
 	return room_positions
+
+# finds all dead-end positions in the floor layout
+# a dead-end is defined as a floor tile that has only one neighboring floor tile
+func find_all_dead_ends(floor_positions : Dictionary) -> Array:
+	# array to store all the detected dead-end positions
+	var dead_ends : Array = []
+
+	# iterate over each floor tile position in the floor layout
+	for position in floor_positions:
+		# variable to count the number of neighboring floor tiles for the current position
+		var neighbor_count : int = 0
+
+		# check each direction (up, down, left, right) from the current tile
+		for direction in proc_gen_data.direction_list:
+
+			# if a neighboring tile exists in the given direction
+			if floor_positions.keys().has(position + direction):
+				# increment the neighbor count
+				neighbor_count += 1
+
+		# if the current tile has only one neighboring floor tile, it's considered a dead-end
+		if (neighbor_count == 1):
+			# add the position to the dead_ends array
+			dead_ends.append(position)
+
+	# return the array of dead-end positions
+	return dead_ends
+
+# creates rooms at dead-end positions by performing a random walk starting from each dead-end
+# if a dead-end is not already part of an existing room, a room will be generated at that position
+func create_rooms_at_dead_ends(dead_ends : Array, room_positions : Dictionary) -> void:
+	# iterate over each dead-end position
+	for position in dead_ends:
+
+		# if the dead-end position is not already part of an existing room
+		if (room_positions.keys().has(position) == false):
+
+			# generate a room (floor positions) using a random walk starting from the dead-end position
+			var room : Dictionary = run_random_walk(position)
+
+			# merge the new room's floor positions into the main room_positions dictionary
+			room_positions.merge(room)
