@@ -339,8 +339,45 @@ func create_rooms_at_dead_ends(dead_ends : Array, room_positions : Dictionary) -
 			# merge the new room's floor positions into the main room_positions dictionary
 			room_positions.merge(room)
 
+# expands the given corridor by adding additional tiles around corners and straight sections
+# for each corner in the corridor, it adds surrounding tiles, while straight sections get
+# an additional tile added in the direction perpendicular to the corridor's direction
 func increase_corridor_size_by_1(corridor : Array) -> Array:
-	return []
+	# initialize an array to store the expanded corridor
+	var new_corridor : Array = []
+
+	# variable to keep track of the previous direction between corridor tile
+	var previous_direction : Vector2i = Vector2i.ZERO
+
+	# loop through each tile in the corridor, starting from the second tile (i = 1)
+	for i in range(1, corridor.size()):
+		# calculate the direction vector from the previous tile to the current tile
+		var direction_between_tiles : Vector2i = corridor[i] - corridor[i - 1]
+
+		# check if there is a change in direction (i.e., a corner)
+		if (previous_direction != Vector2i.ZERO and direction_between_tiles != previous_direction):
+			# handle corner by adding surronding tiles around the previous tile (the corner)
+
+			# iterate over the direction to all neighboring tiles
+			for x in range(-1, 2):
+				for y in range(-1, 2):
+					# add the surrounding tiles of the previous (corner) tile (including diagonals) to the new corridor
+					new_corridor.append(corridor[i - 1] + Vector2i(x, y))
+
+			# update the previous direction for the next iteration
+			previous_direction = direction_between_tiles
+
+		else:
+
+			# add a single cell in the current direction + 90 degrees since were not at a corner
+			var new_corridor_tile_offset : Vector2i = get_direction_90_degrees_from(direction_between_tiles)
+
+			# add the current tile and the new offset tile to the new corridor
+			new_corridor.append(corridor[i]);
+			new_corridor.append(corridor[i - 1] + new_corridor_tile_offset);
+
+	# return the expanded corridor with the additional tiles
+	return new_corridor
 
 # increases the size of a corridor by expanding each tile in the corridor to a 3x3 area
 # for each tile in the corridor, it adds surrounding tiles to create a wider corridor
@@ -359,3 +396,6 @@ func increase_corridor_size_by_3_by_3(corridor : Array) -> Array:
 
 	# return the newly expanded corridor
 	return new_corridor
+
+func get_direction_90_degrees_from(direction : Vector2i) -> Vector2i:
+	return Vector2i.ZERO
