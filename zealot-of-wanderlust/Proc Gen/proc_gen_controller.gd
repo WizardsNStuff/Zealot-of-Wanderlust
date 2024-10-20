@@ -244,8 +244,8 @@ func corridor_first_generation() -> void:
 	# iterate through each generated corridor
 	for i in range(0, corridors.size()):
 		# increase the size of each corridor by one (or two) tiles for more variation
-		corridors[i] = increase_corridor_size_by_one(corridors[i])
-		#corridors[i] = increase_corridor_size_by_two(corridors[i])
+		corridors[i] = increase_corridor_size_by_1(corridors[i])
+		#corridors[i] = increase_corridor_size_by_3_by_3(corridors[i])
 
 		# add the expanded corridor tiles to the main floor_positions dictionary
 		for position in corridors[i]:
@@ -339,5 +339,23 @@ func create_rooms_at_dead_ends(dead_ends : Array, room_positions : Dictionary) -
 			# merge the new room's floor positions into the main room_positions dictionary
 			room_positions.merge(room)
 
-func increase_corridor_size_by_one(corridor : Array) -> Array:
+func increase_corridor_size_by_1(corridor : Array) -> Array:
 	return []
+
+# increases the size of a corridor by expanding each tile in the corridor to a 3x3 area
+# for each tile in the corridor, it adds surrounding tiles to create a wider corridor
+func increase_corridor_size_by_3_by_3(corridor : Array) -> Array:
+	# initialize an array to store the expanded corridor
+	var new_corridor : Array = []
+
+	# loop through each tile in the corridor, starting from the second tile (i = 1)
+	for i in range(1, corridor.size()):
+
+		# for each tile, create a 3x3 area around it
+		for x in range(-1, 2):
+			for y in range(-1, 2):
+				# add the surrounding tiles (including diagonals) to the new corridor
+				new_corridor.append(corridor[i - 1] + Vector2i(x, y))
+
+	# return the newly expanded corridor
+	return new_corridor
