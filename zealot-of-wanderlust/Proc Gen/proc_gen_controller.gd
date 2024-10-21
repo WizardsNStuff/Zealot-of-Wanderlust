@@ -563,14 +563,24 @@ func room_first_generation() -> void:
 	# create simple rooms by converting the AABB rooms into floor tiles stored in a dictionary
 	floor = create_simple_rooms(rooms_list)
 
+	# array to hold the centers of each room for connecting them with corridors
 	var room_centers : Array[Vector2i] = []
 
+	# iterate through each room in the list of rooms
 	for room in rooms_list:
-		# round rounds the float up
-		room_centers.append(Vector2i(round(room.get_center().x), round(room.get_center().y)))
 
+		# get the x and y coords of the room's center and round them to integers (for tilemap alignment)
+		var room_center_x : int = round(room.get_center().x)
+		var room_center_y : int = round(room.get_center().y)
+
+		# add the rounded center position to the room_centers list
+		room_centers.append(Vector2i(room_center_x, room_center_y))
+
+	# finds the closest room center and creates corridors between them
+	# store all the resulting corridor tiles in a dictionary for later use
 	var corridors : Dictionary = connect_rooms(room_centers)
 
+	# merge the corridor tiles into the floor tiles dictionary
 	floor.merge(corridors)
 
 	# get the atlas ID for the floor tilemap layer
@@ -588,45 +598,110 @@ func room_first_generation() -> void:
 	# create walls around the corridors using the positions stored in floor_positions
 	create_walls(floor, wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
 
+# connects rooms by creating corridors between their centers
+# the rooms are represented by their center points, and the corridors 
+# are stored in a dictionary where each key is a tile position along the corridor
 func connect_rooms(room_centers : Array[Vector2i]) -> Dictionary:
+	# dictionary to store all the corridor tiles
 	var corridors : Dictionary = {}
 
+	# pick a random room center to start with
 	var current_room_center : Vector2i = room_centers.pick_random()
 
+	# remove the selected room center from the list to avoid reconnecting it
 	room_centers.erase(current_room_center)
 
+	# loop until all room centers have been connected
 	while room_centers.size() > 0:
+		# find the closest room center to the current room center
 		var closest_center : Vector2i = find_closest_room_center(current_room_center, room_centers)
 
+		# remove the closest room center from the list to avoid reconnecting it
 		room_centers.erase(closest_center)
 
+		# create a new corridor between the current room center and the closest center
 		var new_corridor : Dictionary = create_corridor(current_room_center, closest_center)
 
+		# move to the closest room center to continue the process
 		current_room_center = closest_center
 
+		# merge the new corridor tiles into the corridor tiles dictionary
 		corridors.merge(new_corridor)
 
+	# return the dictionary containing all the corridor tiles connecting the rooms
 	return corridors
 
+# find the closest room center to the current room center from a list of room centers
+# calculates the distance between the current room center and each center in the list,
+# and returns the one with the smallest distance
 func find_closest_room_center(current_room_center : Vector2i, room_centers : Array[Vector2i]) -> Vector2i:
+	# intialize the closest room center with a default value (Vector2i.ZERO)
 	var closest_room_center : Vector2i = Vector2i.ZERO
 
+	# initialize the minimum distance to infinity to ensure any calculated distance will be smaller
 	var distance_to_room_center : float = INF
 
+	# iterate through the room centers list to find the closest one
 	for center in room_centers:
 
+		# calculate the distance between the current room center and the current center in the list
 		var current_distance_to_center : float = center.distance_to(current_room_center)
 
+		# if the distance to the current room center is less than the previously tracked minimum distance,
+		# update the closest room center and record the new shortest distance
 		if current_distance_to_center < distance_to_room_center:
 
+			# update the minimum distance with the new shortest distance found
 			distance_to_room_center = current_distance_to_center
 
+			# set the closest room center to the room with the shortest distance
 			closest_room_center = center
 
+	# return the closest room center found
 	return closest_room_center
 
+# creates a corridor between the start and end positions
+# the corridor is represented as a dictionary where each tile position is a key
 func create_corridor(start_position : Vector2i, end_position : Vector2i) -> Dictionary:
-	return {}
+	# dictionary to store the positions of corridor tiles
+	var corridor : Dictionary = {}
+
+	# set the current position to the starting point of the corridor
+	var current_position : Vector2i = start_position
+
+	# add the initial start position to the corridor dictionary
+	corridor[current_position] = null
+
+	# move vertically until the current position's y matches the end position's y
+	while current_position.y != end_position.y:
+
+		# if the end position is above the current position, move up
+		if end_position.y > current_position.y:
+			current_position += Vector2i.UP;
+
+		# if the end position is below the current position, move down
+		elif end_position.y < current_position.y:
+			current_position += Vector2i.DOWN;
+
+		# add the new position to the corridor dictionary
+		corridor[current_position] = null
+
+	# move horizontally until the current position's x matches the end position's x
+	while current_position.x != end_position.x:
+
+		# if the end position is to the right of the current position, move right
+		if end_position.x > current_position.x:
+			current_position += Vector2i.RIGHT;
+
+		# if the end position is to the left of the current position, move left
+		elif end_position.x < current_position.x:
+			current_position += Vector2i.LEFT;
+
+		# add the new position to the corridor dictionary
+		corridor[current_position] = null
+
+	# return the dictionary containing all the positions of the corridor tiles
+	return corridor
 
 # creates simple rectangular rooms from a list of AABB room objects
 # generates a floor layout for each room and stores the floor tiles in a dictionary
