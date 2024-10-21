@@ -526,7 +526,13 @@ func split_horizontally(minHeight : int, rooms_queue : Array[AABB], room : AABB)
 	rooms_queue.push_back(room_1)
 	rooms_queue.push_back(room_2)
 
+# generates rooms using binary space partitioning (BSP), creates simple rooms from the partitions, 
+# and paints the floor tiles for these rooms onto a tilemap
+# it also places walls around the generated rooms
 func room_first_generation() -> void:
+	# generate a list of rooms using binary space partitioning (BSP)
+	# the AABB defines the entire dungeon space to be split, using the dungeon start position and dimensions
+	# the min width and height for rooms are passed to control how small the rooms can get during splitting
 	var rooms_list : Array[AABB] = binary_space_partitioning(
 		AABB(
 			Vector3i(proc_gen_data.start_position.x, proc_gen_data.start_position.y, 0),
@@ -536,7 +542,10 @@ func room_first_generation() -> void:
 		proc_gen_data.min_woom_height
 		)
 
+	# dictionary to hold the floor tiles for the generated rooms
 	var floor : Dictionary = {}
+
+	# create simple rooms by converting the AABB rooms into floor tiles stored in a dictionary
 	floor = create_simple_rooms(rooms_list)
 	
 	# get the atlas ID for the floor tilemap layer
@@ -554,5 +563,29 @@ func room_first_generation() -> void:
 	# create walls around the corridors using the positions stored in floor_positions
 	create_walls(floor, wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
 
+# creates simple rectangular rooms from a list of AABB room objects
+# generates a floor layout for each room and stores the floor tiles in a dictionary
+# the resulting dictionary contains positions of the floor tiles, where each room's floor 
+# is generated within its bounds, excluding some offsets for walls or other decorations
 func create_simple_rooms(rooms_list : Array[AABB]) -> Dictionary:
-	return {}
+	# to decorate rooms procedural, save each floor room in sperate dict and process further
+
+	# dictionary to store all the floor tile positions for each room
+	var floor : Dictionary = {}
+
+	# loop through each room in the rooms list
+	for room in rooms_list:
+
+		# iterate through the room's dimensions, applying an offset to leave space for walls or decorations
+		# the offsets prevent the floor from being created all the way to the other room's edges
+		for col in range(proc_gen_data.room_offset, room.size.x - proc_gen_data.room_offset):
+			for row in range(proc_gen_data.room_offset, room.size.y - proc_gen_data.room_offset):
+
+				# calculate the tile's position by adding the room's position and the current offset
+				var position : Vector2i = Vector2i(room.position.x, room.position.y) + Vector2i(col, row)
+
+				# store the position as a floor tile in the dictionary
+				floor[position] = null
+
+	# return the dictionary containing all the floor tile positions for the rooms
+	return floor
