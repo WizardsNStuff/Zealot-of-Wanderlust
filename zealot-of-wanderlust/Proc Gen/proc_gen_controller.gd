@@ -502,4 +502,26 @@ func split_vertically(minWidth : int, rooms_queue : Array[AABB], room : AABB) ->
 
 # splits a given room horizontally, creating two new rooms
 func split_horizontally(minHeight : int, rooms_queue : Array[AABB], room : AABB) -> void:
-	pass
+	# using a split range of (minHeight, room.size.y - minHeight) ensures we always fit 2 
+	# rooms but this creates a grid like structure which looks less random
+
+	# generate a random split position along the width of the room
+	var y_split : float = randf_range(1, room.size.y)
+	
+	
+	# room_1 is defined by the original room's position (bottom-left corner)
+	# and extends vertically from the start of the room to the y_split point
+	# while the width remains the same as the original room
+	var room_1 : AABB = AABB(room.position, Vector3i(room.size.x, y_split, room.size.z))
+
+	# room_2 is defined by the position that starts just after the y_split point
+	# and extends to the top of the original room
+	# while the width remains the same as the original room
+	var room_2 : AABB = AABB(
+		Vector3i(room.position.x, room.position.y + y_split, room.position.z), 
+		Vector3i(room.size.x, room.size.y - y_split, room.size.z)
+		)
+
+	# enqueue both newly created rooms back into the rooms_queue for further processing
+	rooms_queue.push_back(room_1)
+	rooms_queue.push_back(room_2)
