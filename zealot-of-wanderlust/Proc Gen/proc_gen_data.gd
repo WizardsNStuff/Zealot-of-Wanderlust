@@ -19,6 +19,10 @@ class_name ProcGenData
 
 @export var min_woom_height : int = 4
 
+@export var dungeon_width : int = 20
+
+@export var dungeon_height : int = 20
+
 @export_range(0, 10) var room_offset : int = 1
 
 @export var random_walk_room : bool = false

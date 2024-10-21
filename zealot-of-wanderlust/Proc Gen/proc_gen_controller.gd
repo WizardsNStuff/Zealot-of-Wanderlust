@@ -525,3 +525,34 @@ func split_horizontally(minHeight : int, rooms_queue : Array[AABB], room : AABB)
 	# enqueue both newly created rooms back into the rooms_queue for further processing
 	rooms_queue.push_back(room_1)
 	rooms_queue.push_back(room_2)
+
+func room_first_generation() -> void:
+	var rooms_list : Array[AABB] = binary_space_partitioning(
+		AABB(
+			Vector3i(proc_gen_data.start_position.x, proc_gen_data.start_position.y, 0),
+			Vector3i(proc_gen_data.dungeon_width, proc_gen_data.dungeon_height, 0)
+		),
+		proc_gen_data.min_room_width,
+		proc_gen_data.min_woom_height
+		)
+
+	var floor : Dictionary = {}
+	floor = create_simple_rooms(rooms_list)
+	
+	# get the atlas ID for the floor tilemap layer
+	var floor_atlas_id : int = floor_tilemap_layer.atlas_id
+	# get the position of the base corridor floor tile in the atlas
+	var corridor_tile_pos : Vector2i = floor_tilemap_layer.base_corridor_floor_tile_atlas_position
+
+	# get the atlas ID for the wall tilemap layer
+	var wall_atlas_id : int = wall_tilemap_layer.atlas_id
+	# get the position of the base corridor wall tile in the atlas
+	var corridor_wall_tile_pos : Vector2i = wall_tilemap_layer.base_corridor_wall_tile_atlas_position
+
+	# paint the floor tiles
+	paint_tiles(floor, floor_tilemap_layer, floor_atlas_id, corridor_tile_pos)
+	# create walls around the corridors using the positions stored in floor_positions
+	create_walls(floor, wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
+
+func create_simple_rooms(rooms_list : Array[AABB]) -> Dictionary:
+	return {}
