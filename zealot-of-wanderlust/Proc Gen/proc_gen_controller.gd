@@ -417,3 +417,69 @@ func get_direction_90_degrees_from(direction : Vector2i) -> Vector2i:
 
 	# if the direction does not match any cardinal direction, return Vector2i.ZERO
 	return Vector2i.ZERO
+
+# performs binary space partitioning on a given space to create a list of rooms
+# algorithm recursively splits the space until the resulting rooms meet
+# the minimum width and height requirements
+func binary_space_partitioning(space_to_split : AABB, minWidth: int, minHeight: int) -> Array[AABB]:
+	# queue to hold the spaces that need to be split
+	var rooms_queue : Array[AABB] = []
+	# array to store the successfully created rooms
+	var rooms_list : Array[AABB] = []
+
+	# enqueue the initial space to split
+	rooms_queue.push_back(space_to_split)
+
+	# process the queue until all spaces have been handled
+	while (rooms_queue.size() > 0):
+		# dequeue the next room to process
+		var room : AABB = rooms_queue.pop_front()
+
+		# check if the room is large enough to split
+		if (room.size.y >= minHeight && room.size.x >= minWidth):
+
+			# generate a random value to decide how to split the room, for a more random room layout
+			# if the random value is <= 0.5, we prioritize a horizontal split
+			if (randf() <= 0.5):
+
+				# if the room's height is at least double the min height
+				# split the room horizontally to create two new rooms
+				if (room.size.y >= minHeight*2):
+					split_horizontally(minHeight, rooms_queue, room)
+
+				# if the room's width is at least double the min width
+				# split the room vertically to create two new rooms
+				elif (room.size.x >= minWidth*2):
+					split_vertically(minWidth, rooms_queue, room)
+
+				# the room cannot be split further due to size constraints
+				# but it is a valid room, so we add it to the rooms list
+				else:
+					rooms_list.append(room)
+
+			# if the random value is > 0.5, we prioritize a vertical split
+			else:
+
+				# if the room's width is at least double the min width
+				# split the room vertically to create two new rooms
+				if (room.size.x >= minWidth*2):
+					split_vertically(minWidth, rooms_queue, room)
+
+				# if the room's height is at least double the min height
+				# split the room horizontally to create two new rooms
+				elif (room.size.y >= minHeight*2):
+					split_horizontally(minHeight, rooms_queue, room)
+
+				# the room cannot be split further due to size constraints
+				# but it is a valid room, so we add it to the rooms list
+				else:
+					rooms_list.append(room)
+
+	# return the list of created rooms
+	return rooms_list
+
+func split_vertically(minWidth : int, rooms_queue : Array[AABB], room : AABB) -> void:
+	pass
+
+func split_horizontally(minHeight : int, rooms_queue : Array[AABB], room : AABB) -> void:
+	pass

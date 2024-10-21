@@ -82,10 +82,9 @@ wall_tilemap_layer = NodePath("Wall")
 [node name="ProcGenData" type="Node" parent="."]
 script = ExtResource("2_fqe3b")
 room_iterations = 1000
-room_walk_length = 7
+room_walk_length = 3
 room_start_randomly_each_iteration = false
-corridor_walk_length = 15
-corridor_amount = 7
+corridor_amount = 3
 
 [node name="ProcGenView" type="CanvasLayer" parent="." node_paths=PackedStringArray("proc_gen_controller", "gen_room_btn", "gen_dungeon_btn")]
 script = ExtResource("3_2tjgd")
