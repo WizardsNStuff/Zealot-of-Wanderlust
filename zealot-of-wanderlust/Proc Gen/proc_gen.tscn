@@ -85,12 +85,17 @@ room_iterations = 1000
 room_walk_length = 3
 room_start_randomly_each_iteration = false
 corridor_amount = 3
+min_room_width = 10
+min_woom_height = 10
+dungeon_width = 50
+dungeon_height = 50
 
-[node name="ProcGenView" type="CanvasLayer" parent="." node_paths=PackedStringArray("proc_gen_controller", "gen_room_btn", "gen_dungeon_btn")]
+[node name="ProcGenView" type="CanvasLayer" parent="." node_paths=PackedStringArray("proc_gen_controller", "gen_room_btn", "corridor_first_btn", "room_first_btn")]
 script = ExtResource("3_2tjgd")
 proc_gen_controller = NodePath("..")
 gen_room_btn = NodePath("GenRoomBtn")
-gen_dungeon_btn = NodePath("GenDungeonBtn")
+corridor_first_btn = NodePath("CorridorFirstBtn")
+room_first_btn = NodePath("RoomFirstBtn")
 
 [node name="GenRoomBtn" type="Button" parent="ProcGenView"]
 offset_left = 538.0
@@ -99,12 +104,19 @@ offset_right = 763.0
 offset_bottom = 106.0
 text = "Generate Room"
 
-[node name="GenDungeonBtn" type="Button" parent="ProcGenView"]
-offset_left = 538.0
-offset_top = 8.0
-offset_right = 763.0
-offset_bottom = 53.0
-text = "Generate Dungeon"
+[node name="CorridorFirstBtn" type="Button" parent="ProcGenView"]
+offset_left = 379.0
+offset_top = 9.0
+offset_right = 651.0
+offset_bottom = 54.0
+text = "Generate Dungeon (Corridor First)"
+
+[node name="RoomFirstBtn" type="Button" parent="ProcGenView"]
+offset_left = 665.0
+offset_top = 9.0
+offset_right = 890.0
+offset_bottom = 54.0
+text = "Generate Dungeon (Room First)"
 
 [node name="Floor" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_en0rj")

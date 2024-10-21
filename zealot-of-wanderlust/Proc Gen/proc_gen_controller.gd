@@ -422,6 +422,7 @@ func get_direction_90_degrees_from(direction : Vector2i) -> Vector2i:
 # algorithm recursively splits the space until the resulting rooms meet
 # the minimum width and height requirements
 func binary_space_partitioning(space_to_split : AABB, minWidth: int, minHeight: int) -> Array[AABB]:
+	print("space_to_split: ", space_to_split)
 	# queue to hold the spaces that need to be split
 	var rooms_queue : Array[AABB] = []
 	# array to store the successfully created rooms
@@ -480,20 +481,21 @@ func binary_space_partitioning(space_to_split : AABB, minWidth: int, minHeight: 
 
 # splits a given room vertically, creating two new rooms
 func split_vertically(minWidth : int, rooms_queue : Array[AABB], room : AABB) -> void:
+	print("split_vertically: ")
 	# generate a random split position along the width of the room
-	var x_split : float = randf_range(1, room.size.x)
+	var x_split : float = randf_range(minWidth, room.size.x - minWidth)
 
 	# room_1 is defined by the original room's position (bottom-left corner)
 	# and extends horizontally from the start of the room to the x_split point
 	# while the height remains the same as the original room
-	var room_1 : AABB = AABB(room.position, Vector3i(x_split, room.position.y, room.position.z))
+	var room_1 : AABB = AABB(room.position, Vector3i(x_split, room.size.y, room.size.z))
 
 	# room_2 is defined by the position that starts just after the x_split point
 	# and extends to the right side of the original room
 	# while the height remains the same as the original room
 	var room_2 : AABB = AABB(
 		Vector3i(room.position.x + x_split, room.position.y, room.position.z), 
-		Vector3i(room.position.x - x_split, room.size.y, room.size.z)
+		Vector3i(room.size.x - x_split, room.size.y, room.size.z)
 		)
 
 	# enqueue both newly created rooms back into the rooms_queue for further processing
@@ -502,11 +504,12 @@ func split_vertically(minWidth : int, rooms_queue : Array[AABB], room : AABB) ->
 
 # splits a given room horizontally, creating two new rooms
 func split_horizontally(minHeight : int, rooms_queue : Array[AABB], room : AABB) -> void:
+	print("split_horizontally: ")
 	# using a split range of (minHeight, room.size.y - minHeight) ensures we always fit 2 
 	# rooms but this creates a grid like structure which looks less random
 
 	# generate a random split position along the width of the room
-	var y_split : float = randf_range(1, room.size.y)
+	var y_split : float = randf_range(minHeight, room.size.y - minHeight)
 	
 	
 	# room_1 is defined by the original room's position (bottom-left corner)
@@ -530,6 +533,10 @@ func split_horizontally(minHeight : int, rooms_queue : Array[AABB], room : AABB)
 # and paints the floor tiles for these rooms onto a tilemap
 # it also places walls around the generated rooms
 func room_first_generation() -> void:
+	# clear any existing tiles in the floor and wall tilemaps before generating new ones
+	clear_tiles(floor_tilemap_layer)
+	clear_tiles(wall_tilemap_layer)
+	
 	# generate a list of rooms using binary space partitioning (BSP)
 	# the AABB defines the entire dungeon space to be split, using the dungeon start position and dimensions
 	# the min width and height for rooms are passed to control how small the rooms can get during splitting
@@ -541,6 +548,8 @@ func room_first_generation() -> void:
 		proc_gen_data.min_room_width,
 		proc_gen_data.min_woom_height
 		)
+
+	print(rooms_list)
 
 	# dictionary to hold the floor tiles for the generated rooms
 	var floor : Dictionary = {}
