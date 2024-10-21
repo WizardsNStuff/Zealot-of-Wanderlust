@@ -563,6 +563,16 @@ func room_first_generation() -> void:
 	# create simple rooms by converting the AABB rooms into floor tiles stored in a dictionary
 	floor = create_simple_rooms(rooms_list)
 
+	var room_centers : Array[Vector2i] = []
+
+	for room in rooms_list:
+		# round rounds the float up
+		room_centers.append(Vector2i(round(room.get_center().x), round(room.get_center().y)))
+
+	var corridors : Dictionary = connect_rooms(room_centers)
+
+	floor.merge(corridors)
+
 	# get the atlas ID for the floor tilemap layer
 	var floor_atlas_id : int = floor_tilemap_layer.atlas_id
 	# get the position of the base corridor floor tile in the atlas
@@ -577,6 +587,32 @@ func room_first_generation() -> void:
 	paint_tiles(floor, floor_tilemap_layer, floor_atlas_id, corridor_tile_pos)
 	# create walls around the corridors using the positions stored in floor_positions
 	create_walls(floor, wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
+
+func connect_rooms(room_centers : Array[Vector2i]) -> Dictionary:
+	var corridors : Dictionary = {}
+
+	var current_room_center : Vector2i = room_centers.pick_random()
+
+	room_centers.erase(current_room_center)
+
+	while room_centers.size() > 0:
+		var closest_center : Vector2i = find_closest_room_center(current_room_center, room_centers)
+
+		room_centers.erase(closest_center)
+
+		var new_corridor : Dictionary = create_corridor(current_room_center, closest_center)
+
+		current_room_center = closest_center
+
+		corridors.merge(new_corridor)
+
+	return corridors
+
+func find_closest_room_center(current_room_center : Vector2i, room_centers : Array[Vector2i]) -> Vector2i:
+	return Vector2i()
+
+func create_corridor(start_position : Vector2i, end_position : Vector2i) -> Dictionary:
+	return {}
 
 # creates simple rectangular rooms from a list of AABB room objects
 # generates a floor layout for each room and stores the floor tiles in a dictionary
