@@ -479,7 +479,7 @@ func binary_space_partitioning(space_to_split : AABB, minWidth: int, minHeight: 
 	return rooms_list
 
 # splits a given room vertically, creating two new rooms
-func split_vertically(minWidth : int, rooms_queue : Array[AABB], room : AABB) -> void:
+func split_vertically(_minWidth : int, rooms_queue : Array[AABB], room : AABB) -> void:
 	# generate a random split position along the width of the room
 	var x_split : float = randf_range(1, room.size.x)
 
@@ -505,7 +505,7 @@ func split_vertically(minWidth : int, rooms_queue : Array[AABB], room : AABB) ->
 	rooms_queue.push_back(room_2)
 
 # splits a given room horizontally, creating two new rooms
-func split_horizontally(minHeight : int, rooms_queue : Array[AABB], room : AABB) -> void:
+func split_horizontally(_minHeight : int, rooms_queue : Array[AABB], room : AABB) -> void:
 	# generate a random split position along the width of the room
 	var y_split : float = randf_range(1, room.size.y)
 
@@ -558,10 +558,10 @@ func room_first_generation() -> void:
 		)
 
 	# dictionary to hold the floor tiles for the generated rooms
-	var floor : Dictionary = {}
+	var floor_tiles : Dictionary = {}
 
 	# create simple rooms by converting the AABB rooms into floor tiles stored in a dictionary
-	floor = create_simple_rooms(rooms_list)
+	floor_tiles = create_simple_rooms(rooms_list)
 
 	# array to hold the centers of each room for connecting them with corridors
 	var room_centers : Array[Vector2i] = []
@@ -581,7 +581,7 @@ func room_first_generation() -> void:
 	var corridors : Dictionary = connect_rooms(room_centers)
 
 	# merge the corridor tiles into the floor tiles dictionary
-	floor.merge(corridors)
+	floor_tiles.merge(corridors)
 
 	# get the atlas ID for the floor tilemap layer
 	var floor_atlas_id : int = floor_tilemap_layer.atlas_id
@@ -594,9 +594,9 @@ func room_first_generation() -> void:
 	var corridor_wall_tile_pos : Vector2i = wall_tilemap_layer.base_corridor_wall_tile_atlas_position
 
 	# paint the floor tiles
-	paint_tiles(floor, floor_tilemap_layer, floor_atlas_id, corridor_tile_pos)
+	paint_tiles(floor_tiles, floor_tilemap_layer, floor_atlas_id, corridor_tile_pos)
 	# create walls around the corridors using the positions stored in floor_positions
-	create_walls(floor, wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
+	create_walls(floor_tiles, wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
 
 # connects rooms by creating corridors between their centers
 # the rooms are represented by their center points, and the corridors 
@@ -677,11 +677,11 @@ func create_corridor(start_position : Vector2i, end_position : Vector2i) -> Dict
 
 		# if the end position is above the current position, move up
 		if end_position.y > current_position.y:
-			current_position += Vector2i.UP;
+			current_position += Vector2i.DOWN;
 
 		# if the end position is below the current position, move down
 		elif end_position.y < current_position.y:
-			current_position += Vector2i.DOWN;
+			current_position += Vector2i.UP;
 
 		# add the new position to the corridor dictionary
 		corridor[current_position] = null
