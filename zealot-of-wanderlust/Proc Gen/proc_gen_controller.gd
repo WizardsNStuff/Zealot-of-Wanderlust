@@ -478,8 +478,28 @@ func binary_space_partitioning(space_to_split : AABB, minWidth: int, minHeight: 
 	# return the list of created rooms
 	return rooms_list
 
+# splits a given room vertically, creating two new rooms
 func split_vertically(minWidth : int, rooms_queue : Array[AABB], room : AABB) -> void:
-	pass
+	# generate a random split position along the width of the room
+	var x_split : float = randf_range(1, room.size.x)
 
+	# room_1 is defined by the original room's position (bottom-left corner)
+	# and extends horizontally from the start of the room to the x_split point
+	# while the height remains the same as the original room
+	var room_1 : AABB = AABB(room.position, Vector3i(x_split, room.position.y, room.position.z))
+
+	# room_2 is defined by the position that starts just after the x_split point
+	# and extends to the right side of the original room
+	# while the height remains the same as the original room
+	var room_2 : AABB = AABB(
+		Vector3i(room.position.x + x_split, room.position.y, room.position.z), 
+		Vector3i(room.position.x - x_split, room.size.y, room.size.z)
+		)
+
+	# enqueue both newly created rooms back into the rooms_queue for further processing
+	rooms_queue.push_back(room_1)
+	rooms_queue.push_back(room_2)
+
+# splits a given room horizontally, creating two new rooms
 func split_horizontally(minHeight : int, rooms_queue : Array[AABB], room : AABB) -> void:
 	pass
