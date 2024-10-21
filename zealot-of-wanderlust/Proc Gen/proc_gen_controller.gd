@@ -588,6 +588,10 @@ func create_simple_rooms(rooms_list : Array[AABB]) -> Dictionary:
 	# dictionary to store all the floor tile positions for each room
 	var floor : Dictionary = {}
 
+	# validate the room offset to ensure it doesn't make rooms smaller than allowed
+	# if the offset is too large, it is adjusted to fit within valid constraints
+	proc_gen_data.room_offset = validate_room_offset()
+
 	# loop through each room in the rooms list
 	for room in rooms_list:
 
@@ -604,3 +608,28 @@ func create_simple_rooms(rooms_list : Array[AABB]) -> Dictionary:
 
 	# return the dictionary containing all the floor tile positions for the rooms
 	return floor
+
+# validate the room offset to ensure it doesn't make the room size 0 or negative
+# if the offset is too large, it is adjusted to fit within valid constraints
+func validate_room_offset() -> int:
+	# get the current room offset value	
+	var offset : int = proc_gen_data.room_offset
+
+	# get the smaller dimension between the minimum room width and height
+	var min_of_room_width_and_height : int = min(proc_gen_data.min_room_width, proc_gen_data.min_room_height)
+
+	# variable to store the offset status
+	var offset_status : float = 0
+
+	# check if the offset is greater than 0
+	if offset > 0:
+		# calculate the status to ensure the room size won't result in a negative or size zero room
+		offset_status = (min_of_room_width_and_height as float) / (offset * 2)
+
+	# if the offset status is valid (greater than 1 or 0), meaning it does not result
+	# in a room of negative or zero size, return the current offset
+	if offset_status > 1 or offset == 0: 
+		return offset
+
+	# if the offset is too large, adjust it to ensure valid room size and return the adjusted offset
+	return (min_of_room_width_and_height / 2) - 1
