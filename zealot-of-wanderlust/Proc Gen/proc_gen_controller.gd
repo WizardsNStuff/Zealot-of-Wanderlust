@@ -609,7 +609,21 @@ func connect_rooms(room_centers : Array[Vector2i]) -> Dictionary:
 	return corridors
 
 func find_closest_room_center(current_room_center : Vector2i, room_centers : Array[Vector2i]) -> Vector2i:
-	return Vector2i()
+	var closest_room_center : Vector2i = Vector2i.ZERO
+
+	var distance_to_room_center : float = INF
+
+	for center in room_centers:
+
+		var current_distance_to_center : float = center.distance_to(current_room_center)
+
+		if current_distance_to_center < distance_to_room_center:
+
+			distance_to_room_center = current_distance_to_center
+
+			closest_room_center = center
+
+	return closest_room_center
 
 func create_corridor(start_position : Vector2i, end_position : Vector2i) -> Dictionary:
 	return {}
