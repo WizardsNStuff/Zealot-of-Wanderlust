@@ -7,6 +7,6 @@
 [node name="WizardGame" type="Node"]
 script = ExtResource("1_hhabl")
 
-[node name="Level" parent="." instance=ExtResource("2_4gxgj")]
+[node name="Model" parent="." instance=ExtResource("2_4gxgj")]
 
 [node name="View" parent="." instance=ExtResource("3_eky8r")]
