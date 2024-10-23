@@ -41,6 +41,9 @@ class_name ProcGenData
 # whether to use random walk when generating rooms
 @export var random_walk_room : bool = false
 
+#var dungeon_floor : int = 1
+#enum room_type { ENTRANCE, GOBLIN_LAIR, ORC_CAVE, TROLL_TUNNEL, DRAGON_DEN, EXIT}
+
 # starting position for dungeon generation
 var start_position : Vector2i = Vector2i.ZERO
 

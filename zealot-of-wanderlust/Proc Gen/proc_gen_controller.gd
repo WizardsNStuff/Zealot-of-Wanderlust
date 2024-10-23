@@ -10,6 +10,9 @@ class_name ProcGenController
 # the tilemap layer for the walls
 @export var wall_tilemap_layer : WallTileMapLayer
 
+# the tilemap layer for the staircases
+@export var staircase_tilemap_layer : StaircaseTileMapLayer
+
 
 # runs the procedural generation for creating the floor layout and walls
 # this method generates the floor positions using a random walk algorithm
@@ -435,17 +438,30 @@ func random_walk_corridor(start_position : Vector2i, corridor_length : int) -> A
 # and paints the floor tiles for these rooms onto a tilemap
 # it also places walls around the generated rooms
 func room_first_generation() -> void:
-	# clear any existing tiles in the floor and wall tilemaps before generating new ones
+	# clear any existing tiles in the floor, staircase, wall tilemaps before generating new ones
 	clear_tiles(floor_tilemap_layer)
 	clear_tiles(wall_tilemap_layer)
-	
+	clear_tiles(staircase_tilemap_layer)
+
+	# array to store information about each room in the game
+	# Each room is represented as a Dictionary with the following key-value pairs:
+	# - "center": The center position of the room (Vector2i).
+	# - "aabb": The Axis-Aligned Bounding Box of the room (AABB).
+	# - "floor_positions": The tile positions of the room stored in the keys of a (Dictionary)
+	# - "type": The type/category of the room (can be null initially).
+	# - "next_room": Reference to the center position of next room (null if none).
+	# - "prev_room": Reference to the center position of previous room (null if none).
+	# - "entrance": Boolean indicating if the room is the first room (default: false).
+	# - "exit": Boolean indicating if the room is the last room (default: false).
+	var rooms_dict_array : Array[Dictionary] = []
+
 	# offset the dungeon's origin is by half its width and height to ensure 
 	# the entire dungeon it is center aligned
 	var room_start_position : Vector2i = Vector2i(
 		-proc_gen_data.dungeon_width / 2, 
 		-proc_gen_data.dungeon_height / 2
 	)
-	
+
 	# generate a list of rooms using binary space partitioning (BSP)
 	# the AABB defines the entire dungeon space to be split, using the dungeon start position and dimensions
 	# the min width and height for rooms are passed to control how small the rooms can get during splitting
@@ -458,40 +474,21 @@ func room_first_generation() -> void:
 		proc_gen_data.min_room_height
 		)
 
-	var list = []
-	for room in rooms_list:
-		var str = str(room.position.x) + "," + str(room.position.y) + "," + str(room.size.x) + "," + str(room.size.y)
-		list.append(str)
-		
-	print(list)
-
 	# dictionary to hold the floor tiles for the generated rooms
 	var floor_tiles : Dictionary = {}
 
 	# check if random walk room generation is enabled
 	if (proc_gen_data.random_walk_room):
-		# create rooms by using a random walk algorithm and store the floor tiles in dictionary
-		floor_tiles = create_random_walk_rooms(rooms_list)
+		# generate rooms using a random walk algorithm
+		# the room data is populated in the 'rooms_dict_array' for further processing
+		floor_tiles = create_random_walk_rooms(rooms_list, rooms_dict_array)
 	else:
 		# create simple rooms by converting the AABB rooms into floor tiles stored in a dictionary
 		floor_tiles = create_simple_rooms(rooms_list)
 
-	# array to hold the centers of each room for connecting them with corridors
-	var room_centers : Array[Vector2i] = []
-
-	# iterate through each room in the list of rooms
-	for room in rooms_list:
-
-		# get the x and y coords of the room's center and round them to integers (for tilemap alignment)
-		var room_center_x : int = round(room.get_center().x)
-		var room_center_y : int = round(room.get_center().y)
-
-		# add the rounded center position to the room_centers list
-		room_centers.append(Vector2i(room_center_x, room_center_y))
-
 	# finds the closest room center and creates corridors between them
 	# store all the resulting corridor tiles in a dictionary for later use
-	var corridors : Dictionary = connect_rooms(room_centers)
+	var corridors : Dictionary = connect_rooms(rooms_dict_array)
 
 	# merge the corridor tiles into the floor tiles dictionary
 	floor_tiles.merge(corridors)
@@ -511,10 +508,40 @@ func room_first_generation() -> void:
 	# create walls around the corridors using the positions stored in floor_positions
 	create_walls(floor_tiles, wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
 
+	# tterate through each room dictionary in the rooms_dict_array to find the exit room
+	for room_dict in rooms_dict_array:
+		# check if the current room has an exit
+		if room_dict["exit"] == true:
+
+			# get the floor positions for the room
+			var room_floor_positions : Dictionary = room_dict["floor_positions"]
+
+			# pick a random position from the floor positions to place the staircase
+			var random_tile_position = room_floor_positions.keys().pick_random()
+
+			# dictionary to hold padding tiles around the staircase
+			var staircase_padding_tiles : Dictionary = {}
+
+			# paint the staircase at the chosen tile position in the staircase tilemap layer
+			paint_single_tile(staircase_tilemap_layer, staircase_tilemap_layer.atlas_id, random_tile_position, staircase_tilemap_layer.upward_staircase_tile_atlas_position)
+
+			# create a 3x3 padding area around the staircase tile
+			for x in range(-1, 2):
+				for y in range(-1, 2):
+
+					# check if the neighboring tile positions are valid and not the staircase tile position
+					if room_floor_positions.keys().has(random_tile_position + Vector2i(x, y)) && Vector2i(x,y) != Vector2i.ZERO:
+
+						# add the padding tiles to the dictionary
+						staircase_padding_tiles[random_tile_position + Vector2i(x, y)] = null
+
+			# paint the padding tiles around the staircase in the staircase tilemap layer
+			paint_tiles(staircase_padding_tiles, staircase_tilemap_layer, staircase_tilemap_layer.atlas_id, staircase_tilemap_layer.staircase_padding_tile_atlas_position) 
+
 # generates floor positions within defined rooms using a random walk algorithm
 # each room's center is used as the starting point for the random walk, and 
 # positions generated are validated to ensure they fall within the room's bounds
-func create_random_walk_rooms(rooms_list : Array[AABB]) -> Dictionary:
+func create_random_walk_rooms(rooms_list : Array[AABB], rooms_dict_array : Array[Dictionary]) -> Dictionary:
 	# dictionary to hold the floor positions generated by random walks
 	var floor_positions : Dictionary = {}
 
@@ -529,6 +556,9 @@ func create_random_walk_rooms(rooms_list : Array[AABB]) -> Dictionary:
 
 		# run the random walk algorithm starting from the room center
 		var room_floor_positions : Dictionary = run_random_walk(room_center)
+
+		# dictionary to hold valid room floor tiles
+		var valid_floor_positions : Dictionary = {}
 
 		# check each position generated by the random walk
 		for position in room_floor_positions:
@@ -551,8 +581,26 @@ func create_random_walk_rooms(rooms_list : Array[AABB]) -> Dictionary:
 				position.y <= bottom_edge - offset
 				):
 
-				# if the position is valid, add it to the floor positions dictionary
-				floor_positions[position] = null
+				# if the position is valid, add it to the valid floor positions dictionary
+				valid_floor_positions[position] = null
+
+		# merge the valid floor positions into the overall floor positions dictionary
+		floor_positions.merge(valid_floor_positions)
+
+		# create a dictionary to store room details
+		var room_dict : Dictionary = {
+			"center": room_center,
+			"aabb": room,
+			"floor_positions": valid_floor_positions,
+			"type": null,
+			"next_room": null,
+			"prev_room": null,
+			"entrance": false,
+			"exit": false
+		}
+
+		# append the room dictionary to the rooms dictionary array
+		rooms_dict_array.append(room_dict)
 
 	# return the dictionary containing all the positions of the floor tiles for the rooms
 	return floor_positions
@@ -560,12 +608,25 @@ func create_random_walk_rooms(rooms_list : Array[AABB]) -> Dictionary:
 # connects rooms by creating corridors between their centers
 # the rooms are represented by their center points, and the corridors 
 # are stored in a dictionary where each key is a tile position along the corridor
-func connect_rooms(room_centers : Array[Vector2i]) -> Dictionary:
+func connect_rooms(rooms_dict_array : Array[Dictionary]) -> Dictionary:
 	# dictionary to store all the corridor tiles
 	var corridors : Dictionary = {}
 
+	# array to store the center positions of each room
+	var room_centers: Array = []
+
+	# collect all room centers from the rooms dictionary array
+	for room_dict in rooms_dict_array:
+		room_centers.append(room_dict["center"])
+
 	# pick a random room center to start with
 	var current_room_center : Vector2i = room_centers.pick_random()
+
+	# mark the starting room
+	for room_dict in rooms_dict_array:
+		if room_dict["center"] == current_room_center:
+			room_dict["entrance"] = true
+			break
 
 	# remove the selected room center from the list to avoid reconnecting it
 	room_centers.erase(current_room_center)
@@ -575,21 +636,40 @@ func connect_rooms(room_centers : Array[Vector2i]) -> Dictionary:
 		# find the closest room center to the current room center
 		var closest_center : Vector2i = find_closest_room_center(current_room_center, room_centers)
 
+		# if only one room center remains, mark it as the exit
+		if room_centers.size() == 1:
+			for room_dict in rooms_dict_array:
+				if room_dict["center"] == closest_center:
+					room_dict["exit"] = true
+					break
+
 		# remove the closest room center from the list to avoid reconnecting it
 		room_centers.erase(closest_center)
 
 		# create a new corridor between the current room center and the closest center using straight lines
 		var new_corridor : Dictionary = create_corridor(current_room_center, closest_center)
 
-		# create a new corridor between the current room center and the closest center using diagnol lines
+		# Optionally, create a new corridor between the current room center and the closest center using diagnol lines
 		#var new_corridor : Dictionary = create_diagnol_corridor(current_room_center, closest_center)
 
 		# increase the size of the newly created corridor by padding each tile with a 3x3 grid
 		#var new_padded_corridor : Array = increase_corridor_size_by_3_by_3(new_corridor.keys())
 
-		# add the padded corridor tile to the corridor tiles ditionary
+		# Optionally, add the padded corridor tile to the corridor tiles ditionary
 		#for tile in new_padded_corridor:
 			#corridors[tile] = null
+
+		# update the next room reference for the current room
+		for room_dict in rooms_dict_array:
+			if room_dict["center"] == current_room_center:
+				room_dict["next_room"] = closest_center
+				break
+
+		# update the previous room reference for the closest room
+		for room_dict in rooms_dict_array:
+			if room_dict["center"] == closest_center:
+				room_dict["prev_room"] = current_room_center
+				break
 
 		# move to the closest room center to continue the process
 		current_room_center = closest_center
@@ -603,7 +683,7 @@ func connect_rooms(room_centers : Array[Vector2i]) -> Dictionary:
 # find the closest room center to the current room center from a list of room centers
 # calculates the distance between the current room center and each center in the list,
 # and returns the one with the smallest distance
-func find_closest_room_center(current_room_center : Vector2i, room_centers : Array[Vector2i]) -> Vector2i:
+func find_closest_room_center(current_room_center : Vector2i, room_centers : Array) -> Vector2i:
 	# intialize the closest room center with a default value (Vector2i.ZERO)
 	var closest_room_center : Vector2i = Vector2i.ZERO
 
@@ -789,7 +869,6 @@ func binary_space_partitioning(space_to_split : AABB, min_room_width: int, min_r
 				else:
 					rooms_list.append(room)
 
-	print(list)
 	# return the list of created rooms
 	return rooms_list
 
