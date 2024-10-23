@@ -10,6 +10,7 @@ class_name ProcGenController
 # the tilemap layer for the walls
 @export var wall_tilemap_layer : WallTileMapLayer
 
+
 # runs the procedural generation for creating the floor layout and walls
 # this method generates the floor positions using a random walk algorithm
 # and then paints the tiles and creates walls based on the generated positions
@@ -152,66 +153,11 @@ func find_wall_edges(floor_positions : Dictionary, direction_list : Array) -> Di
 	# return the dictionary containing all wall positions
 	return wall_positions
 
-# generates a random walk corridor starting from a specified position
-# creates a corridor by moving in a random direction for a given length
-func random_walk_corridor(start_position : Vector2i, corridor_length : int) -> Array:
-	# array to store the positions of the corridor tiles
-	var corridor : Array = []
 
-	# get a random direction for the corridor movement
-	var direction = get_random_direction()
 
-	# set the current position to the starting position
-	var current_position = start_position
 
-	# add the current position to the corridor tile list
-	corridor.append(current_position)
 
-	# iterate for the specified length of the corridor
-	for i in range(0, corridor_length):
-		# move to the next position in the current direction
-		current_position += direction
-
-		# add the new position to the corridor array
-		corridor.append(current_position)
-
-	# return the array containing all positions of the corridor tiles
-	return corridor
-
-# creates corridors using a random walk algorithm and adds their positions to the set of floor positions
-# generates a specified number of corridors
-# updating the floor positions and potential room positions as corridors are created.
-func create_corridors(floor_positions : Dictionary, potential_room_positions : Dictionary) -> Array[Array]:
-	# set the starting position for corridor generation
-	var current_position = proc_gen_data.start_position
-
-	# mark the starting position as a potential room position
-	potential_room_positions[current_position] = null
-
-	# array to store all the generated corridors
-	var corridors : Array[Array] = []
-
-	# loop through the specified corridor amount to generate multiple corridors
-	for i in range(0, proc_gen_data.corridor_amount):
-		# generate a corridor by executing a random walk from the current position
-		var corridor : Array = random_walk_corridor(current_position, proc_gen_data.corridor_walk_length)
-
-		# store the generated corridor in the corridors array
-		corridors.append(corridor)
-
-		# set current_position to the last position in the generated corridor (the corridor endpoint)
-		current_position = corridor[corridor.size() - 1]
-
-		# mark the end position of the corridor as a potential room position
-		potential_room_positions[current_position] = null
-
-		# iterate through each position in the generated corridor
-		for position in corridor:
-			# include the position in the dictionary of floor positions, marking it as part of the floor layout
-			floor_positions[position] = null
-
-	# return the array of generated corridors
-	return corridors
+# Corridor First Generation
 
 # generate corridors first then add rooms, walls, and other features around them
 func corridor_first_generation() -> void:
@@ -418,117 +364,72 @@ func get_direction_90_degrees_from(direction : Vector2i) -> Vector2i:
 	# if the direction does not match any cardinal direction, return Vector2i.ZERO
 	return Vector2i.ZERO
 
-# performs binary space partitioning on a given space to create a list of rooms
-# algorithm recursively splits the space until the resulting rooms meet
-# the minimum width and height requirements
-func binary_space_partitioning(space_to_split : AABB, minWidth: int, minHeight: int) -> Array[AABB]:
-	# queue to hold the spaces that need to be split
-	var rooms_queue : Array[AABB] = []
-	# array to store the successfully created rooms
-	var rooms_list : Array[AABB] = []
+# creates corridors using a random walk algorithm and adds their positions to the set of floor positions
+# generates a specified number of corridors
+# updating the floor positions and potential room positions as corridors are created.
+func create_corridors(floor_positions : Dictionary, potential_room_positions : Dictionary) -> Array[Array]:
+	# set the starting position for corridor generation
+	var current_position = proc_gen_data.start_position
 
-	# enqueue the initial space to split
-	rooms_queue.push_back(space_to_split)
+	# mark the starting position as a potential room position
+	potential_room_positions[current_position] = null
 
-	# process the queue until all spaces have been handled
-	while (rooms_queue.size() > 0):
-		# dequeue the next room to process
-		var room : AABB = rooms_queue.pop_front()
+	# array to store all the generated corridors
+	var corridors : Array[Array] = []
 
-		# check if the room is large enough to split
-		if (room.size.y >= minHeight && room.size.x >= minWidth):
+	# loop through the specified corridor amount to generate multiple corridors
+	for i in range(0, proc_gen_data.corridor_amount):
+		# generate a corridor by executing a random walk from the current position
+		var corridor : Array = random_walk_corridor(current_position, proc_gen_data.corridor_walk_length)
 
-			# generate a random value to decide how to split the room, for a more random room layout
-			# if the random value is <= 0.5, we prioritize a horizontal split
-			if (randf() <= 0.5):
+		# store the generated corridor in the corridors array
+		corridors.append(corridor)
 
-				# if the room's height is at least double the min height
-				# split the room horizontally to create two new rooms
-				if (room.size.y >= minHeight*2):
-					split_horizontally(minHeight, rooms_queue, room)
+		# set current_position to the last position in the generated corridor (the corridor endpoint)
+		current_position = corridor[corridor.size() - 1]
 
-				# if the room's width is at least double the min width
-				# split the room vertically to create two new rooms
-				elif (room.size.x >= minWidth*2):
-					split_vertically(minWidth, rooms_queue, room)
+		# mark the end position of the corridor as a potential room position
+		potential_room_positions[current_position] = null
 
-				# the room cannot be split further due to size constraints
-				# but it is a valid room, so we add it to the rooms list
-				else:
-					rooms_list.append(room)
+		# iterate through each position in the generated corridor
+		for position in corridor:
+			# include the position in the dictionary of floor positions, marking it as part of the floor layout
+			floor_positions[position] = null
 
-			# if the random value is > 0.5, we prioritize a vertical split
-			else:
+	# return the array of generated corridors
+	return corridors
 
-				# if the room's width is at least double the min width
-				# split the room vertically to create two new rooms
-				if (room.size.x >= minWidth*2):
-					split_vertically(minWidth, rooms_queue, room)
+# generates a random walk corridor starting from a specified position
+# creates a corridor by moving in a random direction for a given length
+func random_walk_corridor(start_position : Vector2i, corridor_length : int) -> Array:
+	# array to store the positions of the corridor tiles
+	var corridor : Array = []
 
-				# if the room's height is at least double the min height
-				# split the room horizontally to create two new rooms
-				elif (room.size.y >= minHeight*2):
-					split_horizontally(minHeight, rooms_queue, room)
+	# get a random direction for the corridor movement
+	var direction = get_random_direction()
 
-				# the room cannot be split further due to size constraints
-				# but it is a valid room, so we add it to the rooms list
-				else:
-					rooms_list.append(room)
+	# set the current position to the starting position
+	var current_position = start_position
 
-	# return the list of created rooms
-	return rooms_list
+	# add the current position to the corridor tile list
+	corridor.append(current_position)
 
-# splits a given room vertically, creating two new rooms
-func split_vertically(_minWidth : int, rooms_queue : Array[AABB], room : AABB) -> void:
-	# generate a random split position along the width of the room
-	var x_split : float = randf_range(1, room.size.x)
+	# iterate for the specified length of the corridor
+	for i in range(0, corridor_length):
+		# move to the next position in the current direction
+		current_position += direction
 
-	# using a split range of (minWidth, room.size.x - minWidth) ensures we always fit 2 
-	# rooms but this creates a grid like structure which looks less random
-	#var x_split : float = randf_range(minWidth, room.size.x - minWidth)
+		# add the new position to the corridor array
+		corridor.append(current_position)
 
-	# room_1 is defined by the original room's position (bottom-left corner)
-	# and extends horizontally from the start of the room to the x_split point
-	# while the height remains the same as the original room
-	var room_1 : AABB = AABB(room.position, Vector3i(x_split, room.size.y, room.size.z))
+	# return the array containing all positions of the corridor tiles
+	return corridor
 
-	# room_2 is defined by the position that starts just after the x_split point
-	# and extends to the right side of the original room
-	# while the height remains the same as the original room
-	var room_2 : AABB = AABB(
-		Vector3i(room.position.x + x_split, room.position.y, room.position.z), 
-		Vector3i(room.size.x - x_split, room.size.y, room.size.z)
-		)
 
-	# enqueue both newly created rooms back into the rooms_queue for further processing
-	rooms_queue.push_back(room_1)
-	rooms_queue.push_back(room_2)
 
-# splits a given room horizontally, creating two new rooms
-func split_horizontally(_minHeight : int, rooms_queue : Array[AABB], room : AABB) -> void:
-	# generate a random split position along the width of the room
-	var y_split : float = randf_range(1, room.size.y)
 
-	# using a split range of (minHeight, room.size.y - minHeight) ensures we always fit 2 
-	# rooms but this creates a grid like structure which looks less random
-	#var y_split : float = randf_range(minHeight, room.size.y - minHeight)
 
-	# room_1 is defined by the original room's position (bottom-left corner)
-	# and extends vertically from the start of the room to the y_split point
-	# while the width remains the same as the original room
-	var room_1 : AABB = AABB(room.position, Vector3i(room.size.x, y_split, room.size.z))
-
-	# room_2 is defined by the position that starts just after the y_split point
-	# and extends to the top of the original room
-	# while the width remains the same as the original room
-	var room_2 : AABB = AABB(
-		Vector3i(room.position.x, room.position.y + y_split, room.position.z), 
-		Vector3i(room.size.x, room.size.y - y_split, room.size.z)
-		)
-
-	# enqueue both newly created rooms back into the rooms_queue for further processing
-	rooms_queue.push_back(room_1)
-	rooms_queue.push_back(room_2)
+# Room First Generation
 
 # generates rooms using binary space partitioning (BSP), creates simple rooms from the partitions, 
 # and paints the floor tiles for these rooms onto a tilemap
@@ -556,6 +457,13 @@ func room_first_generation() -> void:
 		proc_gen_data.min_room_width,
 		proc_gen_data.min_room_height
 		)
+
+	var list = []
+	for room in rooms_list:
+		var str = str(room.position.x) + "," + str(room.position.y) + "," + str(room.size.x) + "," + str(room.size.y)
+		list.append(str)
+		
+	print(list)
 
 	# dictionary to hold the floor tiles for the generated rooms
 	var floor_tiles : Dictionary = {}
@@ -670,8 +578,18 @@ func connect_rooms(room_centers : Array[Vector2i]) -> Dictionary:
 		# remove the closest room center from the list to avoid reconnecting it
 		room_centers.erase(closest_center)
 
-		# create a new corridor between the current room center and the closest center
+		# create a new corridor between the current room center and the closest center using straight lines
 		var new_corridor : Dictionary = create_corridor(current_room_center, closest_center)
+
+		# create a new corridor between the current room center and the closest center using diagnol lines
+		#var new_corridor : Dictionary = create_diagnol_corridor(current_room_center, closest_center)
+
+		# increase the size of the newly created corridor by padding each tile with a 3x3 grid
+		#var new_padded_corridor : Array = increase_corridor_size_by_3_by_3(new_corridor.keys())
+
+		# add the padded corridor tile to the corridor tiles ditionary
+		#for tile in new_padded_corridor:
+			#corridors[tile] = null
 
 		# move to the closest room center to continue the process
 		current_room_center = closest_center
@@ -809,3 +727,185 @@ func validate_room_offset() -> int:
 
 	# if the offset is too large, adjust it to ensure valid room size and return the adjusted offset
 	return (min_of_room_width_and_height / 2) - 1
+
+# performs binary space partitioning on a given space to create a list of rooms
+# algorithm recursively splits the space until the resulting rooms meet
+# the minimum width and height requirements
+func binary_space_partitioning(space_to_split : AABB, min_room_width: int, min_room_height: int) -> Array[AABB]:
+	# queue to hold the spaces that need to be split
+	var rooms_queue : Array[AABB] = []
+	# array to store the successfully created rooms
+	var rooms_list : Array[AABB] = []
+
+	# enqueue the initial space to split
+	rooms_queue.push_back(space_to_split)
+
+	var list = [] 
+
+	# process the queue until all spaces have been handled
+	while (rooms_queue.size() > 0):
+		# dequeue the next room to process
+		var room : AABB = rooms_queue.pop_front()
+		var str = str(room.position.x) + "," + str(room.position.y) + "," + str(room.size.x) + "," + str(room.size.y)
+		list.append(str)
+
+		# check if the room is large enough to split
+		if (room.size.y >= min_room_height && room.size.x >= min_room_width):
+
+			# generate a random value to decide how to split the room, for a more random room layout
+			# if the random value is <= 0.5, we prioritize a horizontal split
+			if (randf() <= 0.5):
+
+				# if the room's height is at least double the min height
+				# split the room horizontally to create two new rooms
+				if (room.size.y >= min_room_height*2):
+					split_horizontally(min_room_height, rooms_queue, room)
+
+				# if the room's width is at least double the min width
+				# split the room vertically to create two new rooms
+				elif (room.size.x >= min_room_width*2):
+					split_vertically(min_room_width, rooms_queue, room)
+
+				# the room cannot be split further due to size constraints
+				# but it is a valid room, so we add it to the rooms list
+				else:
+					rooms_list.append(room)
+
+			# if the random value is > 0.5, we prioritize a vertical split
+			else:
+
+				# if the room's width is at least double the min width
+				# split the room vertically to create two new rooms
+				if (room.size.x >= min_room_width*2):
+					split_vertically(min_room_width, rooms_queue, room)
+
+				# if the room's height is at least double the min height
+				# split the room horizontally to create two new rooms
+				elif (room.size.y >= min_room_height*2):
+					split_horizontally(min_room_height, rooms_queue, room)
+
+				# the room cannot be split further due to size constraints
+				# but it is a valid room, so we add it to the rooms list
+				else:
+					rooms_list.append(room)
+
+	print(list)
+	# return the list of created rooms
+	return rooms_list
+
+# splits a given room vertically, creating two new rooms
+func split_vertically(_min_room_width : int, rooms_queue : Array[AABB], room : AABB) -> void:
+	# generate a random split position along the width of the room
+	var x_split : float = randf_range(1, room.size.x)
+
+	# using a split range of (min_room_width, room.size.x - min_room_width) ensures we always fit 2 
+	# rooms but this creates a grid like structure which looks less random
+	#var x_split : float = randf_range(min_room_width, room.size.x - min_room_width)
+
+	# room_1 is defined by the original room's position (bottom-left corner)
+	# and extends horizontally from the start of the room to the x_split point
+	# while the height remains the same as the original room
+	var room_1 : AABB = AABB(room.position, Vector3i(x_split, room.size.y, room.size.z))
+
+	# room_2 is defined by the position that starts just after the x_split point
+	# and extends to the right side of the original room
+	# while the height remains the same as the original room
+	var room_2 : AABB = AABB(
+		Vector3i(room.position.x + x_split, room.position.y, room.position.z), 
+		Vector3i(room.size.x - x_split, room.size.y, room.size.z)
+		)
+
+	# enqueue both newly created rooms back into the rooms_queue for further processing
+	rooms_queue.push_back(room_1)
+	rooms_queue.push_back(room_2)
+
+# splits a given room horizontally, creating two new rooms
+func split_horizontally(_min_room_height : int, rooms_queue : Array[AABB], room : AABB) -> void:
+	# generate a random split position along the width of the room
+	var y_split : float = randf_range(1, room.size.y)
+
+	# using a split range of (min_room_height, room.size.y - min_room_height) ensures we always fit 2 
+	# rooms but this creates a grid like structure which looks less random
+	#var y_split : float = randf_range(min_room_height, room.size.y - min_room_height)
+
+	# room_1 is defined by the original room's position (bottom-left corner)
+	# and extends vertically from the start of the room to the y_split point
+	# while the width remains the same as the original room
+	var room_1 : AABB = AABB(room.position, Vector3i(room.size.x, y_split, room.size.z))
+
+	# room_2 is defined by the position that starts just after the y_split point
+	# and extends to the top of the original room
+	# while the width remains the same as the original room
+	var room_2 : AABB = AABB(
+		Vector3i(room.position.x, room.position.y + y_split, room.position.z), 
+		Vector3i(room.size.x, room.size.y - y_split, room.size.z)
+		)
+
+	# enqueue both newly created rooms back into the rooms_queue for further processing
+	rooms_queue.push_back(room_1)
+	rooms_queue.push_back(room_2)
+
+# creates a diagonal corridor between two points using Bresenham's line algorithm
+# the corridor is represented as a dictionary where the keys are positions (Vector2i) 
+# that form a path from the start to the end position
+func create_diagnol_corridor(start_position : Vector2i, end_position : Vector2i) -> Dictionary:
+	# dictionary to hold the positions that make up the corridor
+	var corridor : Dictionary = {}
+
+	# get the x and y coordinates from start and end positions
+	var x0 : int = start_position.x
+	var y0 : int = start_position.y
+	var x1 : int = end_position.x
+	var y1 : int = end_position.y
+
+	# calculate differences in x and y direction
+	var dx : int = abs(x1-x0)
+	var dy : int = abs(y1-y0)
+
+	# determine the step direction for x and y (whether to increment or decrement)
+	var sx : int
+	var sy : int
+
+	# set x direction step: -1 if moving left, 1 if moving right
+	if x0 > x1:
+		sx = -1
+	else:
+		sx = 1
+
+	# set y direction step: -1 if moving up, 1 if moving down
+	if y0 > y1:
+		sy = -1
+	else:
+		sy = 1
+
+	# initial error term for Bresenham's algorithm (difference between x and y)
+	var err : int = dx-dy
+
+	# loop until the current position matches the end position
+	while true:
+		# mark the current position in the corridor dictionary
+		corridor[Vector2i(x0,y0)] = null
+
+		# break the loop once the start and end positions match
+		if x0 == x1 and y0 == y1:
+			break
+
+		# calculate a temporary error term to adjust movement direction
+		var e2 : int = 2 * err
+
+		# move horizontally if necessary
+		if e2 > -dy:
+			# adjust the error term for horizontal movement
+			err -= dy
+			# adjust x-coordinate based on the step direction
+			x0 += sx
+
+		# move vertically if necessary
+		if e2 < dx:
+			# adjust the error term for vertical movement
+			err += dx
+			# adjust y-coordinate based on the step direction
+			y0 += sy
+
+	# return the dictionary containing all the positions of the diagonal corridor
+	return corridor

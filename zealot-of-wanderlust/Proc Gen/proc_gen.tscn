@@ -68,6 +68,7 @@ texture_region_size = Vector2i(32, 32)
 1:4/0 = 0
 0:5/0 = 0
 1:5/0 = 0
+2:10/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_oibp5"]
 tile_size = Vector2i(32, 32)
@@ -82,14 +83,12 @@ wall_tilemap_layer = NodePath("Wall")
 [node name="ProcGenData" type="Node" parent="."]
 script = ExtResource("2_fqe3b")
 room_iterations = 500
-room_walk_length = 20
 room_start_randomly_each_iteration = false
 corridor_amount = 3
 min_room_width = 15
 min_room_height = 15
 dungeon_width = 100
 dungeon_height = 100
-room_offset = 6
 random_walk_room = true
 
 [node name="ProcGenView" type="CanvasLayer" parent="." node_paths=PackedStringArray("proc_gen_controller", "gen_room_btn", "corridor_first_btn", "room_first_btn")]
