@@ -873,13 +873,18 @@ func binary_space_partitioning(space_to_split : AABB, min_room_width: int, min_r
 	return rooms_list
 
 # splits a given room vertically, creating two new rooms
-func split_vertically(_min_room_width : int, rooms_queue : Array[AABB], room : AABB) -> void:
-	# generate a random split position along the width of the room
-	var x_split : float = randf_range(1, room.size.x)
+func split_vertically(min_room_width : int, rooms_queue : Array[AABB], room : AABB) -> void:
+	# the split position along the width of the room
+	var x_split : float
 
-	# using a split range of (min_room_width, room.size.x - min_room_width) ensures we always fit 2 
-	# rooms but this creates a grid like structure which looks less random
-	#var x_split : float = randf_range(min_room_width, room.size.x - min_room_width)
+	# check if random splits is true
+	if proc_gen_data.bsp_random_splits == true:
+		# generate a random split position along the width of the room
+		x_split = randf_range(1, room.size.x)
+	else:
+		# using a split range of (min_room_width, room.size.x - min_room_width) ensures we always fit 2 
+		# rooms but this creates a grid like structure which looks less random
+		x_split = randf_range(min_room_width, room.size.x - min_room_width)
 
 	# room_1 is defined by the original room's position (bottom-left corner)
 	# and extends horizontally from the start of the room to the x_split point
@@ -899,13 +904,18 @@ func split_vertically(_min_room_width : int, rooms_queue : Array[AABB], room : A
 	rooms_queue.push_back(room_2)
 
 # splits a given room horizontally, creating two new rooms
-func split_horizontally(_min_room_height : int, rooms_queue : Array[AABB], room : AABB) -> void:
-	# generate a random split position along the width of the room
-	var y_split : float = randf_range(1, room.size.y)
+func split_horizontally(min_room_height : int, rooms_queue : Array[AABB], room : AABB) -> void:
+	# the split position along the width of the room
+	var y_split : float
 
-	# using a split range of (min_room_height, room.size.y - min_room_height) ensures we always fit 2 
-	# rooms but this creates a grid like structure which looks less random
-	#var y_split : float = randf_range(min_room_height, room.size.y - min_room_height)
+	# check if random splits is true
+	if proc_gen_data.bsp_random_splits == true:
+		# generate a random split position along the height of the room
+		y_split = randf_range(1, room.size.y)
+	else:
+		# using a split range of (min_room_height, room.size.y - min_room_height) ensures we always fit 2 
+		# rooms but this creates a grid like structure which looks less random
+		y_split = randf_range(min_room_height, room.size.y - min_room_height)
 
 	# room_1 is defined by the original room's position (bottom-left corner)
 	# and extends vertically from the start of the room to the y_split point

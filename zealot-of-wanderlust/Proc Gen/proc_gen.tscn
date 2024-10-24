@@ -97,11 +97,13 @@ script = ExtResource("2_fqe3b")
 room_iterations = 500
 room_walk_length = 20
 room_start_randomly_each_iteration = false
-corridor_amount = 3
+corridor_walk_length = 25
+corridor_amount = 8
+room_amount_percent = 1.0
 min_room_width = 20
 min_room_height = 20
-dungeon_width = 100
-dungeon_height = 100
+dungeon_width = 80
+dungeon_height = 80
 random_walk_room = true
 
 [node name="ProcGenView" type="CanvasLayer" parent="." node_paths=PackedStringArray("proc_gen_controller", "gen_room_btn", "corridor_first_btn", "room_first_btn")]

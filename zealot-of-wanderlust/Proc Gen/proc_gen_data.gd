@@ -44,6 +44,8 @@ class_name ProcGenData
 #var dungeon_floor : int = 1
 #enum room_type { ENTRANCE, GOBLIN_LAIR, ORC_CAVE, TROLL_TUNNEL, DRAGON_DEN, EXIT}
 
+@export var bsp_random_splits : bool = false
+
 # starting position for dungeon generation
 var start_position : Vector2i = Vector2i.ZERO
 
