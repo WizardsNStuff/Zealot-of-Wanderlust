@@ -5,11 +5,13 @@ class_name ProcGenView
 @export var gen_room_btn : Button
 @export var corridor_first_btn : Button
 @export var room_first_btn : Button
+@export var start_btn : Button
 
 func _ready() -> void:
 	gen_room_btn.pressed.connect(proc_gen_controller.run_proc_gen)
 	corridor_first_btn.pressed.connect(proc_gen_controller.corridor_first_generation)
 	room_first_btn.pressed.connect(proc_gen_controller.room_first_generation)
+	start_btn.pressed.connect(proc_gen_controller.start_level)
 
 
 func _process(_delta: float) -> void:

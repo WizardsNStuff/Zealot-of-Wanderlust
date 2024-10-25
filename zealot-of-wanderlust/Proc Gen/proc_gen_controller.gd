@@ -13,6 +13,9 @@ class_name ProcGenController
 # the tilemap layer for the staircases
 @export var staircase_tilemap_layer : StaircaseTileMapLayer
 
+@export var player : Player
+
+
 
 # runs the procedural generation for creating the floor layout and walls
 # this method generates the floor positions using a random walk algorithm
@@ -437,7 +440,7 @@ func random_walk_corridor(start_position : Vector2i, corridor_length : int) -> A
 # generates rooms using binary space partitioning (BSP), creates simple rooms from the partitions, 
 # and paints the floor tiles for these rooms onto a tilemap
 # it also places walls around the generated rooms
-func room_first_generation() -> void:
+func room_first_generation() -> Array:
 	# clear any existing tiles in the floor, staircase, wall tilemaps before generating new ones
 	clear_tiles(floor_tilemap_layer)
 	clear_tiles(wall_tilemap_layer)
@@ -537,6 +540,8 @@ func room_first_generation() -> void:
 
 			# paint the padding tiles around the staircase in the staircase tilemap layer
 			paint_tiles(staircase_padding_tiles, staircase_tilemap_layer, staircase_tilemap_layer.atlas_id, staircase_tilemap_layer.staircase_padding_tile_atlas_position) 
+
+	return rooms_dict_array
 
 # generates floor positions within defined rooms using a random walk algorithm
 # each room's center is used as the starting point for the random walk, and 
@@ -1003,3 +1008,17 @@ func create_diagnol_corridor(start_position : Vector2i, end_position : Vector2i)
 
 	# return the dictionary containing all the positions of the diagonal corridor
 	return corridor
+
+
+func start_level() -> void:
+	var rooms_dict_array : Array[Dictionary] = room_first_generation()
+	for room_dict in rooms_dict_array:
+		if room_dict["entrance"] == true:
+			var floor_positions : Array = room_dict["floor_positions"].keys()
+			print(floor_positions)
+			var spawn_position = floor_positions.pick_random()
+			var current_tile_global_position = floor_tilemap_layer.map_to_local(spawn_position)
+			print("\n", spawn_position, current_tile_global_position)
+			player.position = current_tile_global_position
+			player.visible = true
+			break
