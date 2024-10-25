@@ -820,14 +820,17 @@ func binary_space_partitioning(space_to_split : AABB, min_room_width: int, min_r
 	# enqueue the initial space to split
 	rooms_queue.push_back(space_to_split)
 
-	var list = [] 
+	# FOR TESTING PURPOSES
+	#var list = [] 
 
 	# process the queue until all spaces have been handled
 	while (rooms_queue.size() > 0):
 		# dequeue the next room to process
 		var room : AABB = rooms_queue.pop_front()
-		var str = str(room.position.x) + "," + str(room.position.y) + "," + str(room.size.x) + "," + str(room.size.y)
-		list.append(str)
+
+		# FOR TESTING PURPOSES
+		#var str = str(room.position.x) + "," + str(room.position.y) + "," + str(room.size.x) + "," + str(room.size.y)
+		#list.append(str)
 
 		# check if the room is large enough to split
 		if (room.size.y >= min_room_height && room.size.x >= min_room_width):
@@ -869,6 +872,8 @@ func binary_space_partitioning(space_to_split : AABB, min_room_width: int, min_r
 				else:
 					rooms_list.append(room)
 
+	# FOR TESTING PURPOSES
+	#print(list)
 	# return the list of created rooms
 	return rooms_list
 

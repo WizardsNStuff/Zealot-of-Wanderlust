@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://ttowgqc8xgke"]
+[gd_scene load_steps=16 format=3 uid="uid://ttowgqc8xgke"]
 
 [ext_resource type="Script" path="res://Proc Gen/proc_gen_controller.gd" id="1_5ancx"]
 [ext_resource type="Script" path="res://Proc Gen/proc_gen_data.gd" id="2_fqe3b"]
@@ -7,6 +7,8 @@
 [ext_resource type="Script" path="res://Proc Gen/floor_tilemap_layer.gd" id="5_r24de"]
 [ext_resource type="Script" path="res://Proc Gen/wall_tilemap_layer.gd" id="6_h0tht"]
 [ext_resource type="Script" path="res://Proc Gen/staircase_tilemap_layer.gd" id="7_w8t8j"]
+[ext_resource type="Texture2D" uid="uid://lfbu6udkpv3f" path="res://Assets/rogues.png" id="8_6mb0v"]
+[ext_resource type="Script" path="res://Proc Gen/player.gd" id="8_rtipn"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fg6tr"]
 texture = ExtResource("4_ay2sl")
@@ -104,6 +106,7 @@ min_room_width = 20
 min_room_height = 20
 dungeon_width = 80
 dungeon_height = 80
+room_offset = 3
 random_walk_room = true
 
 [node name="ProcGenView" type="CanvasLayer" parent="." node_paths=PackedStringArray("proc_gen_controller", "gen_room_btn", "corridor_first_btn", "room_first_btn")]
@@ -146,5 +149,21 @@ script = ExtResource("6_h0tht")
 tile_set = SubResource("TileSet_oibp5")
 script = ExtResource("7_w8t8j")
 
+[node name="Player" type="CharacterBody2D" parent="."]
+floor_constant_speed = true
+platform_on_leave = 2
+script = ExtResource("8_rtipn")
+speed = 200
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+texture = ExtResource("8_6mb0v")
+hframes = 6
+vframes = 7
+frame = 25
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+zoom = Vector2(2, 2)
+
 [node name="Camera2D" type="Camera2D" parent="."]
+visible = false
 zoom = Vector2(0.25, 0.25)
