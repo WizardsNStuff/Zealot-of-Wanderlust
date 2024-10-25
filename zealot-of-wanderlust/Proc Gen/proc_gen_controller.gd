@@ -13,6 +13,9 @@ class_name ProcGenController
 # the tilemap layer for the staircases
 @export var staircase_tilemap_layer : StaircaseTileMapLayer
 
+# the tilemap layer for the doors
+@export var door_tilemap_layer : DoorTileMapLayer
+
 @export var player : Player
 
 
@@ -440,11 +443,12 @@ func random_walk_corridor(start_position : Vector2i, corridor_length : int) -> A
 # generates rooms using binary space partitioning (BSP), creates simple rooms from the partitions, 
 # and paints the floor tiles for these rooms onto a tilemap
 # it also places walls around the generated rooms
-func room_first_generation() -> Array:
+func room_first_generation() -> Array[Dictionary]:
 	# clear any existing tiles in the floor, staircase, wall tilemaps before generating new ones
 	clear_tiles(floor_tilemap_layer)
 	clear_tiles(wall_tilemap_layer)
 	clear_tiles(staircase_tilemap_layer)
+	clear_tiles(door_tilemap_layer)
 
 	# array to store information about each room in the game
 	# Each room is represented as a Dictionary with the following key-value pairs:
@@ -540,6 +544,34 @@ func room_first_generation() -> Array:
 
 			# paint the padding tiles around the staircase in the staircase tilemap layer
 			paint_tiles(staircase_padding_tiles, staircase_tilemap_layer, staircase_tilemap_layer.atlas_id, staircase_tilemap_layer.staircase_padding_tile_atlas_position) 
+			
+		elif room_dict.has("outgoing_corridor"):
+			var outgoing_corridor : Array = room_dict["outgoing_corridor"]
+			var door_position  : Vector2i
+			var current_floor : Dictionary = room_dict["floor_positions"]
+			var next_floor : Dictionary = {}
+			var next_center = room_dict["next_room"]
+			var corridor_exclusive_tiles : Array = []
+			for room_dict_i in rooms_dict_array:
+				if room_dict_i["center"] == next_center:
+					next_floor = room_dict_i["floor_positions"]
+
+			print(room_dict["floor_positions"].keys())
+
+			for position in outgoing_corridor:
+				if !current_floor.keys().has(position) && !next_floor.keys().has(position):
+					corridor_exclusive_tiles.append(position)
+
+			print(corridor_exclusive_tiles, "\n")
+
+			door_position = corridor_exclusive_tiles[corridor_exclusive_tiles.size() / 2]
+			paint_single_tile(door_tilemap_layer, door_tilemap_layer.atlas_id, door_position, door_tilemap_layer.door_tile_atlas_position)
+
+			#for position in outgoing_corridor:
+				#if !room_dict["floor_positions"].keys().has(position):
+					#door_position = position
+					#paint_single_tile(door_tilemap_layer, door_tilemap_layer.atlas_id, door_position, door_tilemap_layer.door_tile_atlas_position)
+					#break
 
 	return rooms_dict_array
 
@@ -597,6 +629,8 @@ func create_random_walk_rooms(rooms_list : Array[AABB], rooms_dict_array : Array
 			"center": room_center,
 			"aabb": room,
 			"floor_positions": valid_floor_positions,
+			"outgoing_corridor" : null,
+			"incoming_corridor" : null,
 			"type": null,
 			"next_room": null,
 			"prev_room": null,
@@ -652,7 +686,7 @@ func connect_rooms(rooms_dict_array : Array[Dictionary]) -> Dictionary:
 		room_centers.erase(closest_center)
 
 		# create a new corridor between the current room center and the closest center using straight lines
-		var new_corridor : Dictionary = create_corridor(current_room_center, closest_center)
+		var new_corridor : Array = create_corridor(current_room_center, closest_center)
 
 		# Optionally, create a new corridor between the current room center and the closest center using diagnol lines
 		#var new_corridor : Dictionary = create_diagnol_corridor(current_room_center, closest_center)
@@ -667,20 +701,23 @@ func connect_rooms(rooms_dict_array : Array[Dictionary]) -> Dictionary:
 		# update the next room reference for the current room
 		for room_dict in rooms_dict_array:
 			if room_dict["center"] == current_room_center:
+				room_dict["outgoing_corridor"] = new_corridor
 				room_dict["next_room"] = closest_center
-				break
-
-		# update the previous room reference for the closest room
-		for room_dict in rooms_dict_array:
-			if room_dict["center"] == closest_center:
+			# update the previous room reference for the closest room
+			elif room_dict["center"] == closest_center:
+				var reversed_corridor : Array = new_corridor.duplicate(true)
+				reversed_corridor.reverse()
+				room_dict["incoming_corridor"] = reversed_corridor
 				room_dict["prev_room"] = current_room_center
-				break
+
+		
 
 		# move to the closest room center to continue the process
 		current_room_center = closest_center
 
 		# merge the new corridor tiles into the corridor tiles dictionary
-		corridors.merge(new_corridor)
+		for position in new_corridor:
+			corridors[position] = null
 
 	# return the dictionary containing all the corridor tiles connecting the rooms
 	return corridors
@@ -716,15 +753,15 @@ func find_closest_room_center(current_room_center : Vector2i, room_centers : Arr
 
 # creates a corridor between the start and end positions
 # the corridor is represented as a dictionary where each tile position is a key
-func create_corridor(start_position : Vector2i, end_position : Vector2i) -> Dictionary:
-	# dictionary to store the positions of corridor tiles
-	var corridor : Dictionary = {}
+func create_corridor(start_position : Vector2i, end_position : Vector2i) -> Array:
+	# array to store the positions of corridor tiles
+	var corridor : Array = []
 
 	# set the current position to the starting point of the corridor
 	var current_position : Vector2i = start_position
 
-	# add the initial start position to the corridor dictionary
-	corridor[current_position] = null
+	# add the initial start position to the corridor array
+	corridor.append(current_position)
 
 	# move vertically until the current position's y matches the end position's y
 	while current_position.y != end_position.y:
@@ -737,8 +774,8 @@ func create_corridor(start_position : Vector2i, end_position : Vector2i) -> Dict
 		elif end_position.y < current_position.y:
 			current_position += Vector2i.UP;
 
-		# add the new position to the corridor dictionary
-		corridor[current_position] = null
+		# add the new position to the corridor array
+		corridor.append(current_position)
 
 	# move horizontally until the current position's x matches the end position's x
 	while current_position.x != end_position.x:
@@ -751,8 +788,8 @@ func create_corridor(start_position : Vector2i, end_position : Vector2i) -> Dict
 		elif end_position.x < current_position.x:
 			current_position += Vector2i.LEFT;
 
-		# add the new position to the corridor dictionary
-		corridor[current_position] = null
+		# add the new position to the corridor array
+		corridor.append(current_position)
 
 	# return the dictionary containing all the positions of the corridor tiles
 	return corridor
@@ -1009,16 +1046,13 @@ func create_diagnol_corridor(start_position : Vector2i, end_position : Vector2i)
 	# return the dictionary containing all the positions of the diagonal corridor
 	return corridor
 
-
 func start_level() -> void:
 	var rooms_dict_array : Array[Dictionary] = room_first_generation()
 	for room_dict in rooms_dict_array:
 		if room_dict["entrance"] == true:
 			var floor_positions : Array = room_dict["floor_positions"].keys()
-			print(floor_positions)
 			var spawn_position = floor_positions.pick_random()
 			var current_tile_global_position = floor_tilemap_layer.map_to_local(spawn_position)
-			print("\n", spawn_position, current_tile_global_position)
 			player.position = current_tile_global_position
 			player.visible = true
 			break
