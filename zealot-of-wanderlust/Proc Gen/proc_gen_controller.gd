@@ -854,132 +854,55 @@ func validate_room_offset() -> int:
 # algorithm recursively splits the space until the resulting rooms meet
 # the minimum width and height requirements
 func binary_space_partitioning(space_to_split : AABB, min_room_width: int, min_room_height: int) -> Array[AABB]:
-	# queue to hold the spaces that need to be split
-	var rooms_queue : Array[AABB] = []
-	# array to store the successfully created rooms
+	# array to store the created rooms
 	var rooms_list : Array[AABB] = []
 
-	# enqueue the initial space to split
-	rooms_queue.push_back(space_to_split)
+	split_room(space_to_split, rooms_list, min_room_width, min_room_height)
 
-	# FOR TESTING PURPOSES
-	#var list = [] 
-
-	# process the queue until all spaces have been handled
-	while (rooms_queue.size() > 0):
-		# dequeue the next room to process
-		var room : AABB = rooms_queue.pop_front()
-
-		# FOR TESTING PURPOSES
-		#var str = str(room.position.x) + "," + str(room.position.y) + "," + str(room.size.x) + "," + str(room.size.y)
-		#list.append(str)
-
-		# check if the room is large enough to split
-		if (room.size.y >= min_room_height && room.size.x >= min_room_width):
-
-			# generate a random value to decide how to split the room, for a more random room layout
-			# if the random value is <= 0.5, we prioritize a horizontal split
-			if (randf() <= 0.5):
-
-				# if the room's height is at least double the min height
-				# split the room horizontally to create two new rooms
-				if (room.size.y >= min_room_height*2):
-					split_horizontally(min_room_height, rooms_queue, room)
-
-				# if the room's width is at least double the min width
-				# split the room vertically to create two new rooms
-				elif (room.size.x >= min_room_width*2):
-					split_vertically(min_room_width, rooms_queue, room)
-
-				# the room cannot be split further due to size constraints
-				# but it is a valid room, so we add it to the rooms list
-				else:
-					rooms_list.append(room)
-
-			# if the random value is > 0.5, we prioritize a vertical split
-			else:
-
-				# if the room's width is at least double the min width
-				# split the room vertically to create two new rooms
-				if (room.size.x >= min_room_width*2):
-					split_vertically(min_room_width, rooms_queue, room)
-
-				# if the room's height is at least double the min height
-				# split the room horizontally to create two new rooms
-				elif (room.size.y >= min_room_height*2):
-					split_horizontally(min_room_height, rooms_queue, room)
-
-				# the room cannot be split further due to size constraints
-				# but it is a valid room, so we add it to the rooms list
-				else:
-					rooms_list.append(room)
-
-	# FOR TESTING PURPOSES
-	#print(list)
-	# return the list of created rooms
 	return rooms_list
 
-# splits a given room vertically, creating two new rooms
-func split_vertically(min_room_width : int, rooms_queue : Array[AABB], room : AABB) -> void:
-	# the split position along the width of the room
-	var x_split : float
+func split_room(room, rooms_list, min_room_width, min_room_height):
+	var px : int = room.position.x
+	var py : int = room.position.y
+	var sx : int = room.size.x
+	var sy : int = room.size.y
 
-	# check if random splits is true
-	if proc_gen_data.bsp_random_splits == true:
-		# generate a random split position along the width of the room
-		x_split = randf_range(1, room.size.x)
+	var split : float
+	var room_1 : AABB
+	var room_2 : AABB
+
+	if (sx < min_room_width) && (sy < min_room_height):
+		rooms_list.append(room)
+		return
+
+	if sy >= (min_room_height * 2):
+		# split horizontal
+
+		if proc_gen_data.bsp_random_splits == true:
+			split = randf_range(1, sy)
+		else:
+			split = randi_range(min_room_height, sy - min_room_height)
+
+		room_1 = AABB(room.position, Vector3i(sx, split, 0))
+		room_2 = AABB(Vector3i(px, py + split, 0), Vector3i(sx, sy - split, 0))
+
+	elif sx >= (min_room_width * 2):
+		# split vertical
+
+		if proc_gen_data.bsp_random_splits == true:
+			split = randf_range(1, sx)
+		else:
+			split = randi_range(min_room_width, sx - min_room_width)
+
+		room_1 = AABB(room.position, Vector3i(split, sy, 0))
+		room_2 = AABB(Vector3i(px + split, py, 0), Vector3i(sx - split, sy, 0))
+
 	else:
-		# using a split range of (min_room_width, room.size.x - min_room_width) ensures we always fit 2 
-		# rooms but this creates a grid like structure which looks less random
-		x_split = randf_range(min_room_width, room.size.x - min_room_width)
+		rooms_list.append(room)
+		return
 
-	# room_1 is defined by the original room's position (bottom-left corner)
-	# and extends horizontally from the start of the room to the x_split point
-	# while the height remains the same as the original room
-	var room_1 : AABB = AABB(room.position, Vector3i(x_split, room.size.y, room.size.z))
-
-	# room_2 is defined by the position that starts just after the x_split point
-	# and extends to the right side of the original room
-	# while the height remains the same as the original room
-	var room_2 : AABB = AABB(
-		Vector3i(room.position.x + x_split, room.position.y, room.position.z), 
-		Vector3i(room.size.x - x_split, room.size.y, room.size.z)
-		)
-
-	# enqueue both newly created rooms back into the rooms_queue for further processing
-	rooms_queue.push_back(room_1)
-	rooms_queue.push_back(room_2)
-
-# splits a given room horizontally, creating two new rooms
-func split_horizontally(min_room_height : int, rooms_queue : Array[AABB], room : AABB) -> void:
-	# the split position along the width of the room
-	var y_split : float
-
-	# check if random splits is true
-	if proc_gen_data.bsp_random_splits == true:
-		# generate a random split position along the height of the room
-		y_split = randf_range(1, room.size.y)
-	else:
-		# using a split range of (min_room_height, room.size.y - min_room_height) ensures we always fit 2 
-		# rooms but this creates a grid like structure which looks less random
-		y_split = randf_range(min_room_height, room.size.y - min_room_height)
-
-	# room_1 is defined by the original room's position (bottom-left corner)
-	# and extends vertically from the start of the room to the y_split point
-	# while the width remains the same as the original room
-	var room_1 : AABB = AABB(room.position, Vector3i(room.size.x, y_split, room.size.z))
-
-	# room_2 is defined by the position that starts just after the y_split point
-	# and extends to the top of the original room
-	# while the width remains the same as the original room
-	var room_2 : AABB = AABB(
-		Vector3i(room.position.x, room.position.y + y_split, room.position.z), 
-		Vector3i(room.size.x, room.size.y - y_split, room.size.z)
-		)
-
-	# enqueue both newly created rooms back into the rooms_queue for further processing
-	rooms_queue.push_back(room_1)
-	rooms_queue.push_back(room_2)
+	split_room(room_1, rooms_list, min_room_width, min_room_height)
+	split_room(room_2, rooms_list, min_room_width, min_room_height)
 
 # creates a diagonal corridor between two points using Bresenham's line algorithm
 # the corridor is represented as a dictionary where the keys are positions (Vector2i) 
