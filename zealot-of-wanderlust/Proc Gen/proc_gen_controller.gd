@@ -1001,32 +1001,12 @@ func create_diagnol_corridor(start_position : Vector2i, end_position : Vector2i)
 
 
 
-func bsp_new(space_to_split : Rect2, min_room_width: int, min_room_height: int):
-	var rooms_list : Array[RoomNode] = []
-
+func bsp_new(space_to_split : Rect2, min_room_width: int, min_room_height: int) -> RoomNode:
 	var root = RoomNode.new(space_to_split)
 
-	split(root, rooms_list, min_room_width, min_room_height)
+	split(root, min_room_width, min_room_height)
 
-	print(rooms_list, "\n")
-
-	var leaves = []
-	collect_leaf_nodes_level_order(root, leaves)
-	
-	return leaves
-
-	#level_order_traversal(root)
-	
-	#var result = levelOrder(root)
-	
-	#for level in result:
-		#for node in level:
-			#print(node, " ", node.is_leaf)
-		#print()
-
-	#print(rooms_list)
-	#for node in rooms_list:
-		#print(node.room, " left ", node.left, " right ", node.right)
+	return root
 
 func collect_leaf_nodes_level_order(root, leaves):
 	if root == null:
@@ -1104,7 +1084,7 @@ func levelOrder(root):
 		result.append(levelNodes)
 	return result
 
-func split(node, rooms_list, min_room_width, min_room_height):
+func split(node, min_room_width, min_room_height):
 	var px : int = node.room.position.x
 	var py : int = node.room.position.y
 	var sx : int = node.room.size.x
@@ -1118,7 +1098,6 @@ func split(node, rooms_list, min_room_width, min_room_height):
 
 	if (sx < min_room_width) && (sy < min_room_height):
 		node.is_leaf = true
-		rooms_list.append(node)
 		return
 
 	var random_split : float = randf() >= 0.5
@@ -1146,7 +1125,6 @@ func split(node, rooms_list, min_room_width, min_room_height):
 		room_2_rect = Rect2(Vector2i(px + split, py), Vector2i(sx - split, sy))
 
 	else:
-		rooms_list.append(node)
 		node.is_leaf = true
 		return
 		
@@ -1155,8 +1133,8 @@ func split(node, rooms_list, min_room_width, min_room_height):
 	if (node.right == null):
 		node.right = RoomNode.new(room_2_rect)
 
-	split(node.left, rooms_list, min_room_width, min_room_height)
-	split(node.right, rooms_list, min_room_width, min_room_height)
+	split(node.left, min_room_width, min_room_height)
+	split(node.right, min_room_width, min_room_height)
 
 class RoomNode:
 	var left : RoomNode = null
@@ -1172,9 +1150,21 @@ class RoomNode:
 	var prev_room : RoomNode = null
 	var is_entrance : bool = false
 	var has_exit : bool = false
+	const trim_amount = 1
 	
 	func _init(room : Rect2):
 		self.room = room
+	
+	func trim():
+		room.position.x += trim_amount
+		room.position.y += trim_amount
+		room.size.x -= 2 * trim_amount
+		room.size.y -= 2 * trim_amount
+		
+		if left != null:
+			left.trim()
+		if right != null:
+			right.trim()
 
 
 func room_first_gen():
@@ -1189,14 +1179,30 @@ func room_first_gen():
 	# the entire dungeon it is center aligned
 	var room_start_position : Vector2i = Vector2i(-proc_gen_data.dungeon_width / 2, -proc_gen_data.dungeon_height / 2)
 
-	var room_nodes = bsp_new(
+	var root = bsp_new(
 		Rect2(Vector2i(room_start_position.x, room_start_position.y), Vector2i(proc_gen_data.dungeon_width, proc_gen_data.dungeon_height)),
 		proc_gen_data.min_room_width,
 		proc_gen_data.min_room_height
 		)
 
-	for room in room_nodes:
-		print(room)
+	var leaves = []
+	collect_leaf_nodes_level_order(root, leaves)
+	
+	var rooms = []
+	for leaf in leaves:
+		rooms.append(Rect2(Vector2i(leaf.room.position.x + 100, leaf.room.position.y + 100), leaf.room.size))
+	
+	room_draw_testing_script.set_room_list(rooms)
+	
+	root.trim()
+	
+	leaves = []
+	collect_leaf_nodes_level_order(root, leaves)
+	rooms = []
+	for leaf in leaves:
+		rooms.append(Rect2(Vector2i(leaf.room.position.x + 100, leaf.room.position.y + 100), leaf.room.size))
+	
+	#room_draw_testing_script.set_room_list(rooms)
 
 	#var roooooms : Array[AABB] = []
 	#for node in new_rooms_list:
@@ -1284,4 +1290,4 @@ func room_first_gen():
 					##paint_single_tile(door_tilemap_layer, door_tilemap_layer.atlas_id, door_position, door_tilemap_layer.door_tile_atlas_position)
 					##break
 
-	#return rooms_dict_array
+@export var room_draw_testing_script : RoomDrawTesting
