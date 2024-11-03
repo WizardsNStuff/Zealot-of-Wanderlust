@@ -480,6 +480,23 @@ func room_first_generation() -> Array[Dictionary]:
 		proc_gen_data.min_room_width,
 		proc_gen_data.min_room_height
 		)
+	
+	#print(rooms_list, "\n")
+
+	var new_rooms_list = bsp_new(
+		Rect2(Vector2i(room_start_position.x, room_start_position.y), Vector2i(proc_gen_data.dungeon_width, proc_gen_data.dungeon_height)),
+		proc_gen_data.min_room_width,
+		proc_gen_data.min_room_height
+		)
+		
+	
+
+	#var new_room_list = []
+	#for room in rooms_list:
+		#var rect = Rect2(Vector2i(room.position.x, room.position.y), Vector2i(room.size.x, room.size.y))
+		#new_room_list.append(rect)
+		#
+	#print(new_room_list)
 
 	# dictionary to hold the floor tiles for the generated rooms
 	var floor_tiles : Dictionary = {}
@@ -539,13 +556,13 @@ func room_first_generation() -> Array[Dictionary]:
 				if room_dict_i["center"] == next_center:
 					next_floor = room_dict_i["floor_positions"]
 
-			print(room_dict["floor_positions"].keys())
+			#print(room_dict["floor_positions"].keys())
 
 			for position in outgoing_corridor:
 				if !current_floor.keys().has(position) && !next_floor.keys().has(position):
 					corridor_exclusive_tiles.append(position)
 
-			print(corridor_exclusive_tiles, "\n")
+			#print(corridor_exclusive_tiles, "\n")
 
 			door_position = corridor_exclusive_tiles[corridor_exclusive_tiles.size() / 2]
 			paint_single_tile(door_tilemap_layer, door_tilemap_layer.atlas_id, door_position, door_tilemap_layer.door_tile_atlas_position)
@@ -854,6 +871,143 @@ func binary_space_partitioning(space_to_split : AABB, min_room_width: int, min_r
 	split_room(space_to_split, rooms_list, min_room_width, min_room_height)
 
 	return rooms_list
+	
+func bsp_new(space_to_split : Rect2, min_room_width: int, min_room_height: int):
+	var rooms_list : Array[BSPNode] = []
+
+	var root = BSPNode.new(space_to_split)
+
+	split(root, rooms_list, min_room_width, min_room_height)
+
+	print(rooms_list, "\n")
+
+	#level_order_traversal(root)
+	
+	var result = levelOrder(root)
+	
+	for level in result:
+		for val in level:
+			print(val)
+		print()
+	#print(rooms_list)
+	#for node in rooms_list:
+		#print(node.room, " left ", node.left, " right ", node.right)
+
+func level_order_traversal(root: BSPNode):
+	if root == null:
+		return
+
+	# Initialize a queue with the root node
+	var queue = []
+	var node
+	queue.append(root)
+
+	# While there are nodes in the queue
+	while queue.size() > 0:
+	# Pop the first node from the queue
+		node = queue.pop_front()
+		#print("(", node.room.position.x, ",", node.room.position.y, ")")
+		print(node.room)
+
+		# Add the left child to the queue if it exists
+		if node.left != null:
+			queue.append(node.left)
+
+		# Add the right child to the queue if it exists
+		if node.right != null:
+			queue.append(node.right)
+
+func height(node):
+	if node == null:
+		return 0
+	else:
+
+		# compute the height of each subtree
+		var lheight = height(node.left)
+		var rheight = height(node.right)
+
+		# use the larger one
+		return (lheight + 1) if lheight > rheight else (rheight + 1)
+
+func printGivenLevel(root, level, levelNodes):
+	if root == null:
+		return
+	if level == 1:
+		levelNodes.append(root.room)
+	elif level > 1:
+		printGivenLevel(root.left, level - 1, levelNodes)
+		printGivenLevel(root.right, level - 1, levelNodes)
+		
+func levelOrder(root):
+	var result = []
+	var h = height(root)
+	for i in range(1, h + 1):
+		var levelNodes = []
+		printGivenLevel(root, i, levelNodes)
+		result.append(levelNodes)
+	return result
+
+func split(node, rooms_list, min_room_width, min_room_height):
+	var px : int = node.room.position.x
+	var py : int = node.room.position.y
+	var sx : int = node.room.size.x
+	var sy : int = node.room.size.y
+
+	var split : float
+	var room_1_rect : Rect2 
+	var room_2_rect : Rect2
+	var room_1 : BSPNode
+	var room_2 : BSPNode
+
+	if (sx < min_room_width) && (sy < min_room_height):
+		rooms_list.append(node)
+		return
+
+	var random_split : float = randf() >= 0.5
+
+	if random_split && sy >= (min_room_height * 2):
+		# split horizontal
+
+		if proc_gen_data.bsp_random_splits == true:
+			split = randf_range(1, sy)
+		else:
+			split = randi_range(min_room_height, sy - min_room_height)
+
+		room_1_rect = Rect2(node.room.position, Vector2i(sx, split))
+		room_2_rect = Rect2(Vector2i(px, py + split), Vector2i(sx, sy - split))
+
+	elif sx >= (min_room_width * 2):
+		# split vertical
+
+		if proc_gen_data.bsp_random_splits == true:
+			split = randf_range(1, sx)
+		else:
+			split = randi_range(min_room_width, sx - min_room_width)
+
+		room_1_rect = Rect2(node.room.position, Vector2i(split, sy))
+		room_2_rect = Rect2(Vector2i(px + split, py), Vector2i(sx - split, sy))
+
+	else:
+		rooms_list.append(node)
+		return
+		
+	if (node.left == null):
+		node.left = BSPNode.new(room_1_rect)
+	if (node.right == null):
+		node.right = BSPNode.new(room_2_rect)
+
+	split(node.left, rooms_list, min_room_width, min_room_height)
+	split(node.right, rooms_list, min_room_width, min_room_height)
+
+class BSPNode:
+	var left: BSPNode
+	var right: BSPNode
+	var room: Rect2  # The boundaries of the room
+	#var is_leaf: bool = true
+
+	func _init(room: Rect2):
+		self.room = room
+
 
 func split_room(room, rooms_list, min_room_width, min_room_height):
 	var px : int = room.position.x
