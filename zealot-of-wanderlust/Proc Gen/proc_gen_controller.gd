@@ -16,11 +16,16 @@ class_name ProcGenController
 # the tilemap layer for the doors
 @export var door_tilemap_layer : DoorTileMapLayer
 
+@export var room_draw_testing_script : RoomDrawTesting
+
+@export var doors : Node
+
 @export var player : Player
 
 var dungeon_created : bool = false
 var generated_rooms : Array = []
-var exit_location : Vector2i
+var exit_location : Vector2i = Vector2i()
+var has_key : bool = false
 
 # runs the procedural generation for creating the floor layout and walls
 # this method generates the floor positions using a random walk algorithm
@@ -1029,6 +1034,11 @@ class RoomNode:
 
 func start_level() -> void:
 	var room_nodes = []
+	dungeon_created = false
+	generated_rooms = []
+	exit_location = Vector2i()
+	has_key = false
+	
 	var valid_generation = room_first_gen(room_nodes)
 	
 	if (!valid_generation):
@@ -1187,6 +1197,9 @@ func room_first_gen(room_nodes):
 	clear_tiles(wall_tilemap_layer)
 	clear_tiles(staircase_tilemap_layer)
 	clear_tiles(door_tilemap_layer)
+	
+	for door in doors.get_children(true):
+		door.queue_free()
 
 	var rooms_dict_array : Array[RoomNode] = []
 
@@ -1271,6 +1284,7 @@ func generate_exit(exit_room_tiles):
 	paint_single_tile(staircase_tilemap_layer, staircase_tilemap_layer.atlas_id, random_position, staircase_tilemap_layer.upward_staircase_tile_atlas_position)
 
 func add_doors_to_corridors(room_nodes):
+	var door_number : int = 1
 	for room_node in room_nodes:
 		if room_node.has_outgoing_corridor():
 			var outgoing_corridor : Array = room_node.outgoing_corridor
@@ -1294,8 +1308,17 @@ func add_doors_to_corridors(room_nodes):
 				return false
 
 			door_position = corridor_exclusive_tiles[corridor_exclusive_tiles.size() / 2]
-			paint_single_tile(door_tilemap_layer, door_tilemap_layer.atlas_id, door_position, door_tilemap_layer.door_tile_atlas_position)
+			
+			var new_door_tilemap_layer = TileMapLayer.new()
+			
+			new_door_tilemap_layer.tile_set = door_tilemap_layer.tile_set
+			new_door_tilemap_layer.name = "Door" + str(door_number)
+			new_door_tilemap_layer.set_cell(door_position, door_tilemap_layer.atlas_id, door_tilemap_layer.door_tile_atlas_position)
+			
+			doors.add_child(new_door_tilemap_layer, true)
+			#paint_single_tile(door_tilemap_layer, door_tilemap_layer.atlas_id, door_position, door_tilemap_layer.door_tile_atlas_position)
 
+			door_number += 1
 			#for position in outgoing_corridor:
 				#if !room_dict["floor_positions"].keys().has(position):
 					#door_position = position
@@ -1426,15 +1449,28 @@ func get_all_tiles(room_nodes) -> Dictionary:
 		all_tiles.merge(room_node.room_tiles)
 	return all_tiles
 
-func player_entered_staircase(player_global_position):
-	var player_tile_position = staircase_tilemap_layer.local_to_map(player_global_position)
-	if (player_tile_position == exit_location):
-		return true
-	return false
+func give_player_key():
+	has_key = true
+	print("gave player 1 key")
+
+
+
 
 func _physics_process(delta: float) -> void:
 	if dungeon_created:
-		if player_entered_staircase(player.global_position):
-			print("PLAYER ENTERED STAIRS")
-
-@export var room_draw_testing_script : RoomDrawTesting
+		var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+		player.velocity = input_direction * player.speed
+		var player_collision = player.move_and_slide()
+		
+		if (player_collision):
+			for i in player.get_slide_collision_count():
+				var collision = player.get_slide_collision(i)
+				var collider = collision.get_collider()
+				var collider_name = collider.name
+				
+				if (collider_name.contains("Door")):
+					if (has_key):
+						collider.queue_free()
+						has_key = false
+				if (collider_name.contains("Staircase")):
+					start_level()
