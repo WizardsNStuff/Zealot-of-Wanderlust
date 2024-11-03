@@ -876,17 +876,6 @@ func binary_space_partitioning(space_to_split : AABB, min_room_width: int, min_r
 
 	return rooms_list
 
-func start_level() -> void:
-	var rooms_dict_array : Array[Dictionary] = room_first_generation()
-	for room_dict in rooms_dict_array:
-		if room_dict["entrance"] == true:
-			var floor_positions : Array = room_dict["floor_positions"].keys()
-			var spawn_position = floor_positions.pick_random()
-			var current_tile_global_position = floor_tilemap_layer.map_to_local(spawn_position)
-			player.position = current_tile_global_position
-			player.visible = true
-			break
-
 func split_room(room, rooms_list, min_room_width, min_room_height):
 	var px : int = room.position.x
 	var py : int = room.position.y
@@ -999,7 +988,58 @@ func create_diagnol_corridor(start_position : Vector2i, end_position : Vector2i)
 
 
 
+class RoomNode:
+	var left : RoomNode = null
+	var right : RoomNode = null
+	var room : Rect2 = Rect2()
+	var is_leaf : bool = false
+	var center : Vector2i = Vector2i()
+	var room_tiles : Dictionary = {}
+	var outgoing_corridor : Array = []
+	var incoming_corridor : Array = []
+	var room_type = null
+	var next_room : RoomNode = null
+	var prev_room : RoomNode = null
+	var is_entrance : bool = false
+	var is_exit : bool = false
 
+	func _init(room : Rect2):
+		self.room = room
+
+	func has_outgoing_corridor():
+		return outgoing_corridor.size() > 0
+
+	func has_center(c):
+		return c == center
+
+	func trim(trim_amount):
+		room.position.x += trim_amount
+		room.position.y += trim_amount
+		room.size.x -= 2 * trim_amount
+		room.size.y -= 2 * trim_amount
+		
+		if left != null:
+			left.trim(trim_amount)
+		if right != null:
+			right.trim(trim_amount)
+
+func start_level() -> void:
+	var room_nodes = []
+	var valid_generation = room_first_gen(room_nodes)
+	
+	if (!valid_generation):
+		print("retry")
+		start_level()
+		return
+	else:
+		for room_node in room_nodes:
+			if room_node.is_entrance:
+				var floor_positions : Array = room_node.room_tiles.keys()
+				var spawn_tile_position = floor_positions.pick_random()
+				var spawn_global_position = floor_tilemap_layer.map_to_local(spawn_tile_position)
+				player.position = spawn_global_position
+				player.visible = true
+				break
 
 func bsp_new(space_to_split : Rect2, min_room_width: int, min_room_height: int) -> RoomNode:
 	var root = RoomNode.new(space_to_split)
@@ -1136,38 +1176,7 @@ func split(node, min_room_width, min_room_height):
 	split(node.left, min_room_width, min_room_height)
 	split(node.right, min_room_width, min_room_height)
 
-class RoomNode:
-	var left : RoomNode = null
-	var right : RoomNode = null
-	var room : Rect2 = Rect2()
-	var is_leaf : bool = false
-	var center : Vector2i = Vector2i()
-	var room_tiles : Dictionary = {}
-	var outgoing_corridor : Array = []
-	var incoming_corridor : Array = []
-	var room_type = null
-	var next_room : RoomNode = null
-	var prev_room : RoomNode = null
-	var is_entrance : bool = false
-	var has_exit : bool = false
-	const trim_amount = 1
-	
-	func _init(room : Rect2):
-		self.room = room
-	
-	func trim():
-		room.position.x += trim_amount
-		room.position.y += trim_amount
-		room.size.x -= 2 * trim_amount
-		room.size.y -= 2 * trim_amount
-		
-		if left != null:
-			left.trim()
-		if right != null:
-			right.trim()
-
-
-func room_first_gen():
+func room_first_gen(room_nodes):
 	clear_tiles(floor_tilemap_layer)
 	clear_tiles(wall_tilemap_layer)
 	clear_tiles(staircase_tilemap_layer)
@@ -1175,8 +1184,6 @@ func room_first_gen():
 
 	var rooms_dict_array : Array[RoomNode] = []
 
-	# offset the dungeon's origin is by half its width and height to ensure 
-	# the entire dungeon it is center aligned
 	var room_start_position : Vector2i = Vector2i(-proc_gen_data.dungeon_width / 2, -proc_gen_data.dungeon_height / 2)
 
 	var root = bsp_new(
@@ -1185,109 +1192,227 @@ func room_first_gen():
 		proc_gen_data.min_room_height
 		)
 
-	var leaves = []
-	collect_leaf_nodes_level_order(root, leaves)
+	collect_leaf_nodes_DFS(root, room_nodes)
+
+	if (proc_gen_data.random_walk_room):
+		create_rooms_using_random_walk(room_nodes)
+	#else:
+		#all_room_floor_tiles = create_simple_rooms(rooms_list)
+
+	var connections_valid = connect_rooms_2(room_nodes)
 	
-	var rooms = []
-	for leaf in leaves:
-		rooms.append(Rect2(Vector2i(leaf.room.position.x + 100, leaf.room.position.y + 100), leaf.room.size))
+	if (!connections_valid):
+		return false
 	
-	room_draw_testing_script.set_room_list(rooms)
-	
-	root.trim()
-	
-	leaves = []
-	collect_leaf_nodes_level_order(root, leaves)
-	rooms = []
-	for leaf in leaves:
-		rooms.append(Rect2(Vector2i(leaf.room.position.x + 100, leaf.room.position.y + 100), leaf.room.size))
-	
+	var all_floor_tiles = get_all_tiles(room_nodes)
+
+	#var leaves = []
+	#collect_leaf_nodes_level_order(root, leaves)
+	#
+	#var rooms = []
+	#for leaf in leaves:
+		#rooms.append(Rect2(Vector2i(leaf.room.position.x + 100, leaf.room.position.y + 100), leaf.room.size))
+	#
+	#room_draw_testing_script.set_room_list(rooms)
+	#
+	#root.trim(1)
+	#
+	#leaves = []
+	#collect_leaf_nodes_level_order(root, leaves)
+	#rooms = []
+	#for leaf in leaves:
+		#rooms.append(Rect2(Vector2i(leaf.room.position.x + 100, leaf.room.position.y + 100), leaf.room.size))
+	#
 	#room_draw_testing_script.set_room_list(rooms)
 
-	#var roooooms : Array[AABB] = []
-	#for node in new_rooms_list:
-		#var room = AABB(Vector3i(node.room.position.x, node.room.position.y, 0), Vector3i(node.room.size.x, node.room.size.y, 0))
-		#roooooms.append(room)
-	##var new_room_list = []
-	##for room in rooms_list:
-		##var rect = Rect2(Vector2i(room.position.x, room.position.y), Vector2i(room.size.x, room.size.y))
-		##new_room_list.append(rect)
-		##
-	##print(new_room_list)
-#
-	## dictionary to hold the floor tiles for the generated rooms
-	#var floor_tiles : Dictionary = {}
-#
-	## check if random walk room generation is enabled
-	#if (proc_gen_data.random_walk_room):
-		## generate rooms using a random walk algorithm
-		## the room data is populated in the 'rooms_dict_array' for further processing
-		#create_random_walk_rooms(roooooms, rooms_dict_array, floor_tiles)
-	#else:
-		## create simple rooms by converting the AABB rooms into floor tiles stored in a dictionary
-		#floor_tiles = create_simple_rooms(rooms_list)
-#
-	## finds the closest room center and creates corridors between them
-	## store all the resulting corridor tiles in a dictionary for later use
-	#var corridors : Dictionary = connect_rooms(rooms_dict_array)
-#
-	## merge the corridor tiles into the floor tiles dictionary
-	#floor_tiles.merge(corridors)
-#
-	## get the atlas ID for the floor tilemap layer
-	#var floor_atlas_id : int = floor_tilemap_layer.atlas_id
-	## get the position of the base corridor floor tile in the atlas
-	#var corridor_tile_pos : Vector2i = floor_tilemap_layer.base_corridor_floor_tile_atlas_position
-#
-	## get the atlas ID for the wall tilemap layer
-	#var wall_atlas_id : int = wall_tilemap_layer.atlas_id
-	## get the position of the base corridor wall tile in the atlas
-	#var corridor_wall_tile_pos : Vector2i = wall_tilemap_layer.base_corridor_wall_tile_atlas_position
-#
-	## paint the floor tiles
-	#paint_tiles(floor_tiles, floor_tilemap_layer, floor_atlas_id, corridor_tile_pos)
-	## create walls around the corridors using the positions stored in floor_positions
-	#create_walls(floor_tiles, wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
-#
-	## get the dictionary containing all the data for the exit room
-	#var exit_room : Dictionary = get_exit_room_dict(rooms_dict_array)
-#
-	## add one staircase to the exit room at a random position
-	#add_tile_at_random_positions(
-		#exit_room["floor_positions"], 
-		#1, 
-		#staircase_tilemap_layer, 
-		#staircase_tilemap_layer.atlas_id, 
-		#staircase_tilemap_layer.upward_staircase_tile_atlas_position
-	#)
-#
-	#for room_dict in rooms_dict_array:
-		#if room_dict.has("outgoing_corridor") && room_dict["outgoing_corridor"] != null:
-			#var outgoing_corridor : Array = room_dict["outgoing_corridor"]
-			#var door_position  : Vector2i
-			#var current_floor : Dictionary = room_dict["floor_positions"]
-			#var next_floor : Dictionary = {}
-			#var next_center = room_dict["next_room"]
-			#var corridor_exclusive_tiles : Array = []
-			#for room_dict_i in rooms_dict_array:
-				#if room_dict_i["center"] == next_center:
-					#next_floor = room_dict_i["floor_positions"]
-#
-			##print(room_dict["floor_positions"].keys())
-#
+	# get the atlas ID for the floor tilemap layer
+	var floor_atlas_id : int = floor_tilemap_layer.atlas_id
+	# get the position of the base corridor floor tile in the atlas
+	var corridor_tile_pos : Vector2i = floor_tilemap_layer.base_corridor_floor_tile_atlas_position
+
+	# get the atlas ID for the wall tilemap layer
+	var wall_atlas_id : int = wall_tilemap_layer.atlas_id
+	# get the position of the base corridor wall tile in the atlas
+	var corridor_wall_tile_pos : Vector2i = wall_tilemap_layer.base_corridor_wall_tile_atlas_position
+
+	# paint the floor tiles
+	paint_tiles(all_floor_tiles, floor_tilemap_layer, floor_atlas_id, corridor_tile_pos)
+	# create walls around the corridors using the positions stored in floor_positions
+	create_walls(all_floor_tiles, wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
+
+	var exit_room_node
+	for room_node in room_nodes:
+		if room_node.is_exit:
+			exit_room_node = room_node
+
+	# add one staircase to the exit room at a random position
+	add_tile_at_random_positions(
+		exit_room_node.room_tiles, 
+		1, 
+		staircase_tilemap_layer, 
+		staircase_tilemap_layer.atlas_id, 
+		staircase_tilemap_layer.upward_staircase_tile_atlas_position
+	)
+	
+	if !add_doors_to_corridors(room_nodes):
+		return false
+	
+	return true
+
+func add_doors_to_corridors(room_nodes):
+	for room_node in room_nodes:
+		if room_node.has_outgoing_corridor():
+			var outgoing_corridor : Array = room_node.outgoing_corridor
+			var door_position  : Vector2i
+			var current_floor : Dictionary = room_node.room_tiles
+			var next_floor : Dictionary = {}
+			var next_center = room_node.next_room.center
+			var corridor_exclusive_tiles : Array = []
+			for room_node_i in room_nodes:
+				if room_node_i.has_center(next_center):
+					next_floor = room_node_i.room_tiles
+
+			#print(room_dict["floor_positions"].keys())
+
+			for tile in outgoing_corridor:
+				if !current_floor.keys().has(tile) && !next_floor.keys().has(tile):
+					corridor_exclusive_tiles.append(tile)
+
+			if corridor_exclusive_tiles.size() == 0:
+				print("WIRED DORROROR")
+				return false
+
+			door_position = corridor_exclusive_tiles[corridor_exclusive_tiles.size() / 2]
+			paint_single_tile(door_tilemap_layer, door_tilemap_layer.atlas_id, door_position, door_tilemap_layer.door_tile_atlas_position)
+
 			#for position in outgoing_corridor:
-				#if !current_floor.keys().has(position) && !next_floor.keys().has(position):
-					#corridor_exclusive_tiles.append(position)
-#
-			##print(corridor_exclusive_tiles, "\n")
-#
-			#door_position = corridor_exclusive_tiles[corridor_exclusive_tiles.size() / 2]
-			#paint_single_tile(door_tilemap_layer, door_tilemap_layer.atlas_id, door_position, door_tilemap_layer.door_tile_atlas_position)
-#
-			##for position in outgoing_corridor:
-				##if !room_dict["floor_positions"].keys().has(position):
-					##door_position = position
-					##paint_single_tile(door_tilemap_layer, door_tilemap_layer.atlas_id, door_position, door_tilemap_layer.door_tile_atlas_position)
-					##break
+				#if !room_dict["floor_positions"].keys().has(position):
+					#door_position = position
+					#paint_single_tile(door_tilemap_layer, door_tilemap_layer.atlas_id, door_position, door_tilemap_layer.door_tile_atlas_position)
+					#break
+	return true
+
+func create_rooms_using_random_walk(room_nodes):
+	for i in range(0, room_nodes.size()):
+		var room : Rect2 = room_nodes[i].room
+
+		# get the roguh center of the current room
+		var room_center : Vector2i = Vector2i(round(room.get_center().x), round(room.get_center().y))
+
+		# update the room nodes center
+		room_nodes[i].center = room_center
+
+		# run the random walk algorithm starting from the room center
+		var room_floor_positions : Dictionary = run_random_walk(room_center)
+
+		# dictionary to hold valid room floor tiles within the bounds of the room
+		var valid_floor_positions : Dictionary = {}
+
+		# check each position generated by the random walk
+		for position in room_floor_positions:
+
+			# calculate the x,y position of the edges of the room 
+			var left_edge : int = room.position.x
+			var right_edge : int = room.position.x + room.size.x
+			var top_edge : int = room.position.y
+			var bottom_edge : int = room.position.y + room.size.y
+
+			# ensure the position is within the valid bounds of the room,
+			if (position.x >= left_edge && position.x <= right_edge&& position.y >= top_edge && position.y <= bottom_edge):
+
+				# if the position is valid, add it to the valid floor positions dictionary
+				valid_floor_positions[position] = null
+		
+		room_nodes[i].room_tiles = valid_floor_positions
+
+func connect_rooms_2(room_nodes) -> bool:
+	var all_corridor_tiles = {}
+	
+	# dictionary to store all the corridor tiles
+	var corridors : Dictionary = {}
+
+	# array to store the center positions of each room
+	var room_centers: Array[Vector2i] = []
+
+	# collect all room centers from the rooms dictionary array
+	for room_node in room_nodes:
+		room_centers.append(room_node.center)
+
+	# pick the first center to start with
+	var current_room_center : Vector2i = room_centers[0]
+
+	# mark the starting room
+	for room_node in room_nodes:
+		if room_node.has_center(current_room_center):
+			room_node.is_entrance = true
+			break
+
+	# remove the selected room center from the list to avoid reconnecting it
+	room_centers.erase(current_room_center)
+
+	# loop until all room centers have been connected
+	while room_centers.size() > 0:
+		# find the closest room center to the current room center
+		var closest_center : Vector2i = find_closest_room_center(current_room_center, room_centers)
+
+		# if only one room center remains, mark it as the exit
+		if room_centers.size() == 1:
+			for room_node in room_nodes:
+				if room_node.has_center(closest_center):
+					room_node.is_exit = true
+					break
+
+		# remove the closest room center from the list to avoid reconnecting it
+		room_centers.erase(closest_center)
+
+		# create a new corridor between the current room center and the closest center using straight lines
+		var new_corridor : Array = create_corridor(current_room_center, closest_center)
+
+		for tile in new_corridor:
+			if all_corridor_tiles.keys().has(tile):
+				return false
+			else:
+				if tile != current_room_center && tile != closest_center:
+					all_corridor_tiles[tile] = null
+
+		# Optionally, create a new corridor between the current room center and the closest center using diagnol lines
+		#var new_corridor : Dictionary = create_diagnol_corridor(current_room_center, closest_center)
+
+		# increase the size of the newly created corridor by padding each tile with a 3x3 grid
+		#var new_padded_corridor : Array = increase_corridor_size_by_3_by_3(new_corridor.keys())
+
+		# Optionally, add the padded corridor tile to the corridor tiles ditionary
+		#for tile in new_padded_corridor:
+			#corridors[tile] = null
+
+		# update the next room reference for the current room
+		for room_node in room_nodes:
+			if room_node.has_center(current_room_center):
+				room_node.outgoing_corridor = new_corridor
+				for room_node_i in room_nodes:
+					if room_node_i.has_center(closest_center):
+						room_node.next_room = room_node_i
+
+			# update the previous room reference for the closest room
+			elif room_node.has_center(closest_center):
+				var reversed_corridor : Array = new_corridor.duplicate(true)
+				reversed_corridor.reverse()
+				room_node.incoming_corridor = reversed_corridor
+				for room_node_i in room_nodes:
+					if room_node_i.has_center(current_room_center):
+						room_node.prev_room = room_node_i
+
+		# move to the closest room center to continue the process
+		current_room_center = closest_center
+	return true
+
+func get_all_tiles(room_nodes) -> Dictionary:
+	var all_tiles = {}
+	for room_node in room_nodes:
+		if room_node.has_outgoing_corridor():
+			for tile in room_node.outgoing_corridor:
+				all_tiles[tile] = null
+		all_tiles.merge(room_node.room_tiles)
+	return all_tiles
 
 @export var room_draw_testing_script : RoomDrawTesting
