@@ -10,7 +10,7 @@ class_name ProcGenView
 func _ready() -> void:
 	gen_room_btn.pressed.connect(proc_gen_controller.run_proc_gen)
 	corridor_first_btn.pressed.connect(proc_gen_controller.corridor_first_generation)
-	room_first_btn.pressed.connect(proc_gen_controller.room_first_generation)
+	room_first_btn.pressed.connect(proc_gen_controller.room_first_gen)
 	start_btn.pressed.connect(proc_gen_controller.start_level)
 
 
