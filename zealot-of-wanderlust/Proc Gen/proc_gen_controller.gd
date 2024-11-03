@@ -18,7 +18,9 @@ class_name ProcGenController
 
 @export var player : Player
 
-
+var dungeon_created : bool = false
+var generated_rooms : Array = []
+var exit_location : Vector2i
 
 # runs the procedural generation for creating the floor layout and walls
 # this method generates the floor positions using a random walk algorithm
@@ -988,6 +990,8 @@ func create_diagnol_corridor(start_position : Vector2i, end_position : Vector2i)
 
 
 
+
+
 class RoomNode:
 	var left : RoomNode = null
 	var right : RoomNode = null
@@ -1032,6 +1036,7 @@ func start_level() -> void:
 		start_level()
 		return
 	else:
+		generated_rooms = room_nodes
 		for room_node in room_nodes:
 			if room_node.is_entrance:
 				var floor_positions : Array = room_node.room_tiles.keys()
@@ -1039,6 +1044,7 @@ func start_level() -> void:
 				var spawn_global_position = floor_tilemap_layer.map_to_local(spawn_tile_position)
 				player.position = spawn_global_position
 				player.visible = true
+				dungeon_created = true
 				break
 
 func bsp_new(space_to_split : Rect2, min_room_width: int, min_room_height: int) -> RoomNode:
@@ -1198,10 +1204,11 @@ func room_first_gen(room_nodes):
 		create_rooms_using_random_walk(room_nodes)
 	#else:
 		#all_room_floor_tiles = create_simple_rooms(rooms_list)
-
-	var connections_valid = connect_rooms_2(room_nodes)
 	
-	if (!connections_valid):
+	if (!connect_rooms_2(room_nodes)):
+		return false
+
+	if !add_doors_to_corridors(room_nodes):
 		return false
 	
 	var all_floor_tiles = get_all_tiles(room_nodes)
@@ -1246,18 +1253,22 @@ func room_first_gen(room_nodes):
 			exit_room_node = room_node
 
 	# add one staircase to the exit room at a random position
-	add_tile_at_random_positions(
-		exit_room_node.room_tiles, 
-		1, 
-		staircase_tilemap_layer, 
-		staircase_tilemap_layer.atlas_id, 
-		staircase_tilemap_layer.upward_staircase_tile_atlas_position
-	)
 	
-	if !add_doors_to_corridors(room_nodes):
-		return false
+	generate_exit(exit_room_node.room_tiles)
 	
 	return true
+
+func generate_exit(exit_room_tiles):
+	var random_floor_position_array : Array = exit_room_tiles.keys()
+	randomize()
+	random_floor_position_array.shuffle()
+
+	var random_position : Vector2i = random_floor_position_array[0]
+	
+	exit_location = random_position
+
+	# paint the tile at the chosen random position in the given tilemap layer
+	paint_single_tile(staircase_tilemap_layer, staircase_tilemap_layer.atlas_id, random_position, staircase_tilemap_layer.upward_staircase_tile_atlas_position)
 
 func add_doors_to_corridors(room_nodes):
 	for room_node in room_nodes:
@@ -1414,5 +1425,16 @@ func get_all_tiles(room_nodes) -> Dictionary:
 				all_tiles[tile] = null
 		all_tiles.merge(room_node.room_tiles)
 	return all_tiles
+
+func player_entered_staircase(player_global_position):
+	var player_tile_position = staircase_tilemap_layer.local_to_map(player_global_position)
+	if (player_tile_position == exit_location):
+		return true
+	return false
+
+func _physics_process(delta: float) -> void:
+	if dungeon_created:
+		if player_entered_staircase(player.global_position):
+			print("PLAYER ENTERED STAIRS")
 
 @export var room_draw_testing_script : RoomDrawTesting
