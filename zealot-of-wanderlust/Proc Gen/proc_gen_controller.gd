@@ -5,7 +5,7 @@ class_name ProcGenController
 @export var proc_gen_data : ProcGenData
 
 # reference to the player
-@export var player : Player
+@export var player : ProcGenPlayer
 
 # class representing a room node in a dungeon
 class RoomNode:
@@ -735,14 +735,6 @@ func handle_door_collision(collider : Object) -> void:
 		# set key flag to false after use
 		proc_gen_data.has_key = false
 
-# move the player based on input direction
-# return true if the player collides with something
-func move_player(input_direction : Vector2) -> bool:
-	# set the player's velocity and move them, handling any collisions
-	player.velocity = input_direction * player.speed
-	var player_collision = player.move_and_slide()
-	return player_collision
-
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
@@ -751,8 +743,11 @@ func _physics_process(delta: float) -> void:
 		# get the input direction for movement
 		var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 
+		# set the player's velocity
+		player.velocity = input_direction * player.speed
+
 		# move the player and retrieve if any collisions occured
-		var player_collision = move_player(input_direction)
+		var player_collision = player.move_and_slide()
 
 		# if a collision occurred during movement, process each collision
 		if (player_collision):

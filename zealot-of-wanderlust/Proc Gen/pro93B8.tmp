@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://Proc Gen/staircase_tilemap_layer.gd" id="7_w8t8j"]
 [ext_resource type="Texture2D" uid="uid://lfbu6udkpv3f" path="res://Assets/rogues.png" id="8_6mb0v"]
 [ext_resource type="Script" path="res://Proc Gen/door_tilemap_layer.gd" id="8_gloib"]
-[ext_resource type="Script" path="res://Proc Gen/proc_gen_player.gd" id="8_rtipn"]
+[ext_resource type="Script" path="res://Proc Gen/player.gd" id="8_rtipn"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fg6tr"]
 texture = ExtResource("4_ay2sl")
