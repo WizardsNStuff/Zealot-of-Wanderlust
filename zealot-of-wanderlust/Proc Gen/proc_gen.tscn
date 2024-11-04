@@ -112,30 +112,25 @@ sources/3 = SubResource("TileSetAtlasSource_8jxqj")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7hbav"]
 size = Vector2(13, 27)
 
-[node name="ProcGen" type="Node" node_paths=PackedStringArray("proc_gen_data", "floor_tilemap_layer", "wall_tilemap_layer", "staircase_tilemap_layer", "door_tilemap_layer", "doors", "player")]
+[node name="ProcGen" type="Node" node_paths=PackedStringArray("proc_gen_data", "player")]
 script = ExtResource("1_5ancx")
 proc_gen_data = NodePath("ProcGenData")
-floor_tilemap_layer = NodePath("Floor")
-wall_tilemap_layer = NodePath("Wall")
-staircase_tilemap_layer = NodePath("Staircase")
-door_tilemap_layer = NodePath("Door")
-doors = NodePath("Doors")
 player = NodePath("Player")
 
-[node name="ProcGenData" type="Node" parent="."]
+[node name="ProcGenData" type="Node" parent="." node_paths=PackedStringArray("floor_tilemap_layer", "wall_tilemap_layer", "staircase_tilemap_layer", "door_tilemap_layer", "doors_root_node")]
 script = ExtResource("2_fqe3b")
+floor_tilemap_layer = NodePath("../Floor")
+wall_tilemap_layer = NodePath("../Wall")
+staircase_tilemap_layer = NodePath("../Staircase")
+door_tilemap_layer = NodePath("../Door")
+doors_root_node = NodePath("../Doors")
 room_iterations = 500
 room_walk_length = 20
 room_start_randomly_each_iteration = false
-corridor_walk_length = 25
-corridor_amount = 8
-room_amount_percent = 1.0
 min_room_width = 20
 min_room_height = 20
 dungeon_width = 80
 dungeon_height = 80
-room_offset = 3
-random_walk_room = true
 
 [node name="ProcGenView" type="CanvasLayer" parent="." node_paths=PackedStringArray("proc_gen_controller", "start_btn", "key_btn")]
 script = ExtResource("3_2tjgd")
