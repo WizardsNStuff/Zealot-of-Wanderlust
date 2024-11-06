@@ -735,19 +735,52 @@ func handle_door_collision(collider : Object) -> void:
 		# set key flag to false after use
 		proc_gen_data.has_key = false
 
+func handle_input() -> void:
+	# get the input direction for movement
+	var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+
+	# set the player's velocity
+	player.velocity = input_direction * player.speed
+
+	if Input.is_action_just_pressed("attack"):
+		attack()
+
+func attack() -> void:
+		player.animations.play("attack_" + player.last_animation_direction)
+		player.is_attacking = true
+		player.weapon.visible = true
+		await player.animations.animation_finished
+		player.is_attacking = false
+		player.weapon.visible = false
+
+func update_animation() -> void:
+	if player.is_attacking : return
+
+	if player.velocity == Vector2.ZERO:
+		if player.animations.is_playing():
+			player.animations.stop()
+	else:
+
+		var direction : String = "down"
+
+		if player.velocity.x < 0: direction = "left"
+		elif player.velocity.x > 0: direction = "right"
+		elif player.velocity.y < 0: direction = "up"
+
+		#player.animations.play("walk_" + direction)
+		player.last_animation_direction = direction
+
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
 	if proc_gen_data.dungeon_created:
 
-		# get the input direction for movement
-		var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-
-		# set the player's velocity
-		player.velocity = input_direction * player.speed
+		handle_input()
 
 		# move the player and retrieve if any collisions occured
 		var player_collision = player.move_and_slide()
+
+		update_animation()
 
 		# if a collision occurred during movement, process each collision
 		if (player_collision):
