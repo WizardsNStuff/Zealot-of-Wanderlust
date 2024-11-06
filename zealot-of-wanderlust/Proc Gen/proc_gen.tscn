@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ttowgqc8xgke"]
+[gd_scene load_steps=18 format=3 uid="uid://ttowgqc8xgke"]
 
 [ext_resource type="Script" path="res://Proc Gen/proc_gen_controller.gd" id="1_5ancx"]
 [ext_resource type="Script" path="res://Proc Gen/proc_gen_data.gd" id="2_fqe3b"]
@@ -7,9 +7,8 @@
 [ext_resource type="Script" path="res://Proc Gen/floor_tilemap_layer.gd" id="5_r24de"]
 [ext_resource type="Script" path="res://Proc Gen/wall_tilemap_layer.gd" id="6_h0tht"]
 [ext_resource type="Script" path="res://Proc Gen/staircase_tilemap_layer.gd" id="7_w8t8j"]
-[ext_resource type="Texture2D" uid="uid://lfbu6udkpv3f" path="res://Assets/rogues.png" id="8_6mb0v"]
 [ext_resource type="Script" path="res://Proc Gen/door_tilemap_layer.gd" id="8_gloib"]
-[ext_resource type="Script" path="res://Proc Gen/proc_gen_player.gd" id="8_rtipn"]
+[ext_resource type="PackedScene" uid="uid://bh27mhrshrtua" path="res://Proc Gen/proc_gen_player.tscn" id="9_2lm77"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fg6tr"]
 texture = ExtResource("4_ay2sl")
@@ -109,9 +108,6 @@ tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/3 = SubResource("TileSetAtlasSource_8jxqj")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7hbav"]
-size = Vector2(13, 27)
-
 [node name="ProcGen" type="Node" node_paths=PackedStringArray("proc_gen_data", "player")]
 script = ExtResource("1_5ancx")
 proc_gen_data = NodePath("ProcGenData")
@@ -170,25 +166,8 @@ script = ExtResource("8_gloib")
 
 [node name="Doors" type="Node" parent="."]
 
-[node name="Player" type="CharacterBody2D" parent="."]
+[node name="Player" parent="." instance=ExtResource("9_2lm77")]
 visible = false
-floor_constant_speed = true
-platform_on_leave = 2
-script = ExtResource("8_rtipn")
-speed = 200
-
-[node name="Sprite2D" type="Sprite2D" parent="Player"]
-texture = ExtResource("8_6mb0v")
-hframes = 6
-vframes = 7
-frame = 25
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-position = Vector2(-0.5, 1.5)
-shape = SubResource("RectangleShape2D_7hbav")
-
-[node name="Camera2D" type="Camera2D" parent="Player"]
-zoom = Vector2(0.25, 0.25)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.25, 0.25)
