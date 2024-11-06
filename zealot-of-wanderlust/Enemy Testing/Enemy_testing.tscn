@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://k3ovcuealf77"]
+
+[ext_resource type="Texture2D" uid="uid://lfbu6udkpv3f" path="res://Assets/rogues.png" id="1_8tpu0"]
+[ext_resource type="Script" path="res://Enemy Testing/player.gd" id="1_pa4rq"]
+[ext_resource type="PackedScene" uid="uid://d3xseqrxnwvjh" path="res://Enemy Testing/enemy_1.tscn" id="3_ocf5q"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kvrhi"]
+radius = 14.0357
+
+[node name="Node2D" type="Node2D"]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+collision_layer = 3
+script = ExtResource("1_pa4rq")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+texture = ExtResource("1_8tpu0")
+region_enabled = true
+region_rect = Rect2(31.2087, 128.17, 33.2563, 32.9695)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("CircleShape2D_kvrhi")
+
+[node name="Enemy1" parent="." instance=ExtResource("3_ocf5q")]
+position = Vector2(-98, -45)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+visible = false
