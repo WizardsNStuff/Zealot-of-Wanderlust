@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://ttowgqc8xgke"]
+[gd_scene load_steps=19 format=3 uid="uid://ttowgqc8xgke"]
 
 [ext_resource type="Script" path="res://Proc Gen/proc_gen_controller.gd" id="1_5ancx"]
 [ext_resource type="Script" path="res://Proc Gen/proc_gen_data.gd" id="2_fqe3b"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://Proc Gen/staircase_tilemap_layer.gd" id="7_w8t8j"]
 [ext_resource type="Script" path="res://Proc Gen/door_tilemap_layer.gd" id="8_gloib"]
 [ext_resource type="PackedScene" uid="uid://bh27mhrshrtua" path="res://Proc Gen/proc_gen_player.tscn" id="9_2lm77"]
+[ext_resource type="AudioStream" uid="uid://6mut3ae27vk1" path="res://cloaks_daggers.mp3" id="10_s8tip"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fg6tr"]
 texture = ExtResource("4_ay2sl")
@@ -171,3 +172,7 @@ visible = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.25, 0.25)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_s8tip")
+autoplay = true
