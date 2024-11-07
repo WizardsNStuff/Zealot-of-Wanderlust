@@ -6,6 +6,9 @@ class_name View
 func _ready() -> void:
 	pass
 
+func start_level() -> void:
+	controller.start_level()
+	$MainMenu.hide()
 
 func _process(delta: float) -> void:
 	pass

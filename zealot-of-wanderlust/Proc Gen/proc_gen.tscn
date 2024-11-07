@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://bh27mhrshrtua" path="res://Proc Gen/proc_gen_player.tscn" id="9_2lm77"]
 [ext_resource type="AudioStream" uid="uid://6mut3ae27vk1" path="res://cloaks_daggers.mp3" id="10_s8tip"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fg6tr"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_cn1vb"]
 texture = ExtResource("4_ay2sl")
 texture_region_size = Vector2i(32, 32)
 0:6/0 = 0
@@ -53,9 +53,9 @@ texture_region_size = Vector2i(32, 32)
 
 [sub_resource type="TileSet" id="TileSet_en0rj"]
 tile_size = Vector2i(32, 32)
-sources/0 = SubResource("TileSetAtlasSource_fg6tr")
+sources/0 = SubResource("TileSetAtlasSource_cn1vb")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kgwo0"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_alw8h"]
 texture = ExtResource("4_ay2sl")
 texture_region_size = Vector2i(32, 32)
 0:0/0 = 0
@@ -77,9 +77,9 @@ texture_region_size = Vector2i(32, 32)
 [sub_resource type="TileSet" id="TileSet_o8cbx"]
 tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
-sources/1 = SubResource("TileSetAtlasSource_kgwo0")
+sources/1 = SubResource("TileSetAtlasSource_alw8h")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8kxg4"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dknic"]
 texture = ExtResource("4_ay2sl")
 texture_region_size = Vector2i(32, 32)
 7:16/0 = 0
@@ -90,9 +90,9 @@ texture_region_size = Vector2i(32, 32)
 [sub_resource type="TileSet" id="TileSet_oibp5"]
 tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
-sources/2 = SubResource("TileSetAtlasSource_8kxg4")
+sources/2 = SubResource("TileSetAtlasSource_dknic")
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8jxqj"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ghj3j"]
 texture = ExtResource("4_ay2sl")
 texture_region_size = Vector2i(32, 32)
 0:16/0 = 0
@@ -107,7 +107,7 @@ texture_region_size = Vector2i(32, 32)
 [sub_resource type="TileSet" id="TileSet_redgw"]
 tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
-sources/3 = SubResource("TileSetAtlasSource_8jxqj")
+sources/3 = SubResource("TileSetAtlasSource_ghj3j")
 
 [node name="ProcGen" type="Node" node_paths=PackedStringArray("proc_gen_data", "player")]
 script = ExtResource("1_5ancx")

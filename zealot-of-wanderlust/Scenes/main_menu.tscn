@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://m28273i40xcl"]
+[gd_scene load_steps=5 format=3 uid="uid://bsx3epajnt7ak"]
 
 [ext_resource type="FontFile" uid="uid://dguq661xgdfvr" path="res://Assets/Geizer.otf" id="1_4tm8v"]
 [ext_resource type="Script" path="res://Scripts/main_menu.gd" id="1_gfkys"]
