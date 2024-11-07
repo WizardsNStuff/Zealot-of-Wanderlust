@@ -5,7 +5,7 @@ var attack_range = 28
 # this variable is kinda useless but without it the main_damage_cooldown felt useless so
 var cooldown = 0
 # the file path for this will obv change once we get everything hooked up to MVC
-@onready var player = $"../CharacterBody2D"
+@export var player : ProcGenPlayer
 
 func _ready() -> void:
 	### Declaring attributes from GameCharacterScript ###
