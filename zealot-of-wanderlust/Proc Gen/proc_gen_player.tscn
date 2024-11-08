@@ -161,8 +161,10 @@ _data = {
 }
 
 [node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations", "weapon")]
+motion_mode = 1
 floor_constant_speed = true
 platform_on_leave = 2
+platform_floor_layers = 4294967041
 script = ExtResource("1_fdof0")
 animations = NodePath("AnimationPlayer")
 weapon = NodePath("Weapon")

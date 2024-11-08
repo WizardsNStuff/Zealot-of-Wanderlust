@@ -5,13 +5,11 @@ var speed = 75
 var attack_range = 28
 var cooldown = 0
 var score = 100
-# the file path for this will obv change once we get everything hooked up to MVC
-@export var player : ProcGenPlayer
 
+@export var player : ProcGenPlayer
 @export var controller : Controller
 
 func _ready() -> void:
-	
 	### Declaring attributes from GameCharacterScript ###
 	health = 100
 	defense = 20
@@ -38,9 +36,15 @@ func canEnemyHit() -> bool:
 
 func _physics_process(delta: float) -> void:
 	# move towards player with normalized direction
-	position += (player.position - position).normalized() * speed * delta
+	var direction_to_player = (player.position - self.position).normalized()
 	
-	var distance_to_player = position.distance_to(player.position)
+	self.velocity = direction_to_player * speed
+	
+	move_and_slide()
+	
+	#position += (player.position - position).normalized() * speed * delta
+	
+	#var distance_to_player = position.distance_to(player.position)
 	
 	# if enemy is close enough to the player then deal damage
 	#if distance_to_player <= attack_range:
