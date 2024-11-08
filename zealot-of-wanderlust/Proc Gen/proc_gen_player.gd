@@ -12,7 +12,7 @@ var original_health : float
 
 @export var animations : AnimationPlayer
 
-@export var weapon : Node2D
+@export var weapon : Weapon
 
 var last_animation_direction : String = "down"
 

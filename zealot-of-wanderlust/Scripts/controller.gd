@@ -815,10 +815,12 @@ func handle_input() -> void:
 func attack() -> void:
 		player.animations.play("attack_" + player.last_animation_direction)
 		player.is_attacking = true
-		player.weapon.visible = true
+		player.weapon.current_weapon.visible = true
+		player.weapon.current_weapon.hitbox.disabled = false
 		await player.animations.animation_finished
+		player.weapon.current_weapon.visible = false
+		player.weapon.current_weapon.hitbox.disabled = true
 		player.is_attacking = false
-		player.weapon.visible = false
 
 func update_animation() -> void:
 	if player.is_attacking : return
