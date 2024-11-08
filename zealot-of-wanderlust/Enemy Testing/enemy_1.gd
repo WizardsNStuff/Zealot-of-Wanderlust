@@ -4,8 +4,11 @@ class_name Enemy
 var speed = 75
 var attack_range = 28
 var cooldown = 0
+var score = 100
 # the file path for this will obv change once we get everything hooked up to MVC
 @export var player : ProcGenPlayer
+
+@export var controller : Controller
 
 func _ready() -> void:
 	
@@ -18,6 +21,7 @@ func _ready() -> void:
 func take_damage(damage_amount : float) -> void:
 	health -= damage_amount
 	if health <= 0:
+		controller.update_score(score)
 		queue_free()
 
 func startCooldown(delta: float) -> void:

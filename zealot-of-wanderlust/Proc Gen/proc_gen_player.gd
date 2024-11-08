@@ -6,6 +6,8 @@ class_name ProcGenPlayer
 @export var health : float = 200
 var original_health : float
 
+@export var score : float = 0
+
 @export var damage : float = 10
 
 @export var animations : AnimationPlayer

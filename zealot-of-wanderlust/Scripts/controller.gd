@@ -122,6 +122,7 @@ func start_level() -> void:
 				player.visible = true
 				
 				view.health_label.visible = true
+				view.score_label.visible = true
 
 				# mark the dungeon generation as successful
 				proc_gen_data.dungeon_created = true
@@ -842,7 +843,7 @@ func get_random_tile_in_room(room_node : RoomNode) -> Vector2i:
 
 func player_take_damage(damage_amount : float) -> void:
 	player.health -= damage_amount
-	print("player health: " + str(player.health))
+	#print("player health: " + str(player.health))
 	if player.health <= 0:
 		player.health = 0
 		view.health_label.text = "Health: " + str(player.health)
@@ -859,6 +860,7 @@ func spawn_enemies_in_room(room_node : RoomNode):
 	var enemy = model.basic_enemy.instantiate()
 	enemy.position = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile)
 	enemy.player = player
+	enemy.controller = self
 	model.enemy_spawner.add_child(enemy)
 
 func quit_game() -> void:
@@ -867,6 +869,12 @@ func quit_game() -> void:
 func play_again() -> void:
 	player.health = player.original_health
 	view.health_label.text = "Health: " + str(player.health)
+	player.score = 0
+	view.score_label.text = "Health: " + str(player.score)
+
+func update_score(score_amount : float) -> void:
+	player.score += score_amount
+	view.score_label.text = "Score: " + str(player.score)
 
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
