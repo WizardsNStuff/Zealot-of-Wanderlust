@@ -5,6 +5,8 @@ class_name Controller
 #var player : Player
 var enemies : Array[Enemy]
 
+@export var view : View
+
 func _ready() -> void:
 	model = $Model
 	#player = model.player
@@ -118,6 +120,9 @@ func start_level() -> void:
 
 				# make the player visible
 				player.visible = true
+				
+				view.health_label.visible = true
+				view.score_label.visible = true
 
 				# mark the dungeon generation as successful
 				proc_gen_data.dungeon_created = true
@@ -810,10 +815,12 @@ func handle_input() -> void:
 func attack() -> void:
 		player.animations.play("attack_" + player.last_animation_direction)
 		player.is_attacking = true
-		player.weapon.visible = true
+		player.weapon.current_weapon.visible = true
+		player.weapon.current_weapon.hitbox.disabled = false
 		await player.animations.animation_finished
+		player.weapon.current_weapon.visible = false
+		player.weapon.current_weapon.hitbox.disabled = true
 		player.is_attacking = false
-		player.weapon.visible = false
 
 func update_animation() -> void:
 	if player.is_attacking : return
@@ -838,15 +845,16 @@ func get_random_tile_in_room(room_node : RoomNode) -> Vector2i:
 
 func player_take_damage(damage_amount : float) -> void:
 	player.health -= damage_amount
+	#print("player health: " + str(player.health))
 	if player.health <= 0:
 		player.health = 0
+		view.health_label.text = "Health: " + str(player.health)
 		game_over()
-	# TODO : UPDATE PLAYER HEALTH LABEL
+	view.health_label.text = "Health: " + str(player.health)
 
 func game_over() -> void:
 	proc_gen_data.dungeon_created = false
-	# TODO : LOAD GAMEOVER SCENE
-	print("GAME OVER")
+	view.game_over()
 
 func spawn_enemies_in_room(room_node : RoomNode):
 	var random_tile : Vector2i = get_random_tile_in_room(room_node)
@@ -854,7 +862,21 @@ func spawn_enemies_in_room(room_node : RoomNode):
 	var enemy = model.basic_enemy.instantiate()
 	enemy.position = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile)
 	enemy.player = player
+	enemy.controller = self
 	model.enemy_spawner.add_child(enemy)
+
+func quit_game() -> void:
+	get_tree().quit()
+
+func play_again() -> void:
+	player.health = player.original_health
+	view.health_label.text = "Health: " + str(player.health)
+	player.score = 0
+	view.score_label.text = "Health: " + str(player.score)
+
+func update_score(score_amount : float) -> void:
+	player.score += score_amount
+	view.score_label.text = "Score: " + str(player.score)
 
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
@@ -884,7 +906,10 @@ func _physics_process(delta: float) -> void:
 				var collider_name = collider.name
 
 				if (collider is Enemy):
-					player_take_damage(collider.main_damage)
+					collider.startCooldown(delta)
+					#print("collider test: " + str(collider.cooldown))
+					if (collider.canEnemyHit() == true):
+						player_take_damage(collider.main_damage)
 
 				# check if the collision is with a door
 				if (collider_name.contains("Door")):

@@ -1,15 +1,12 @@
 extends Control
+class_name GameOver
 
 @export var view : View
-@export var start_btn : Button
+@export var play_again_btn : Button
 @export var quit_btn : Button
+@export var score_label : Label
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	start_btn.pressed.connect(view.start_level)
+	play_again_btn.pressed.connect(view.play_again)
 	quit_btn.pressed.connect(view.quit_game)
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass

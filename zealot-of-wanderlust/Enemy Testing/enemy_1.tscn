@@ -7,6 +7,9 @@
 radius = 12.0
 
 [node name="Enemy1" type="CharacterBody2D"]
+motion_mode = 1
+platform_on_leave = 2
+platform_floor_layers = 4294967041
 script = ExtResource("1_n3po6")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

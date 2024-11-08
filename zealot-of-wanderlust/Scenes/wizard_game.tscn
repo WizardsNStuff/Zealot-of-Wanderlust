@@ -111,8 +111,10 @@ tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/3 = SubResource("TileSetAtlasSource_wvxqh")
 
-[node name="WizardGame" type="Node" node_paths=PackedStringArray("proc_gen_data", "player")]
+[node name="WizardGame" type="Node" node_paths=PackedStringArray("model", "view", "proc_gen_data", "player")]
 script = ExtResource("1_hhabl")
+model = NodePath("Model")
+view = NodePath("View")
 proc_gen_data = NodePath("ProcGenData")
 player = NodePath("Player")
 
