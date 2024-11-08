@@ -838,6 +838,7 @@ func get_random_tile_in_room(room_node : RoomNode) -> Vector2i:
 
 func player_take_damage(damage_amount : float) -> void:
 	player.health -= damage_amount
+	print("player health: " + str(player.health))
 	if player.health <= 0:
 		player.health = 0
 		game_over()
@@ -884,7 +885,10 @@ func _physics_process(delta: float) -> void:
 				var collider_name = collider.name
 
 				if (collider is Enemy):
-					player_take_damage(collider.main_damage)
+					collider.startCooldown(delta)
+					#print("collider test: " + str(collider.cooldown))
+					if (collider.canEnemyHit() == true):
+						player_take_damage(collider.main_damage)
 
 				# check if the collision is with a door
 				if (collider_name.contains("Door")):

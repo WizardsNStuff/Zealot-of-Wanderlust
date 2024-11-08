@@ -3,7 +3,6 @@ class_name Enemy
 
 var speed = 75
 var attack_range = 28
-# this variable is kinda useless but without it the main_damage_cooldown felt useless so
 var cooldown = 0
 # the file path for this will obv change once we get everything hooked up to MVC
 @export var player : ProcGenPlayer
@@ -21,7 +20,16 @@ func take_damage(damage_amount : float) -> void:
 	if health <= 0:
 		queue_free()
 
+func startCooldown(delta: float) -> void:
+	if cooldown > 0:
+		cooldown -= delta
 
+func canEnemyHit() -> bool:
+	if cooldown <= 0:
+		cooldown = main_damage_cooldown
+		return true
+	else:
+		return false
 
 
 func _physics_process(delta: float) -> void:
@@ -31,13 +39,13 @@ func _physics_process(delta: float) -> void:
 	var distance_to_player = position.distance_to(player.position)
 	
 	# if enemy is close enough to the player then deal damage
-	if distance_to_player <= attack_range:
-		if cooldown <= 0:
+	#if distance_to_player <= attack_range:
+		#if cooldown <= 0:
 			#print("enemy is doing damage")
-			# deal damage to player code would go here
-			cooldown = main_damage_cooldown
-
-	
-	# decrease the cooldown timer each frame
-	if cooldown > 0:
-		cooldown -= delta
+			## deal damage to player code would go here
+			#cooldown = main_damage_cooldown
+#
+	#
+	## decrease the cooldown timer each frame
+	#if cooldown > 0:
+		#cooldown -= delta
