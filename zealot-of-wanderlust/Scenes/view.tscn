@@ -9,16 +9,19 @@
 font = ExtResource("4_x16ur")
 font_size = 25
 
-[node name="View" type="CanvasLayer"]
+[node name="View" type="CanvasLayer" node_paths=PackedStringArray("health_label")]
 script = ExtResource("1_yc6w3")
+health_label = NodePath("Health")
 
 [node name="MainMenu" parent="." node_paths=PackedStringArray("view") instance=ExtResource("2_v62gn")]
 view = NodePath("..")
 
-[node name="GameOver" parent="." instance=ExtResource("3_vdvbm")]
+[node name="GameOver" parent="." node_paths=PackedStringArray("view") instance=ExtResource("3_vdvbm")]
 visible = false
+view = NodePath("..")
 
-[node name="Label" type="Label" parent="."]
+[node name="Health" type="Label" parent="."]
+visible = false
 offset_right = 40.0
 offset_bottom = 23.0
 text = "Health: 200"

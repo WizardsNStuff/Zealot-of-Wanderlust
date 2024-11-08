@@ -5,6 +5,8 @@ class_name Controller
 #var player : Player
 var enemies : Array[Enemy]
 
+@export var view : View
+
 func _ready() -> void:
 	model = $Model
 	#player = model.player
@@ -118,6 +120,8 @@ func start_level() -> void:
 
 				# make the player visible
 				player.visible = true
+				
+				view.health_label.visible = true
 
 				# mark the dungeon generation as successful
 				proc_gen_data.dungeon_created = true
@@ -841,13 +845,13 @@ func player_take_damage(damage_amount : float) -> void:
 	print("player health: " + str(player.health))
 	if player.health <= 0:
 		player.health = 0
+		view.health_label.text = "Health: " + str(player.health)
 		game_over()
-	# TODO : UPDATE PLAYER HEALTH LABEL
+	view.health_label.text = "Health: " + str(player.health)
 
 func game_over() -> void:
 	proc_gen_data.dungeon_created = false
-	# TODO : LOAD GAMEOVER SCENE
-	print("GAME OVER")
+	view.game_over()
 
 func spawn_enemies_in_room(room_node : RoomNode):
 	var random_tile : Vector2i = get_random_tile_in_room(room_node)
@@ -856,6 +860,13 @@ func spawn_enemies_in_room(room_node : RoomNode):
 	enemy.position = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile)
 	enemy.player = player
 	model.enemy_spawner.add_child(enemy)
+
+func quit_game() -> void:
+	get_tree().quit()
+
+func play_again() -> void:
+	player.health = player.original_health
+	view.health_label.text = "Health: " + str(player.health)
 
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:

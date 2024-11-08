@@ -15,7 +15,7 @@ shadow_size = 25
 shadow_color = Color(0.75855, 0.799605, 0.907602, 0.109804)
 shadow_offset = Vector2(-1, 0)
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("start_btn", "quit_btn")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,6 +23,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_gfkys")
+start_btn = NodePath("MarginContainer/VBoxContainer/StartBtn")
+quit_btn = NodePath("MarginContainer/VBoxContainer/StartBtn3")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2

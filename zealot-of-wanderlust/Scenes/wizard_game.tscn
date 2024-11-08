@@ -10,7 +10,7 @@
 [ext_resource type="Script" path="res://Proc Gen/wall_tilemap_layer.gd" id="6_0ngi0"]
 [ext_resource type="Script" path="res://Proc Gen/staircase_tilemap_layer.gd" id="7_6egnp"]
 [ext_resource type="Script" path="res://Proc Gen/door_tilemap_layer.gd" id="8_vopyf"]
-[ext_resource type="PackedScene" path="res://Proc Gen/proc_gen_player.tscn" id="9_sf7b2"]
+[ext_resource type="PackedScene" uid="uid://bh27mhrshrtua" path="res://Proc Gen/proc_gen_player.tscn" id="9_sf7b2"]
 [ext_resource type="AudioStream" uid="uid://6mut3ae27vk1" path="res://cloaks_daggers.mp3" id="10_3fdig"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d76g3"]
@@ -111,8 +111,10 @@ tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/3 = SubResource("TileSetAtlasSource_wvxqh")
 
-[node name="WizardGame" type="Node" node_paths=PackedStringArray("proc_gen_data", "player")]
+[node name="WizardGame" type="Node" node_paths=PackedStringArray("model", "view", "proc_gen_data", "player")]
 script = ExtResource("1_hhabl")
+model = NodePath("Model")
+view = NodePath("View")
 proc_gen_data = NodePath("ProcGenData")
 player = NodePath("Player")
 
