@@ -1,6 +1,7 @@
 # Zealot-of-Wanderlust
 
 WASD - Move Player
+
 Space - Swing Sword
 
 The doors unlock once all enemies have spawned within the room.
