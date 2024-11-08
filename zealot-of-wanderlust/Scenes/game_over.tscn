@@ -1,0 +1,59 @@
+[gd_scene load_steps=3 format=3 uid="uid://bu75n3pwlpxd4"]
+
+[ext_resource type="FontFile" uid="uid://dguq661xgdfvr" path="res://Assets/Geizer.otf" id="1_rsv4x"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_y4g0n"]
+line_spacing = 5.0
+font = ExtResource("1_rsv4x")
+font_size = 125
+font_color = Color(0.47451, 0, 0, 1)
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 25
+shadow_color = Color(0, 0, 0, 0.352941)
+shadow_offset = Vector2(-1, 0)
+
+[node name="GameOver" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
+offset_right = 1277.0
+offset_bottom = 719.0
+color = Color(0.0745098, 0, 0, 0.631373)
+
+[node name="Label" type="Label" parent="."]
+offset_left = 1.0
+offset_top = 9.0
+offset_right = 1276.0
+offset_bottom = 117.0
+text = "GAME over"
+label_settings = SubResource("LabelSettings_y4g0n")
+horizontal_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 0
+offset_right = 1283.0
+offset_bottom = 723.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 75
+alignment = 2
+
+[node name="PlayBtn" type="Button" parent="CenterContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_rsv4x")
+theme_override_font_sizes/font_size = 75
+text = "Play Again"
+
+[node name="QuitBtn" type="Button" parent="CenterContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_rsv4x")
+theme_override_font_sizes/font_size = 75
+text = "Quit"

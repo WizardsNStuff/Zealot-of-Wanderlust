@@ -10,7 +10,7 @@
 [ext_resource type="Script" path="res://Proc Gen/wall_tilemap_layer.gd" id="6_0ngi0"]
 [ext_resource type="Script" path="res://Proc Gen/staircase_tilemap_layer.gd" id="7_6egnp"]
 [ext_resource type="Script" path="res://Proc Gen/door_tilemap_layer.gd" id="8_vopyf"]
-[ext_resource type="PackedScene" uid="uid://bh27mhrshrtua" path="res://Proc Gen/proc_gen_player.tscn" id="9_sf7b2"]
+[ext_resource type="PackedScene" path="res://Proc Gen/proc_gen_player.tscn" id="9_sf7b2"]
 [ext_resource type="AudioStream" uid="uid://6mut3ae27vk1" path="res://cloaks_daggers.mp3" id="10_3fdig"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d76g3"]
