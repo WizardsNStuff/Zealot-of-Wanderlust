@@ -22,6 +22,8 @@ func take_damage(damage_amount : float) -> void:
 		queue_free()
 
 
+
+
 func _physics_process(delta: float) -> void:
 	# move towards player with normalized direction
 	position += (player.position - position).normalized() * speed * delta
@@ -31,7 +33,7 @@ func _physics_process(delta: float) -> void:
 	# if enemy is close enough to the player then deal damage
 	if distance_to_player <= attack_range:
 		if cooldown <= 0:
-			print("enemy is doing damage")
+			#print("enemy is doing damage")
 			# deal damage to player code would go here
 			cooldown = main_damage_cooldown
 
