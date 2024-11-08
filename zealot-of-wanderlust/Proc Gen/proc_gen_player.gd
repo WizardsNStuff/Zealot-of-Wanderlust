@@ -3,6 +3,8 @@ class_name ProcGenPlayer
 
 @export var speed = 200
 
+@export var damage : float = 10
+
 @export var animations : AnimationPlayer
 
 @export var weapon : Node2D

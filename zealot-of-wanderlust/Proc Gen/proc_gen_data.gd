@@ -47,6 +47,8 @@ var dungeon_created : bool = false
 
 var generated_rooms : Array = []
 
+var current_room
+
 var exit_location : Vector2i = Vector2i()
 
 var has_key : bool = false

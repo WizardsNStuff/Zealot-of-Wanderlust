@@ -171,8 +171,11 @@ script = ExtResource("8_vopyf")
 
 [node name="Doors" type="Node" parent="."]
 
+[node name="EnemySpawner" type="Node" parent="."]
+
+[node name="Timers" type="Node" parent="."]
+
 [node name="Player" parent="." instance=ExtResource("9_sf7b2")]
-visible = false
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.25, 0.25)
@@ -182,7 +185,9 @@ stream = ExtResource("10_3fdig")
 volume_db = -15.0
 autoplay = true
 
-[node name="Model" parent="." instance=ExtResource("2_4gxgj")]
+[node name="Model" parent="." node_paths=PackedStringArray("enemy_spawner", "timers") instance=ExtResource("2_4gxgj")]
+enemy_spawner = NodePath("../EnemySpawner")
+timers = NodePath("../Timers")
 enemies = []
 
 [node name="View" parent="." node_paths=PackedStringArray("controller") instance=ExtResource("3_eky8r")]

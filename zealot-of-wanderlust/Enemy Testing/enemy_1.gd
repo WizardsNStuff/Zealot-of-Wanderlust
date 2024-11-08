@@ -1,4 +1,5 @@
 extends GameCharacter
+class_name Enemy
 
 var speed = 75
 var attack_range = 28
@@ -8,11 +9,18 @@ var cooldown = 0
 @export var player : ProcGenPlayer
 
 func _ready() -> void:
+	
 	### Declaring attributes from GameCharacterScript ###
 	health = 100
 	defense = 20
 	main_damage = 15
 	main_damage_cooldown = 3.5
+
+func take_damage(damage_amount : float) -> void:
+	health -= damage_amount
+	if health <= 0:
+		queue_free()
+
 
 func _physics_process(delta: float) -> void:
 	# move towards player with normalized direction
