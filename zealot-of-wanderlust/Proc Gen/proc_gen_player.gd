@@ -3,6 +3,10 @@ class_name ProcGenPlayer
 
 @export var speed = 200
 
+@export var health : float = 200
+
+@export var damage : float = 10
+
 @export var animations : AnimationPlayer
 
 @export var weapon : Node2D
@@ -10,3 +14,4 @@ class_name ProcGenPlayer
 var last_animation_direction : String = "down"
 
 var is_attacking : bool = false
+	

@@ -73,8 +73,13 @@ func start_level() -> void:
 	# reset the procedural generation initalization data
 	proc_gen_data.dungeon_created = false
 	proc_gen_data.generated_rooms = []
+	proc_gen_data.current_room = null
 	proc_gen_data.exit_location = Vector2i()
 	proc_gen_data.has_key = false
+	for child in model.enemy_spawner.get_children(true):
+		child.queue_free()
+	for child in model.timers.get_children(true):
+		child.queue_free()
 
 	# array to hole all the room nodes
 	var room_nodes : Array[RoomNode] = []
@@ -84,6 +89,7 @@ func start_level() -> void:
 
 	# if the generation does not pass evaluation, retry
 	if (!valid_generation):
+		#print("retry")
 		start_level()
 		return
 
@@ -116,6 +122,26 @@ func start_level() -> void:
 				# mark the dungeon generation as successful
 				proc_gen_data.dungeon_created = true
 
+				proc_gen_data.current_room = room_node
+
+				model.spawn_timer = Timer.new()
+				model.timers.add_child(model.spawn_timer)
+				model.spawn_timer.wait_time = model.spawn_interval
+				model.spawn_timer.one_shot = false
+				model.spawn_timer.stop()
+				model.spawn_timer.timeout.connect(spawn_enemies_in_room.bind(room_node))
+
+				model.stop_timer = Timer.new()
+				model.timers.add_child(model.stop_timer)
+				model.stop_timer.wait_time = model.spawn_duration
+				model.stop_timer.one_shot = true
+				model.stop_timer.stop()
+				model.stop_timer.timeout.connect(enemy_spawning_finished)
+
+				model.stop_timer.start()
+				model.spawn_timer.start()
+				
+				
 				break
 
 # clears all the tiles on the screen
@@ -754,6 +780,22 @@ func handle_door_collision(collider : Object) -> void:
 		collider.queue_free()
 		# set key flag to false after use
 		proc_gen_data.has_key = false
+		
+		if (proc_gen_data.current_room.next_room != null):
+			proc_gen_data.current_room = proc_gen_data.current_room.next_room
+			
+			model.spawn_timer.stop()
+			model.spawn_timer.disconnect("timeout", spawn_enemies_in_room)
+			model.spawn_timer.timeout.connect(spawn_enemies_in_room.bind(proc_gen_data.current_room))
+			model.stop_timer.stop()
+			model.stop_timer.start()
+			model.spawn_timer.start()
+		
+
+func enemy_spawning_finished() -> void:
+	model.stop_timer.stop()
+	model.spawn_timer.stop()
+	give_player_key()
 
 func handle_input() -> void:
 	# get the input direction for movement
@@ -790,6 +832,30 @@ func update_animation() -> void:
 		#player.animations.play("walk_" + direction)
 		player.last_animation_direction = direction
 
+func get_random_tile_in_room(room_node : RoomNode) -> Vector2i:
+	randomize()
+	return room_node.room_tiles.keys().pick_random()
+
+func player_take_damage(damage_amount : float) -> void:
+	player.health -= damage_amount
+	if player.health <= 0:
+		player.health = 0
+		game_over()
+	# TODO : UPDATE PLAYER HEALTH LABEL
+
+func game_over() -> void:
+	proc_gen_data.dungeon_created = false
+	# TODO : LOAD GAMEOVER SCENE
+	print("GAME OVER")
+
+func spawn_enemies_in_room(room_node : RoomNode):
+	var random_tile : Vector2i = get_random_tile_in_room(room_node)
+	
+	var enemy = model.basic_enemy.instantiate()
+	enemy.position = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile)
+	enemy.player = player
+	model.enemy_spawner.add_child(enemy)
+
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
@@ -816,6 +882,9 @@ func _physics_process(delta: float) -> void:
 
 				# get the name of the collider
 				var collider_name = collider.name
+
+				if (collider is Enemy):
+					player_take_damage(collider.main_damage)
 
 				# check if the collision is with a door
 				if (collider_name.contains("Door")):
