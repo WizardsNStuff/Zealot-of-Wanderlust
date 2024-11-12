@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://bv08ievt7chkl"]
+
+[ext_resource type="Script" path="res://Enemy Testing/state_machine.gd" id="1_k3qcx"]
+[ext_resource type="Script" path="res://Enemy Testing/state_1.gd" id="2_0kdo0"]
+[ext_resource type="Script" path="res://Enemy Testing/state_2.gd" id="3_8514f"]
+
+[node name="StateMachine" type="Node"]
+script = ExtResource("1_k3qcx")
+
+[node name="State1" type="Node" parent="."]
+script = ExtResource("2_0kdo0")
+
+[node name="State2" type="Node" parent="."]
+script = ExtResource("3_8514f")
