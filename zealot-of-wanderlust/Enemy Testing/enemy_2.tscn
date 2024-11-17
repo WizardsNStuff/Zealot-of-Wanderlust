@@ -1,0 +1,44 @@
+[gd_scene load_steps=5 format=3 uid="uid://bwv3arxa4rs65"]
+
+[ext_resource type="Texture2D" uid="uid://ubj5y2wlu8ln" path="res://Assets/monsters.png" id="1_kw7yk"]
+[ext_resource type="Script" path="res://Enemy Testing/enemy_2.gd" id="1_x02qx"]
+[ext_resource type="PackedScene" uid="uid://8f6epsfntfhx" path="res://Enemy Testing/state_machine.tscn" id="4_3tx0e"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7n77i"]
+radius = 11.0454
+
+[node name="Enemy2" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 3
+motion_mode = 1
+script = ExtResource("1_x02qx")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_kw7yk")
+region_enabled = true
+region_rect = Rect2(227.806, 224.011, 26.9925, 30.7317)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_7n77i")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+debug_enabled = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[node name="StateMachine" parent="." instance=ExtResource("4_3tx0e")]
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(200, 0)
+collision_mask = 2
+
+[node name="Label" type="Label" parent="."]
+offset_left = -20.0
+offset_top = -38.0
+offset_right = 20.0
+offset_bottom = -15.0
+text = "TEST"
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
