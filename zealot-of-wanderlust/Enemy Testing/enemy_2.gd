@@ -8,7 +8,7 @@ const speed = 90
 @onready var state_machine = $StateMachine
 
 # Minotaur mechanic variables/states
-var charge_up_timer = 0.0
+var locked_on_player_timer = 0.0
 var rushing = false
 var last_known_dir = Vector2(0, 0)
 
@@ -18,6 +18,7 @@ var last_known_dir = Vector2(0, 0)
 # for like 1 whole second, then make the minotaur charge in a straight line
 # at the direction that was last known/recorded when that timer ran out
 func _physics_process(delta: float) -> void:
+	# enemy is pathfinding and moving with normal behaviour in this code block
 	if (rushing == false):
 		$Label.text = "Normal State"
 		var direction = to_local(nav_agent.get_next_path_position()).normalized()
@@ -28,18 +29,23 @@ func _physics_process(delta: float) -> void:
 		makepath()
 		move_and_slide()
 		
+		# add time when raycast collides with player so enemy can soon change states
 		if ($RayCast2D.is_colliding()):
-			charge_up_timer += delta
+			locked_on_player_timer += delta
 	
-	if (charge_up_timer >= 0.5):
+	
+	# TODO: add a cooldown so that it can't charge at player again for a bit
+	# enter rushing state: move to the last known direction at a fast speed
+	if (locked_on_player_timer >= 0.5):
 		$Label.text = "RUSH STATE!"
 		rushing = true
-		if (charge_up_timer >= 2.0):
+		# this is how we go back to the 'ready/normal' state
+		if (locked_on_player_timer >= 2.0):
 			rushing = false
-			charge_up_timer = 0.0
+			locked_on_player_timer = 0.0
 		velocity = last_known_dir * 300
 		move_and_slide()
-		charge_up_timer += delta
+		locked_on_player_timer += delta
 
 
 func makepath() -> void:
