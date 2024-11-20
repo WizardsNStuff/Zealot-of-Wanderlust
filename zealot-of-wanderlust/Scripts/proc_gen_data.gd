@@ -53,6 +53,8 @@ var exit_location : Vector2i = Vector2i()
 
 var has_key : bool = false
 
+enum ROOM_TYPE {DEFAULT, GOBLIN_LAIR, TROLL_TUNNEL, DRAGON_DEN}
+
 # length of each random walk step when generating corridors
 #@export var corridor_walk_length : int = 10
 
@@ -66,7 +68,6 @@ var has_key : bool = false
 #var start_position : Vector2i = Vector2i.ZERO
 
 #var dungeon_floor : int = 1
-#enum room_type { ENTRANCE, GOBLIN_LAIR, ORC_CAVE, TROLL_TUNNEL, DRAGON_DEN, EXIT}
 
 # offset subtracted from the width and height of the room's edges when generating rooms; 
 # makes the room smaller by 2 * offset

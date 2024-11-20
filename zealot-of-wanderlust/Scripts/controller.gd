@@ -38,7 +38,7 @@ class RoomNode:
 	var room_tiles : Dictionary = {}	# Dictionary of floor tiles in the room (the keys hold the tile positions)
 	var outgoing_corridor : Array = []	# tiles in the outgoing corridor
 	var incoming_corridor : Array = []	# tiles in the incoming corridor
-	var room_type = null	# type of the room (used for spawning mobs)
+	var room_type : int = 0	# type of the room (used for spawning mobs)
 	var next_room : RoomNode = null	# reference to the next room in the dungeon
 	var prev_room : RoomNode = null	# reference to the previous room in the dungeon
 	var is_entrance : bool = false	# true if this room is the starting room for the dungeon
@@ -47,6 +47,12 @@ class RoomNode:
 	# constructor initializes the room with a Rect2 representing its posiion and size 
 	func _init(room : Rect2):
 		self.room = room
+
+	func get_room_type() -> int:
+		return self.room_type 
+
+	func get_room_tiles() -> Dictionary:
+		return self.room_tiles
 
 	# returns true if the room has an outgoing corridor (used for connecting rooms)
 	func has_outgoing_corridor():
@@ -96,6 +102,10 @@ func start_level() -> void:
 
 	# if generation passes evaluation
 	else:
+
+		for room_node in room_nodes:
+			print(room_node.get_room_tiles().keys(), "\n")
+			#print(room_node.get_room_type())
 
 		# update the generated rooms in proc gen data with the newly generated room nodes
 		proc_gen_data.generated_rooms = room_nodes
@@ -183,35 +193,30 @@ func room_first_gen(room_nodes : Array[RoomNode]) -> bool:
 	# generate each room layout using a random walk
 	create_rooms_using_random_walk(room_nodes)
 
+	assign_random_room_types(room_nodes)
+
 	# connect rooms with corridors 
 	# if any corridors cross paths 
 	# return false to indicate generation failure
 	if (!connect_rooms(room_nodes)):
 		return false
 
+
+	var corridor_exclusive_tiles : Array = []
 	# add doors to each corridor
 	# if a door cannot be added to a corridor becasue the corridor only exists as part of a room
 	# return false to indicate generation failure
-	if !add_doors_to_corridors(room_nodes):
+	if !add_doors_to_corridors(room_nodes, corridor_exclusive_tiles):
 		return false
 
-	# get all floor tile positions for the generated rooms and corridors 
-	var all_floor_tiles = get_all_tiles(room_nodes)
+	print("Corridor tiles ", corridor_exclusive_tiles)
+	
+	paint_all_corridor_exclusive_tiles(corridor_exclusive_tiles)
 
-	# get the atlas ID for the floor tilemap layer
-	var floor_atlas_id : int = proc_gen_data.floor_tilemap_layer.atlas_id
-	# get the position of the base corridor floor tile in the atlas
-	var corridor_tile_pos : Vector2i = proc_gen_data.floor_tilemap_layer.base_corridor_floor_tile_atlas_position
-
-	# get the atlas ID for the wall tilemap layer
-	var wall_atlas_id : int = proc_gen_data.wall_tilemap_layer.atlas_id
-	# get the position of the base corridor wall tile in the atlas
-	var corridor_wall_tile_pos : Vector2i = proc_gen_data.wall_tilemap_layer.base_corridor_wall_tile_atlas_position
-
-	# paint the floor tiles
-	paint_tiles(all_floor_tiles, proc_gen_data.floor_tilemap_layer, floor_atlas_id, corridor_tile_pos)
+	paint_room_specific_tiles(room_nodes)
+	
 	# paint walls around all the floor tiles
-	create_walls(all_floor_tiles, proc_gen_data.wall_tilemap_layer, wall_atlas_id, corridor_wall_tile_pos)
+	create_walls(get_all_tiles(room_nodes), proc_gen_data.wall_tilemap_layer, proc_gen_data.wall_tilemap_layer.atlas_id, proc_gen_data.wall_tilemap_layer.brick_wall_tile_atlas_position)
 
 	# check every room node
 	for room_node in room_nodes:
@@ -614,7 +619,7 @@ func create_corridor(start_position : Vector2i, end_position : Vector2i) -> Arra
 # if a door cannot be placed on a corridor becasue the
 # the corridor overlaps with a room's floor tiles
 # return false to indicate generation failure
-func add_doors_to_corridors(room_nodes : Array[RoomNode]) -> bool:
+func add_doors_to_corridors(room_nodes : Array[RoomNode], all_corridor_exclusive_tiles : Array) -> bool:
 	# initalize a counter to assign unique names to each dorr layer
 	var door_number : int = 1
 
@@ -655,6 +660,8 @@ func add_doors_to_corridors(room_nodes : Array[RoomNode]) -> bool:
 			# if no exclusive corridor tiles are found, return false
 			if corridor_exclusive_tiles.size() == 0:
 				return false
+
+			all_corridor_exclusive_tiles.append(corridor_exclusive_tiles)
 
 			# set the door position to the midpoint of corridor_exclusive_tiles
 			door_position = corridor_exclusive_tiles[corridor_exclusive_tiles.size() / 2]
@@ -876,6 +883,75 @@ func play_again() -> void:
 func update_score(score_amount : float) -> void:
 	player.score += score_amount
 	view.score_label.text = "Score: " + str(player.score)
+
+func get_random_room_type() -> int:
+	var room_types = proc_gen_data.ROOM_TYPE.keys()
+	randomize()
+	return randi_range(0, room_types.size() - 1)
+
+func assign_random_room_types(room_nodes : Array[RoomNode]) -> void:
+	for room_node in room_nodes:
+		room_node.room_type = get_random_room_type()
+
+func get_room_type_name(value : int) -> String:
+	var enum_keys = proc_gen_data.ROOM_TYPE.keys()
+
+	for key in enum_keys:
+		if proc_gen_data.ROOM_TYPE[key] == value:
+			return key
+
+	return "DEFAULT"
+
+func paint_room_specific_tiles(room_nodes : Array[RoomNode]) -> void:
+	for room_node in room_nodes:
+		# get all floor tile positions for the generated rooms and corridors 
+		var room_tiles = room_node.get_room_tiles()
+		
+		var room_type = get_room_type_name(room_node.get_room_type())
+
+		# the atlas ID for the floor tilemap layer
+		var floor_atlas_id : int = proc_gen_data.floor_tilemap_layer.atlas_id
+		# get the atlas ID for the wall tilemap layer
+		var wall_atlas_id : int = proc_gen_data.wall_tilemap_layer.atlas_id
+
+		# the position of the floor tile in the atlas
+		var floor_tile_pos : Vector2i
+		# the position of the wall tile in the atlas
+		var wall_tile_pos : Vector2i
+
+		match room_type:
+			"DEFAULT":
+				floor_tile_pos = proc_gen_data.floor_tilemap_layer.red_floor_tile_atlas_position
+				wall_tile_pos = proc_gen_data.wall_tilemap_layer.brick_wall_tile_atlas_position
+			"GOBLIN_LAIR":
+				floor_tile_pos = proc_gen_data.floor_tilemap_layer.light_green_floor_tile_atlas_position
+				wall_tile_pos = proc_gen_data.wall_tilemap_layer.ice_wall_tile_atlas_position
+			"TROLL_TUNNEL":
+				floor_tile_pos = proc_gen_data.floor_tilemap_layer.light_brown_floor_tile_atlas_position
+				wall_tile_pos = proc_gen_data.wall_tilemap_layer.sponge_wall_tile_atlas_position
+			"DRAGON_DEN":
+				floor_tile_pos = proc_gen_data.floor_tilemap_layer.green_floor_tile_atlas_position
+				wall_tile_pos = proc_gen_data.wall_tilemap_layer.clay_wall_tile_atlas_position
+
+		# paint the floor tiles
+		paint_tiles(room_tiles, proc_gen_data.floor_tilemap_layer, floor_atlas_id, floor_tile_pos)
+
+func paint_all_corridor_exclusive_tiles(corridor_exclusive_tiles : Array) -> void:
+	
+	# the atlas ID for the floor tilemap layer
+	var floor_atlas_id : int = proc_gen_data.floor_tilemap_layer.atlas_id
+	# get the atlas ID for the wall tilemap layer
+	var wall_atlas_id : int = proc_gen_data.wall_tilemap_layer.atlas_id
+
+	# the position of the floor tile in the atlas
+	var floor_tile_pos : Vector2i = proc_gen_data.floor_tilemap_layer.corridor_floor_tile_atlas_position
+	# the position of the wall tile in the atlas
+	var wall_tile_pos : Vector2i
+	
+	for sub_arr in corridor_exclusive_tiles:
+		for tile in sub_arr:
+			paint_single_tile(proc_gen_data.floor_tilemap_layer, floor_atlas_id, tile, floor_tile_pos)
+	
 
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
