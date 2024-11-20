@@ -9,7 +9,7 @@ var original_health : float
 @export var score : float = 0
 
 @export var damage : float = 50
-var damage_cooldown: float = 1
+var damage_cooldown: float = 0.75
 
 @export var animations : AnimationPlayer
 
