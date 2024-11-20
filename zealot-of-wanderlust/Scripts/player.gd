@@ -21,6 +21,7 @@ var experience : int = 0 :
 			level_up.emit()
 			level += 1
 			experience = level_up_threshold - value
+			level_up_threshold *= 1.1
 		else:
 			experience = value
 
