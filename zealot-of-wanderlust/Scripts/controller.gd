@@ -821,7 +821,7 @@ func attack(attack_direction: Vector2) -> void:
 	var projectile_scene := load("res://Player Combat/projectile.tscn")
 	var projectile = projectile_scene.instantiate()
 	projectile.damage = player.damage
-	projectile.velocity = attack_direction * player.speed
+	projectile.velocity = attack_direction * player.projectile_speed
 	projectile.global_position = player.global_position
 	model.add_child(projectile)
 	
@@ -883,6 +883,7 @@ func play_again() -> void:
 
 func update_score(score_amount : float) -> void:
 	player.score += score_amount
+	player.experience += score_amount
 	view.score_label.text = "Score: " + str(player.score)
 
 # handle player movement and player interactions in each frame
