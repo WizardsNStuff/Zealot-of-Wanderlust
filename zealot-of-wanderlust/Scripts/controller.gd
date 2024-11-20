@@ -2,7 +2,7 @@ extends Node
 class_name Controller
 
 @export var model : Model
-#var player : Player
+
 var enemies : Array[Enemy]
 
 @export var view : View
@@ -11,6 +11,7 @@ var enemies : Array[Enemy]
 var proc_gen_data : ProcGenData
 # reference to the player
 var player : Player
+var player_cooldown : float
 
 func _ready() -> void:
 	proc_gen_data = model.proc_gen_data
@@ -797,7 +798,7 @@ func handle_input() -> void:
 	player.velocity = input_direction * player.speed
 	
 	var attack_direction = Input.get_vector("attack_left", "attack_right", "attack_up", "attack_down")
-	if Input.is_action_just_pressed("attack"):
+	if attack_direction != Vector2.ZERO && !player.is_attacking:
 		attack(attack_direction)
 
 func attack(attack_direction: Vector2) -> void:
@@ -812,6 +813,7 @@ func attack(attack_direction: Vector2) -> void:
 		player.animations.play("attack_left")
 		
 	player.is_attacking = true
+	player_cooldown = Time.get_unix_time_from_system() + player.damage_cooldown
 	player.weapon.current_weapon.visible = true
 	player.weapon.current_weapon.hitbox.disabled = false
 	
@@ -824,10 +826,8 @@ func attack(attack_direction: Vector2) -> void:
 	model.add_child(projectile)
 	
 	# stop the attack
-	await player.animations.animation_finished
 	player.weapon.current_weapon.visible = false
 	player.weapon.current_weapon.hitbox.disabled = true
-	player.is_attacking = false
 
 func update_animation() -> void:
 	if player.is_attacking : return
@@ -889,8 +889,11 @@ func update_score(score_amount : float) -> void:
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
 	if proc_gen_data.dungeon_created:
-
+		
 		handle_input()
+		if Time.get_unix_time_from_system() >= player_cooldown:
+			player.is_attacking = false
+
 
 		# move the player and retrieve if any collisions occured
 		var player_collision = player.move_and_slide()
