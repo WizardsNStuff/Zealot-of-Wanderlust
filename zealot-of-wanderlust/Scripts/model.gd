@@ -17,3 +17,5 @@ var stop_timer : Timer
 
 # Enemies
 @export var enemies := Array([], TYPE_OBJECT, "CharacterBody2D", Enemy)
+
+@export var proc_gen_data : ProcGenData

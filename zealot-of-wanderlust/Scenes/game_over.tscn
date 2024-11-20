@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bu75n3pwlpxd4"]
 
 [ext_resource type="FontFile" uid="uid://dguq661xgdfvr" path="res://Assets/Geizer.otf" id="1_rsv4x"]
-[ext_resource type="Script" path="res://Scenes/game_over.gd" id="1_w51cq"]
+[ext_resource type="Script" path="res://Scripts/game_over.gd" id="1_w51cq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_y4g0n"]
 line_spacing = 5.0

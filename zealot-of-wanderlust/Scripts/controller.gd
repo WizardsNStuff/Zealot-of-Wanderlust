@@ -7,15 +7,14 @@ var enemies : Array[Enemy]
 
 @export var view : View
 
-func _ready() -> void:
-	model = $Model
-	#player = model.player
-	enemies = model.enemies
 # holds the procedural generation settings, node references, and data
-@export var proc_gen_data : ProcGenData
-
+var proc_gen_data : ProcGenData
 # reference to the player
-@export var player : ProcGenPlayer
+var player : Player
+
+func _ready() -> void:
+	proc_gen_data = model.proc_gen_data
+	player = model.player
 
 #func _physics_process(_delta: float) -> void:
 	## For each enemy: move them accordingly

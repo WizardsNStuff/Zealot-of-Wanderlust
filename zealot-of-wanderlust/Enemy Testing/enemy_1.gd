@@ -6,7 +6,7 @@ var attack_range = 28
 var cooldown = 0
 var score = 100
 
-@export var player : ProcGenPlayer
+@export var player : Player
 @export var controller : Controller
 
 func _ready() -> void:
