@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://lfbu6udkpv3f" path="res://Assets/rogues.png" id="1_8tpu0"]
 [ext_resource type="Script" path="res://Enemy Testing/player.gd" id="1_pa4rq"]
-[ext_resource type="PackedScene" uid="uid://bwv3arxa4rs65" path="res://Enemy Testing/enemy_2.tscn" id="3_5sxsp"]
+[ext_resource type="PackedScene" uid="uid://bwv3arxa4rs65" path="res://Enemy Testing/minotaur.tscn" id="3_5sxsp"]
 [ext_resource type="Texture2D" uid="uid://b36g8amcnnwwo" path="res://Assets/tiles.png" id="4_3hyqv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kvrhi"]
@@ -469,22 +469,22 @@ sources/0 = SubResource("TileSetAtlasSource_f17af")
 
 [node name="Node2D" type="Node2D"]
 
-[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+[node name="Player" type="CharacterBody2D" parent="."]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_pa4rq")
 
-[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
 texture = ExtResource("1_8tpu0")
 region_enabled = true
 region_rect = Rect2(31.2087, 128.17, 33.2563, 32.9695)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 shape = SubResource("CircleShape2D_kvrhi")
 
 [node name="Enemy2" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_5sxsp")]
 position = Vector2(-299, -125)
-player = NodePath("../CharacterBody2D")
+player = NodePath("../Player")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
