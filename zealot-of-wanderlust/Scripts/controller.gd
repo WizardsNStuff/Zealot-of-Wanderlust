@@ -16,18 +16,6 @@ func _ready() -> void:
 	proc_gen_data = model.proc_gen_data
 	player = model.player
 
-#func _physics_process(_delta: float) -> void:
-	## For each enemy: move them accordingly
-	##for enemy in enemies:
-		## update enemy.velocity before move_and_slide()
-	##	enemy.move_and_slide()
-	#
-	## Player Movement
-	#player.velocity = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	#player.move_and_slide()
-
-
-
 # class representing a room node in a dungeon
 class RoomNode:
 	var left : RoomNode = null	# left child room node in binary tree
@@ -807,19 +795,39 @@ func handle_input() -> void:
 
 	# set the player's velocity
 	player.velocity = input_direction * player.speed
-
+	
+	var attack_direction = Input.get_vector("attack_left", "attack_right", "attack_up", "attack_down")
 	if Input.is_action_just_pressed("attack"):
-		attack()
+		attack(attack_direction)
 
-func attack() -> void:
-		player.animations.play("attack_" + player.last_animation_direction)
-		player.is_attacking = true
-		player.weapon.current_weapon.visible = true
-		player.weapon.current_weapon.hitbox.disabled = false
-		await player.animations.animation_finished
-		player.weapon.current_weapon.visible = false
-		player.weapon.current_weapon.hitbox.disabled = true
-		player.is_attacking = false
+func attack(attack_direction: Vector2) -> void:
+	# start the attack
+	if attack_direction.x == 0 && attack_direction.y > 0:
+		player.animations.play("attack_down")
+	elif attack_direction.x == 0 && attack_direction.y < 0:
+		player.animations.play("attack_up")
+	elif attack_direction.x > 0 && attack_direction.y == 0:
+		player.animations.play("attack_right")
+	elif attack_direction.x < 0 && attack_direction.y == 0:
+		player.animations.play("attack_left")
+		
+	player.is_attacking = true
+	player.weapon.current_weapon.visible = true
+	player.weapon.current_weapon.hitbox.disabled = false
+	
+	# shoot projectile
+	var projectile_scene := load("res://Player Combat/projectile.tscn")
+	var projectile = projectile_scene.instantiate()
+	projectile.damage = player.damage
+	projectile.velocity = attack_direction * player.speed
+	projectile.global_position = player.global_position
+	model.add_child(projectile)
+	
+	# stop the attack
+	await player.animations.animation_finished
+	player.weapon.current_weapon.visible = false
+	player.weapon.current_weapon.hitbox.disabled = true
+	player.is_attacking = false
 
 func update_animation() -> void:
 	if player.is_attacking : return
