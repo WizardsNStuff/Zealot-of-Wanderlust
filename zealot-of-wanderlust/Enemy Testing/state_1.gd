@@ -1,6 +1,6 @@
 extends Node
 
-@export var enemy: Enemy2
+#@export var enemy: Enemy2
 var fsm: StateMachine
 
 func enter():
