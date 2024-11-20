@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://cgu6hwypoqcg3"]
+
+[ext_resource type="Script" path="res://Scripts/model.gd" id="1_0ovum"]
+[ext_resource type="PackedScene" uid="uid://d3xseqrxnwvjh" path="res://Enemy Testing/enemy_1.tscn" id="2_t5mub"]
+[ext_resource type="PackedScene" uid="uid://d3j48o1j7sdd4" path="res://Scenes/proc_gen_data.tscn" id="4_te031"]
+[ext_resource type="PackedScene" uid="uid://bh27mhrshrtua" path="res://Scenes/player.tscn" id="5_lonvu"]
+
+[node name="Model" type="Node2D" node_paths=PackedStringArray("player", "enemy_spawner", "timers", "proc_gen_data")]
+script = ExtResource("1_0ovum")
+player = NodePath("Player")
+basic_enemy = ExtResource("2_t5mub")
+enemy_spawner = NodePath("EnemySpawner")
+timers = NodePath("Timers")
+proc_gen_data = NodePath("ProcGenData")
+
+[node name="ProcGenData" parent="." instance=ExtResource("4_te031")]
+
+[node name="Player" parent="." instance=ExtResource("5_lonvu")]
+z_index = 100
+
+[node name="EnemySpawner" type="Node" parent="."]
+
+[node name="Timers" type="Node" parent="."]

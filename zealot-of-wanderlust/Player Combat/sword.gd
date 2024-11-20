@@ -8,5 +8,4 @@ class_name Sword
 
 func _on_body_entered(body: Node2D) -> void:
 	if body is Enemy:
-		print("SWORD HIT")
 		body.take_damage(damage)
