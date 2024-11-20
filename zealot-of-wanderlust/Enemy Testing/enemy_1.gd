@@ -41,19 +41,3 @@ func _physics_process(delta: float) -> void:
 	self.velocity = direction_to_player * speed
 	
 	move_and_slide()
-	
-	#position += (player.position - position).normalized() * speed * delta
-	
-	#var distance_to_player = position.distance_to(player.position)
-	
-	# if enemy is close enough to the player then deal damage
-	#if distance_to_player <= attack_range:
-		#if cooldown <= 0:
-			#print("enemy is doing damage")
-			## deal damage to player code would go here
-			#cooldown = main_damage_cooldown
-#
-	#
-	## decrease the cooldown timer each frame
-	#if cooldown > 0:
-		#cooldown -= delta
