@@ -160,13 +160,15 @@ _data = {
 "attack_up": SubResource("Animation_a18h1")
 }
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations", "weapon")]
 collision_layer = 4
 motion_mode = 1
 floor_constant_speed = true
 platform_on_leave = 2
 platform_floor_layers = 4294967041
 script = ExtResource("1_up7rm")
+animations = NodePath("AnimationPlayer")
+weapon = NodePath("Weapon")
 
 [node name="Weapon" type="Node2D" parent="." node_paths=PackedStringArray("current_weapon")]
 position = Vector2(6, 12)

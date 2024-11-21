@@ -25,9 +25,9 @@ var experience : int = 0 :
 		else:
 			experience = value
 
-var animations : AnimationPlayer
+@export var animations : AnimationPlayer
 
-var weapon : Weapon
+@export var weapon : Weapon
 
 var last_animation_direction : String = "down"
 
