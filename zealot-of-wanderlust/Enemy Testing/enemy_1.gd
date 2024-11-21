@@ -4,7 +4,7 @@ class_name Enemy
 var speed = 75
 var attack_range = 28
 var cooldown = 0
-var score = 100
+var score = 10
 
 @export var player : Player
 @export var controller : Controller

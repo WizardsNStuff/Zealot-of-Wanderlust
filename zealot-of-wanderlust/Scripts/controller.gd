@@ -2,7 +2,7 @@ extends Node
 class_name Controller
 
 @export var model : Model
-#var player : Player
+
 var enemies : Array[Enemy]
 
 @export var view : View
@@ -11,22 +11,11 @@ var enemies : Array[Enemy]
 var proc_gen_data : ProcGenData
 # reference to the player
 var player : Player
+var player_cooldown : float
 
 func _ready() -> void:
 	proc_gen_data = model.proc_gen_data
 	player = model.player
-
-#func _physics_process(_delta: float) -> void:
-	## For each enemy: move them accordingly
-	##for enemy in enemies:
-		## update enemy.velocity before move_and_slide()
-	##	enemy.move_and_slide()
-	#
-	## Player Movement
-	#player.velocity = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-	#player.move_and_slide()
-
-
 
 # class representing a room node in a dungeon
 class RoomNode:
@@ -915,19 +904,38 @@ func handle_input() -> void:
 
 	# set the player's velocity
 	player.velocity = input_direction * player.speed
+	
+	var attack_direction = Input.get_vector("attack_left", "attack_right", "attack_up", "attack_down")
+	if attack_direction != Vector2.ZERO && !player.is_attacking:
+		attack(attack_direction)
 
-	if Input.is_action_just_pressed("attack"):
-		attack()
-
-func attack() -> void:
-		player.animations.play("attack_" + player.last_animation_direction)
-		player.is_attacking = true
-		player.weapon.current_weapon.visible = true
-		player.weapon.current_weapon.hitbox.disabled = false
-		await player.animations.animation_finished
-		player.weapon.current_weapon.visible = false
-		player.weapon.current_weapon.hitbox.disabled = true
-		player.is_attacking = false
+func attack(attack_direction: Vector2) -> void:
+	# start the attack
+	if attack_direction.x == 0 && attack_direction.y > 0:
+		player.animations.play("attack_down")
+	elif attack_direction.x == 0 && attack_direction.y < 0:
+		player.animations.play("attack_up")
+	elif attack_direction.x > 0 && attack_direction.y == 0:
+		player.animations.play("attack_right")
+	elif attack_direction.x < 0 && attack_direction.y == 0:
+		player.animations.play("attack_left")
+		
+	player.is_attacking = true
+	player_cooldown = Time.get_unix_time_from_system() + player.damage_cooldown
+	player.weapon.current_weapon.visible = true
+	player.weapon.current_weapon.hitbox.disabled = false
+	
+	# shoot projectile
+	var projectile_scene := load("res://Player Combat/projectile.tscn")
+	var projectile = projectile_scene.instantiate()
+	projectile.damage = player.damage
+	projectile.velocity = attack_direction * player.projectile_speed
+	projectile.global_position = player.global_position
+	model.add_child(projectile)
+	
+	# stop the attack
+	player.weapon.current_weapon.visible = false
+	player.weapon.current_weapon.hitbox.disabled = true
 
 func update_animation() -> void:
 	if player.is_attacking : return
@@ -983,6 +991,7 @@ func play_again() -> void:
 
 func update_score(score_amount : float) -> void:
 	player.score += score_amount
+	player.experience += score_amount
 	view.score_label.text = "Score: " + str(player.score)
 
 func get_random_room_type() -> int:
@@ -1071,8 +1080,11 @@ func check_key_status() -> bool:
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
 	if proc_gen_data.dungeon_created:
-
+		
 		handle_input()
+		if Time.get_unix_time_from_system() >= player_cooldown:
+			player.is_attacking = false
+
 
 		# move the player and retrieve if any collisions occured
 		var player_collision = player.move_and_slide()

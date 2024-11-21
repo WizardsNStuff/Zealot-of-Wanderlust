@@ -1,18 +1,33 @@
 extends CharacterBody2D
 class_name Player
 
-@export var speed = 200
+var speed = 200
 
-@export var health : float = 200
+var health : float = 200
 var original_health : float
 
-@export var score : float = 0
+var score : float = 0
 
-@export var damage : float = 10
+var damage : float = 25
+var projectile_speed : float = 225
+var damage_cooldown: float = 0.75
 
-@export var animations : AnimationPlayer
+var level : int = 1
+var level_up_threshold : int = 100
+signal level_up
+var experience : int = 0 :
+	set(value):
+		if value >= level_up_threshold:
+			level_up.emit()
+			level += 1
+			experience = level_up_threshold - value
+			level_up_threshold *= 1.1
+		else:
+			experience = value
 
-@export var weapon : Weapon
+var animations : AnimationPlayer
+
+var weapon : Weapon
 
 var last_animation_direction : String = "down"
 
