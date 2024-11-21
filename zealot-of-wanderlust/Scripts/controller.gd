@@ -202,11 +202,15 @@ func room_first_gen(room_nodes : Array[RoomNode]) -> bool:
 		return false
 
 
+	var all_room_tiles : Dictionary = {}
+	for room_node in room_nodes:
+		all_room_tiles.merge(room_node.get_room_tiles())
+
 	var corridor_exclusive_tiles : Array = []
 	# add doors to each corridor
 	# if a door cannot be added to a corridor becasue the corridor only exists as part of a room
 	# return false to indicate generation failure
-	if !add_doors_to_corridors(room_nodes, corridor_exclusive_tiles):
+	if !add_doors_to_corridors(room_nodes, corridor_exclusive_tiles, all_room_tiles):
 		return false
 
 	#print("Corridor tiles ", corridor_exclusive_tiles)
@@ -627,7 +631,7 @@ func create_corridor(start_position : Vector2i, end_position : Vector2i) -> Arra
 # if a door cannot be placed on a corridor becasue the
 # the corridor overlaps with a room's floor tiles
 # return false to indicate generation failure
-func add_doors_to_corridors(room_nodes : Array[RoomNode], all_corridor_exclusive_tiles : Array) -> bool:
+func add_doors_to_corridors(room_nodes : Array[RoomNode], all_corridor_exclusive_tiles : Array, all_room_tiles : Dictionary) -> bool:
 	# initalize a counter to assign unique names to each dorr layer
 	var door_number : int = 1
 
@@ -673,6 +677,18 @@ func add_doors_to_corridors(room_nodes : Array[RoomNode], all_corridor_exclusive
 
 			# set the door position to the midpoint of corridor_exclusive_tiles
 			door_position = corridor_exclusive_tiles[corridor_exclusive_tiles.size() / 2]
+
+			if all_room_tiles.keys().has(door_position):
+				return false
+
+			var surrounding_door_wall_positions : Array = []
+			for direction in proc_gen_data.direction_list:
+				if corridor_exclusive_tiles.has(door_position + direction) == false:
+					surrounding_door_wall_positions.append(door_position + direction)
+			
+			if surrounding_door_wall_positions.size() <= 2:
+				for tile in surrounding_door_wall_positions:
+					paint_single_tile(proc_gen_data.wall_tilemap_layer, proc_gen_data.wall_tilemap_layer.atlas_id, tile, proc_gen_data.wall_tilemap_layer.cobblestone_wall_tile_atlas_position)
 
 			# create a new TileMapLayer instance for the door
 			var new_door_tilemap_layer = TileMapLayer.new()
