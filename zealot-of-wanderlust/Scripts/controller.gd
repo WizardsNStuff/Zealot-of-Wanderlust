@@ -911,6 +911,11 @@ func handle_input() -> void:
 
 func attack(attack_direction: Vector2) -> void:
 	# start the attack
+	player_cooldown = Time.get_unix_time_from_system() + player.damage_cooldown
+	player.is_attacking = true
+	player.weapon.current_weapon.visible = true
+	player.weapon.current_weapon.hitbox.disabled = false
+	
 	if attack_direction.x == 0 && attack_direction.y > 0:
 		player.animations.play("attack_down")
 	elif attack_direction.x == 0 && attack_direction.y < 0:
@@ -919,11 +924,6 @@ func attack(attack_direction: Vector2) -> void:
 		player.animations.play("attack_right")
 	elif attack_direction.x < 0 && attack_direction.y == 0:
 		player.animations.play("attack_left")
-		
-	player.is_attacking = true
-	player_cooldown = Time.get_unix_time_from_system() + player.damage_cooldown
-	player.weapon.current_weapon.visible = true
-	player.weapon.current_weapon.hitbox.disabled = false
 	
 	# shoot projectile
 	var projectile_scene := load("res://Player Combat/projectile.tscn")
@@ -934,6 +934,7 @@ func attack(attack_direction: Vector2) -> void:
 	model.add_child(projectile)
 	
 	# stop the attack
+	await player.animations.animation_finished
 	player.weapon.current_weapon.visible = false
 	player.weapon.current_weapon.hitbox.disabled = true
 
