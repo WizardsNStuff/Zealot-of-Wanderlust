@@ -103,8 +103,8 @@ func start_level() -> void:
 	# if generation passes evaluation
 	else:
 
-		for room_node in room_nodes:
-			print(room_node.get_room_tiles().keys(), "\n")
+		#for room_node in room_nodes:
+			#print(room_node.get_room_tiles().keys(), "\n")
 			#print(room_node.get_room_type())
 
 		# update the generated rooms in proc gen data with the newly generated room nodes
@@ -209,14 +209,22 @@ func room_first_gen(room_nodes : Array[RoomNode]) -> bool:
 	if !add_doors_to_corridors(room_nodes, corridor_exclusive_tiles):
 		return false
 
-	print("Corridor tiles ", corridor_exclusive_tiles)
+	#print("Corridor tiles ", corridor_exclusive_tiles)
 	
 	paint_all_corridor_exclusive_tiles(corridor_exclusive_tiles)
 
-	paint_room_specific_tiles(room_nodes)
+	var all_corridor_exclusive_tiles : Array = []
+
+	for sub_arr in corridor_exclusive_tiles:
+		for tile in sub_arr:
+			all_corridor_exclusive_tiles.append(tile)
+
+	paint_room_specific_tiles(room_nodes, all_corridor_exclusive_tiles)
 	
+	# paint walls around the corridors
+	create_corridor_walls(room_nodes, proc_gen_data.wall_tilemap_layer, proc_gen_data.wall_tilemap_layer.atlas_id, proc_gen_data.wall_tilemap_layer.cobblestone_wall_tile_atlas_position, all_corridor_exclusive_tiles)
 	# paint walls around all the floor tiles
-	create_walls(get_all_tiles(room_nodes), proc_gen_data.wall_tilemap_layer, proc_gen_data.wall_tilemap_layer.atlas_id, proc_gen_data.wall_tilemap_layer.brick_wall_tile_atlas_position)
+	#create_walls(get_all_tiles(room_nodes), proc_gen_data.wall_tilemap_layer, proc_gen_data.wall_tilemap_layer.atlas_id, proc_gen_data.wall_tilemap_layer.brick_wall_tile_atlas_position)
 
 	# check every room node
 	for room_node in room_nodes:
@@ -735,6 +743,66 @@ func create_walls(floor_positions : Dictionary, tilemap_layer : TileMapLayer, ti
 		# paint a single wall tile at the current position using the specified tilemap layer and atlas information
 		paint_single_tile(tilemap_layer, tilemap_layer_atlas_id, position, tile_atlas_position)
 
+func create_room_walls(floor_positions : Dictionary, tilemap_layer : TileMapLayer, tilemap_layer_atlas_id : int , tile_atlas_position : Vector2i, corridor_exclusive_tiles : Array) -> void:
+	# find wall edge positions based on the floor positions and the defined direction list
+	var wall_positions : Dictionary = find_wall_edges_not_on_corrior(floor_positions, proc_gen_data.direction_list, corridor_exclusive_tiles)
+
+	# iterate through each wall position and paint a wall tile at that position
+	for position in wall_positions:
+		# paint a single wall tile at the current position using the specified tilemap layer and atlas information
+		paint_single_tile(tilemap_layer, tilemap_layer_atlas_id, position, tile_atlas_position)
+
+func create_corridor_walls(room_nodes : Array[RoomNode], tilemap_layer : TileMapLayer, tilemap_layer_atlas_id : int , tile_atlas_position : Vector2i, corridor_exclusive_tiles : Array) -> void:
+	var all_room_tiles : Dictionary = {}
+	for room_node in room_nodes:
+		all_room_tiles.merge(room_node.get_room_tiles())
+
+	# find wall edge positions based on the floor positions and the defined direction list
+	var wall_positions : Dictionary = find_corridor_wall_edges(all_room_tiles, proc_gen_data.direction_list, corridor_exclusive_tiles)
+
+	# iterate through each wall position and paint a wall tile at that position
+	for position in wall_positions:
+		# paint a single wall tile at the current position using the specified tilemap layer and atlas information
+		paint_single_tile(tilemap_layer, tilemap_layer_atlas_id, position, tile_atlas_position)
+
+func find_corridor_wall_edges(floor_positions : Dictionary, direction_list : Array, corridor_exclusive_tiles : Array) -> Dictionary:
+	# dictionary to store wall positions
+	var wall_positions : Dictionary = {}
+
+	# iterate through each position in the corridor positions array
+	for position in corridor_exclusive_tiles:
+		# check each direction in the direction list
+		for direction in direction_list:
+			# calculate the neighbor position based on the current position and direction
+			var neighbor_position = position + direction
+
+			# if there is no floor tile at the neighbor position
+			if (corridor_exclusive_tiles.has(neighbor_position) == false) && (floor_positions.keys().has(neighbor_position) == false):
+				# add the neighbor position to the wall positions
+				wall_positions[neighbor_position] = null
+
+	# return the dictionary containing all wall positions
+	return wall_positions
+
+func find_wall_edges_not_on_corrior(floor_positions : Dictionary, direction_list : Array, corridor_exclusive_tiles : Array) -> Dictionary:
+	# dictionary to store wall positions
+	var wall_positions : Dictionary = {}
+
+	# iterate through each position in the floor positions dictionary
+	for position in floor_positions:
+		# check each direction in the direction list
+		for direction in direction_list:
+			# calculate the neighbor position based on the current position and direction
+			var neighbor_position = position + direction
+
+			# if there is no floor tile at the neighbor position
+			if (floor_positions.keys().has(neighbor_position) == false) && (corridor_exclusive_tiles.has(neighbor_position) == false):
+				# add the neighbor position to the wall positions
+				wall_positions[neighbor_position] = null
+
+	# return the dictionary containing all wall positions
+	return wall_positions
+
 # finds the positions where walls should be placed based on the empty neighboring tiles of the floor
 # checks each floor tile position and its neighboring tiles. If a neighboring tile
 # is not a floor tile, it adds that position to the list of wall positions
@@ -902,7 +970,7 @@ func get_room_type_name(value : int) -> String:
 
 	return "DEFAULT"
 
-func paint_room_specific_tiles(room_nodes : Array[RoomNode]) -> void:
+func paint_room_specific_tiles(room_nodes : Array[RoomNode], corridor_exclusive_tiles : Array) -> void:
 	for room_node in room_nodes:
 		# get all floor tile positions for the generated rooms and corridors 
 		var room_tiles = room_node.get_room_tiles()
@@ -935,6 +1003,9 @@ func paint_room_specific_tiles(room_nodes : Array[RoomNode]) -> void:
 
 		# paint the floor tiles
 		paint_tiles(room_tiles, proc_gen_data.floor_tilemap_layer, floor_atlas_id, floor_tile_pos)
+		# paint the wall tiles
+		#create_walls(room_tiles, proc_gen_data.wall_tilemap_layer, wall_atlas_id, wall_tile_pos)
+		create_room_walls(room_tiles, proc_gen_data.wall_tilemap_layer, wall_atlas_id, wall_tile_pos, corridor_exclusive_tiles)
 
 func paint_all_corridor_exclusive_tiles(corridor_exclusive_tiles : Array) -> void:
 	
