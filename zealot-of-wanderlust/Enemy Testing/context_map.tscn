@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://cvx3dkivwli3o"]
+
+[node name="context_map" type="Node2D"]
+
+[node name="0 [E]" type="RayCast2D" parent="."]
+target_position = Vector2(35, 0)
+
+[node name="1 [NE]" type="RayCast2D" parent="."]
+target_position = Vector2(17.5, -17.5)
+
+[node name="2 [N]" type="RayCast2D" parent="."]
+target_position = Vector2(0, -35)
+
+[node name="3 [NW]" type="RayCast2D" parent="."]
+target_position = Vector2(-17.5, -17.5)
+
+[node name="4 [W]" type="RayCast2D" parent="."]
+target_position = Vector2(-35, 0)
+
+[node name="5 [SW]" type="RayCast2D" parent="."]
+target_position = Vector2(-17.5, 17.5)
+
+[node name="6 [S]" type="RayCast2D" parent="."]
+target_position = Vector2(0, 35)
+
+[node name="7 [SE]" type="RayCast2D" parent="."]
+target_position = Vector2(17.5, 17.5)
