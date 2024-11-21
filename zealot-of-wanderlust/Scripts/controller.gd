@@ -131,6 +131,7 @@ func start_level() -> void:
 				player.visible = true
 				
 				view.health_label.visible = true
+				view.health_label.text = "HEALTH: " + str(player.health)
 				view.score_label.visible = true
 
 				# mark the dungeon generation as successful
@@ -152,6 +153,7 @@ func start_level() -> void:
 				model.stop_timer.stop()
 				model.stop_timer.timeout.connect(enemy_spawning_finished)
 
+				model.spawning_enabled = true
 				model.stop_timer.start()
 				model.spawn_timer.start()
 				
@@ -866,6 +868,7 @@ func generate_exit(exit_room_tiles : Dictionary) -> void:
 func give_player_key():
 	# set the key flag to true in the proc gen data
 	proc_gen_data.has_key = true
+	view.play_key_animation()
 
 # handle player collision with a door
 func handle_door_collision(collider : Object) -> void:
@@ -875,7 +878,9 @@ func handle_door_collision(collider : Object) -> void:
 		collider.queue_free()
 		# set key flag to false after use
 		proc_gen_data.has_key = false
-		
+
+		view.stop_key_animation()
+
 		if (proc_gen_data.current_room.next_room != null):
 			proc_gen_data.current_room = proc_gen_data.current_room.next_room
 			
@@ -883,14 +888,26 @@ func handle_door_collision(collider : Object) -> void:
 			model.spawn_timer.disconnect("timeout", spawn_enemies_in_room)
 			model.spawn_timer.timeout.connect(spawn_enemies_in_room.bind(proc_gen_data.current_room))
 			model.stop_timer.stop()
+			model.spawning_enabled = true
 			model.stop_timer.start()
 			model.spawn_timer.start()
-		
+
+# handle player collision with a stair
+func handle_stair_collision(collider : Object) -> void:
+	# check if the player has a key
+	if proc_gen_data.has_key:
+
+		# set key flag to false after use
+		proc_gen_data.has_key = false
+
+		view.stop_key_animation()
+
+		start_level()
 
 func enemy_spawning_finished() -> void:
 	model.stop_timer.stop()
 	model.spawn_timer.stop()
-	give_player_key()
+	model.spawning_enabled = false
 
 func handle_input() -> void:
 	# get the input direction for movement
@@ -1040,6 +1057,16 @@ func paint_all_corridor_exclusive_tiles(corridor_exclusive_tiles : Array) -> voi
 			paint_single_tile(proc_gen_data.floor_tilemap_layer, floor_atlas_id, tile, floor_tile_pos)
 	
 
+func get_living_enemy_count() -> int:
+	return model.enemy_spawner.get_child_count(false)
+
+# gets called in the enemy script when the enemy health reaches 0 the enemy is 
+# queue_freed directly after this check hence the check for 1 livig enemt and not 0
+func check_key_status() -> bool:
+	if get_living_enemy_count() == 1 && model.spawning_enabled == false:
+		return true
+	return false
+
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
@@ -1079,4 +1106,4 @@ func _physics_process(delta: float) -> void:
 
 				# check if collision is with a staircase
 				if (collider_name.contains("Staircase")):
-					start_level()
+					handle_stair_collision(collider)

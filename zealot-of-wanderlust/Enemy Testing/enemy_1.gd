@@ -20,7 +20,9 @@ func take_damage(damage_amount : float) -> void:
 	health -= damage_amount
 	if health <= 0:
 		controller.update_score(score)
-		queue_free()
+		if controller.check_key_status():
+			controller.give_player_key()
+		self.queue_free()
 
 func startCooldown(delta: float) -> void:
 	if cooldown > 0:
