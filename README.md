@@ -2,9 +2,9 @@
 
 WASD - Move Player
 
-Space - Swing Sword
+Arrow Keys - Swing Sword
 
-The doors unlock once all enemies have spawned within the room.
+The doors unlock once all enemies have been defeated within the room.
 
 At the end of each random dungeon is a staircase which takes you to another random dungeon.
 
