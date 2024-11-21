@@ -13,6 +13,8 @@ var spawn_interval : float = 1.0
 var spawn_timer : Timer
 var stop_timer : Timer
 
+var spawning_enabled = true
+
 @export var timers : Node
 
 # Enemies
