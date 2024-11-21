@@ -922,13 +922,14 @@ func attack(attack_direction: Vector2) -> void:
 		player.animations.play("attack_up")
 	elif attack_direction.x > 0 && attack_direction.y == 0:
 		player.animations.play("attack_right")
-	elif attack_direction.x < 0 && attack_direction.y == 0:
+	else:
 		player.animations.play("attack_left")
-	
+	print(attack_direction)
 	# shoot projectile
 	var projectile_scene := load("res://Player Combat/projectile.tscn")
-	var projectile = projectile_scene.instantiate()
+	var projectile : Projectile = projectile_scene.instantiate()
 	projectile.damage = player.damage
+	projectile.projectile_life = Time.get_unix_time_from_system() + player.projectile_life_span
 	projectile.velocity = attack_direction * player.projectile_speed
 	projectile.global_position = player.global_position
 	model.add_child(projectile)

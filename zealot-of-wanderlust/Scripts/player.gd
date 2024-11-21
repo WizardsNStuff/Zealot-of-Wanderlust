@@ -10,6 +10,7 @@ var score : float = 0
 
 var damage : float = 25
 var projectile_speed : float = 225
+var projectile_life_span : float = 0.5
 var damage_cooldown: float = 0.75
 
 var level : int = 1
