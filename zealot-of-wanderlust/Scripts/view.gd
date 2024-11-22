@@ -9,15 +9,17 @@ class_name View
 @export var score_label : Label
 @export var animated_key_sprite : AnimatedSprite2D
 @export var key_animation_player : AnimationPlayer
+@export var health_bar : HealthBar
 
 func start_level() -> void:
 	controller.start_level()
-	$MainMenu.hide()
-	$HealthBar.show()
+	main_menu_node.hide()
+	health_bar.show()
+
 func play_again() -> void:
 	controller.play_again()
 	controller.start_level()
-	$GameOver.hide()
+	game_over_node.hide()
 
 func play_key_animation() -> void:
 	animated_key_sprite.visible = true
@@ -31,11 +33,11 @@ func stop_key_animation() -> void:
 
 func game_over() -> void:
 	game_over_node.score_label.text = "Score: " + str(controller.player.score)
-	$MainMenu.hide()
-	$PlayerHealth.hide()
-	$HealthBar.hide()
-	$PlayerScore.hide()
-	$GameOver.show()
+	main_menu_node.hide()
+	health_label.hide()
+	health_bar.hide()
+	score_label.hide()
+	game_over_node.show()
 
 func quit_game() -> void:
 	controller.quit_game()

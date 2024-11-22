@@ -16,7 +16,7 @@ var player_cooldown : float
 func _ready() -> void:
 	proc_gen_data = model.proc_gen_data
 	player = model.player
-	$View/HealthBar.init_health(player.health)
+	view.health_bar.init_health(player.health)
 
 # class representing a room node in a dungeon
 class RoomNode:
@@ -121,8 +121,9 @@ func start_level() -> void:
 				player.visible = true
 				
 				view.health_label.visible = true
-				view.health_label.text = "HEALTH: " + str(player.health)
 				view.score_label.visible = true
+				view.health_bar.visible = true
+				view.health_label.text = "HEALTH: " + str(player.health)
 
 				# mark the dungeon generation as successful
 				proc_gen_data.dungeon_created = true
@@ -972,7 +973,7 @@ func player_take_damage(damage_amount : float) -> void:
 		player.health = 0
 		view.health_label.text = "Health: " + str(player.health)
 		game_over()
-	$View/HealthBar.health = player.health
+	view.health_bar.health = player.health
 	view.health_label.text = "Health: " + str(player.health)
 
 func game_over() -> void:
@@ -993,7 +994,7 @@ func quit_game() -> void:
 
 func play_again() -> void:
 	player.health = player.original_health
-	$View/HealthBar.init_health(player.health)
+	view.health_bar.init_health(player.health)
 	view.health_label.text = "Health: " + str(player.health)
 	player.score = 0
 	view.score_label.text = "Health: " + str(player.score)

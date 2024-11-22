@@ -1,4 +1,5 @@
 extends ProgressBar
+class_name HealthBar
 
 # node references
 @onready var timer = $Timer
@@ -16,8 +17,8 @@ func _set_health(new_health):
 	value = health
 	
 	# free if player died
-	if health <= 0:
-		queue_free()
+	#if health <= 0:
+		#queue_free()
 	
 	if health < prev_health:
 		timer.start()
