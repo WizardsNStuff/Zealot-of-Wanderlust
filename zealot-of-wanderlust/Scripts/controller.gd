@@ -45,6 +45,9 @@ class RoomNode:
 	func add_enemy(enemy) -> void:
 		enemies.append(enemy)
 
+	func remove_enemy():
+		return enemies.pop_back()
+
 	func get_room_tiles() -> Dictionary:
 		return self.room_tiles
 
@@ -125,7 +128,7 @@ func start_level() -> void:
 
 				# make the player visible
 				player.visible = true
-				
+
 				view.health_label.visible = true
 				view.score_label.visible = true
 				view.health_bar.visible = true
@@ -144,23 +147,11 @@ func start_level() -> void:
 
 				model.spawn_timer = Timer.new()
 				model.timers.add_child(model.spawn_timer)
-				model.spawn_timer.wait_time = model.spawn_interval
-				model.spawn_timer.one_shot = false
 				model.spawn_timer.stop()
-				model.spawn_timer.timeout.connect(spawn_enemies_in_room.bind(room_node))
-
-				model.stop_timer = Timer.new()
-				model.timers.add_child(model.stop_timer)
-				model.stop_timer.wait_time = model.spawn_duration
-				model.stop_timer.one_shot = true
-				model.stop_timer.stop()
-				model.stop_timer.timeout.connect(enemy_spawning_finished)
-
+				model.spawn_timer.timeout.connect(spawn_enemy.bind(room_node))
 				model.spawning_enabled = true
-				model.stop_timer.start()
-				model.spawn_timer.start()
-				
-				
+				model.spawn_timer.start(model.spawn_interval)
+
 				break
 
 # clears all the tiles on the screen
@@ -887,15 +878,15 @@ func handle_door_collision(collider : Object) -> void:
 
 		view.stop_key_animation()
 
+		# move to next room
 		if (proc_gen_data.current_room.next_room != null):
 			proc_gen_data.current_room = proc_gen_data.current_room.next_room
 			
+			# rebidn the spawn timer to the new room
 			model.spawn_timer.stop()
-			model.spawn_timer.disconnect("timeout", spawn_enemies_in_room)
-			model.spawn_timer.timeout.connect(spawn_enemies_in_room.bind(proc_gen_data.current_room))
-			model.stop_timer.stop()
+			model.spawn_timer.disconnect("timeout", spawn_enemy)
+			model.spawn_timer.timeout.connect(spawn_enemy.bind(proc_gen_data.current_room))
 			model.spawning_enabled = true
-			model.stop_timer.start()
 			model.spawn_timer.start()
 
 # handle player collision with a stair
@@ -913,7 +904,6 @@ func handle_stair_collision(collider : Object) -> void:
 		start_level()
 
 func enemy_spawning_finished() -> void:
-	model.stop_timer.stop()
 	model.spawn_timer.stop()
 	model.spawning_enabled = false
 
@@ -998,14 +988,25 @@ func game_over() -> void:
 	proc_gen_data.dungeon_created = false
 	view.game_over()
 
-func spawn_enemies_in_room(room_node : RoomNode):
-	var random_tile : Vector2i = get_random_tile_in_room(room_node)
-	
-	var enemy = model.minotaur_enemy.instantiate()
-	enemy.position = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile)
-	enemy.player = player
-	enemy.controller = self
-	model.enemy_spawner.add_child(enemy)
+func spawn_enemy(room_node : RoomNode) -> void:
+	if room_node.enemies.size() > 0:
+		var enemy = room_node.remove_enemy().instantiate()
+		var random_tile : Vector2i = get_random_tile_in_room(room_node)
+		enemy.position = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile)
+		enemy.player = player
+		enemy.controller = self
+		model.enemy_spawner.add_child(enemy)
+	else:
+		enemy_spawning_finished()
+
+#func spawn_enemies_in_room(room_node : RoomNode):
+	#var random_tile : Vector2i = get_random_tile_in_room(room_node)
+	#
+	#var enemy = model.minotaur_enemy.instantiate()
+	#enemy.position = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile)
+	#enemy.player = player
+	#enemy.controller = self
+	#model.enemy_spawner.add_child(enemy)
 
 func quit_game() -> void:
 	get_tree().quit()
@@ -1019,6 +1020,7 @@ func play_again() -> void:
 	player.level = 1
 	view.player_level_label.text = "LVL: " + str(player.level)
 	player.experience = 0
+	player.level_up_threshold = 100
 	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 	proc_gen_data.current_dungeon_floor = 1
 
@@ -1052,7 +1054,7 @@ func give_room_enemies(room_node : RoomNode) -> void:
 				room_node.add_enemy(model.skeleton_enemy)
 		"GOBLIN_LAIR":
 			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1 * 0.5)
-			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6 * 0.5)
+			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6)
 
 			for i in range(skeleton_count):
 				room_node.add_enemy(model.skeleton_enemy)
@@ -1062,7 +1064,7 @@ func give_room_enemies(room_node : RoomNode) -> void:
 
 		"TROLL_TUNNEL":
 			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1 * 0.5)
-			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6 * 0.5)
+			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6)
 
 			for i in range(minotaur_count):
 				room_node.add_enemy(model.minotaur_enemy)
