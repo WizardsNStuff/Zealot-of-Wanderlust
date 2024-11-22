@@ -13,7 +13,7 @@ class_name View
 func start_level() -> void:
 	controller.start_level()
 	$MainMenu.hide()
-
+	$HealthBar.show()
 func play_again() -> void:
 	controller.play_again()
 	controller.start_level()
@@ -33,6 +33,7 @@ func game_over() -> void:
 	game_over_node.score_label.text = "Score: " + str(controller.player.score)
 	$MainMenu.hide()
 	$PlayerHealth.hide()
+	$HealthBar.hide()
 	$PlayerScore.hide()
 	$GameOver.show()
 
