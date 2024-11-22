@@ -16,6 +16,7 @@ var player_cooldown : float
 func _ready() -> void:
 	proc_gen_data = model.proc_gen_data
 	player = model.player
+	$View/HealthBar.init_health(player.health)
 
 # class representing a room node in a dungeon
 class RoomNode:
@@ -966,7 +967,7 @@ func get_random_tile_in_room(room_node : RoomNode) -> Vector2i:
 
 func player_take_damage(damage_amount : float) -> void:
 	player.health -= damage_amount
-	#print("player health: " + str(player.health))
+	$View/HealthBar.health = player.health
 	if player.health <= 0:
 		player.health = 0
 		view.health_label.text = "Health: " + str(player.health)
@@ -991,6 +992,7 @@ func quit_game() -> void:
 
 func play_again() -> void:
 	player.health = player.original_health
+	$View/HealthBar.health = player.health
 	view.health_label.text = "Health: " + str(player.health)
 	player.score = 0
 	view.score_label.text = "Health: " + str(player.score)
