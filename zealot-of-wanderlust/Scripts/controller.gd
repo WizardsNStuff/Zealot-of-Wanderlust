@@ -901,13 +901,17 @@ func enemy_spawning_finished() -> void:
 func handle_input() -> void:
 	# get the input direction for movement
 	var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
-
-	# set the player's velocity
-	player.velocity = input_direction * player.speed
 	
-	var attack_direction = Input.get_vector("attack_left", "attack_right", "attack_up", "attack_down")
-	if attack_direction != Vector2.ZERO && !player.is_attacking:
-		attack(attack_direction)
+	if Input.is_action_just_pressed("ui_cancel"):
+		# Switch the pause state
+		get_tree().paused = !get_tree().paused
+	elif !get_tree().paused:
+		# set the player's velocity
+		player.velocity = input_direction * player.speed
+		
+		var attack_direction = Input.get_vector("attack_left", "attack_right", "attack_up", "attack_down")
+		if attack_direction != Vector2.ZERO && !player.is_attacking:
+			attack(attack_direction)
 
 func attack(attack_direction: Vector2) -> void:
 	# start the attack
@@ -1082,11 +1086,12 @@ func check_key_status() -> bool:
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
 	if proc_gen_data.dungeon_created:
-		
 		handle_input()
+		
+		if get_tree().paused: return
+		
 		if Time.get_unix_time_from_system() >= player_cooldown:
 			player.is_attacking = false
-
 
 		# move the player and retrieve if any collisions occured
 		var player_collision = player.move_and_slide()
