@@ -54,3 +54,11 @@ var exit_location : Vector2i = Vector2i()
 var has_key : bool = false
 
 enum ROOM_TYPE {DEFAULT, GOBLIN_LAIR, TROLL_TUNNEL, DRAGON_DEN}
+
+var current_dungeon_floor : int = 1
+
+# for testing purposes remove walls from the dungeons
+@export var paint_walls = true
+
+# for testing purposes
+@export var permanent_key = false
