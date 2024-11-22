@@ -1,8 +1,9 @@
-[gd_scene load_steps=36 format=3 uid="uid://b2hi00650vmq1"]
+[gd_scene load_steps=37 format=3 uid="uid://b2hi00650vmq1"]
 
 [ext_resource type="Script" path="res://Scripts/view.gd" id="1_yc6w3"]
 [ext_resource type="PackedScene" uid="uid://m28273i40xcl" path="res://Scenes/main_menu.tscn" id="2_v62gn"]
 [ext_resource type="PackedScene" uid="uid://bu75n3pwlpxd4" path="res://Scenes/game_over.tscn" id="3_vdvbm"]
+[ext_resource type="PackedScene" uid="uid://bm0pjkjhhsd6p" path="res://Scenes/healthbar.tscn" id="4_25atk"]
 [ext_resource type="FontFile" uid="uid://dguq661xgdfvr" path="res://Assets/Geizer.otf" id="4_x16ur"]
 [ext_resource type="Texture2D" uid="uid://c7mr1dlng224o" path="res://Assets/key_32x32_24f.png" id="5_wn1ll"]
 
@@ -204,46 +205,6 @@ animations = [{
 "speed": 12.0
 }]
 
-[sub_resource type="Animation" id="Animation_383ec"]
-resource_name = "key_display"
-length = 2.0
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:scale")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.666667, 1.4, 2),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(1, 1), Vector2(3.1276, 3.1276), Vector2(3.1276, 3.1276), Vector2(1.71875, 1.71875)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.666667, 1.4, 2),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(640, 360), Vector2(493, 312), Vector2(493, 312), Vector2(53, 158)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:modulate")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(-0.233333, 0, 0.8),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
-}
-
 [sub_resource type="Animation" id="Animation_j8jwg"]
 length = 2.0
 step = 2.0
@@ -284,6 +245,46 @@ tracks/2/keys = {
 "values": [Color(1, 1, 1, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_383ec"]
+resource_name = "key_display"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.666667, 1.4, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(3.1276, 3.1276), Vector2(3.1276, 3.1276), Vector2(1.71875, 1.71875)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.666667, 1.4, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(640, 360), Vector2(493, 312), Vector2(493, 312), Vector2(53, 158)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(-0.233333, 0, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_psqwl"]
 _data = {
 "RESET": SubResource("Animation_j8jwg"),
@@ -305,6 +306,9 @@ view = NodePath("..")
 [node name="GameOver" parent="." node_paths=PackedStringArray("view") instance=ExtResource("3_vdvbm")]
 visible = false
 view = NodePath("..")
+
+[node name="HealthBar" parent="." instance=ExtResource("4_25atk")]
+visible = false
 
 [node name="PlayerHealth" type="Label" parent="."]
 visible = false
