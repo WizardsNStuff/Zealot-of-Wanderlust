@@ -12,6 +12,7 @@ class_name View
 @export var animated_key_sprite : AnimatedSprite2D
 @export var key_animation_player : AnimationPlayer
 @export var health_bar : HealthBar
+@export var floor_label : Label
 
 func start_level() -> void:
 	controller.start_level()
@@ -39,6 +40,7 @@ func game_over() -> void:
 	health_label.hide()
 	health_bar.hide()
 	exp_label.hide()
+	floor_label.hide()
 	player_level_label.hide()
 	score_label.hide()
 	game_over_node.show()

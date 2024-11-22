@@ -33,6 +33,7 @@ class RoomNode:
 	var prev_room : RoomNode = null	# reference to the previous room in the dungeon
 	var is_entrance : bool = false	# true if this room is the starting room for the dungeon
 	var is_exit : bool = false	# true if this room is the last room in dungeon and contains a staircase
+	var enemies : Array = []
 
 	# constructor initializes the room with a Rect2 representing its posiion and size 
 	func _init(room : Rect2):
@@ -40,6 +41,12 @@ class RoomNode:
 
 	func get_room_type() -> int:
 		return self.room_type 
+
+	func add_enemy(enemy) -> void:
+		enemies.append(enemy)
+
+	func remove_enemy():
+		return enemies.pop_back()
 
 	func get_room_tiles() -> Dictionary:
 		return self.room_tiles
@@ -121,12 +128,14 @@ func start_level() -> void:
 
 				# make the player visible
 				player.visible = true
-				
+
 				view.health_label.visible = true
 				view.score_label.visible = true
 				view.health_bar.visible = true
 				view.exp_label.visible = true
 				view.player_level_label.visible = true
+				view.floor_label.visible = true
+				view.floor_label.text = "FLOOR: " + str(proc_gen_data.current_dungeon_floor)
 				view.health_label.text = "HEALTH: " + str(player.health)
 				view.score_label.text = "SCORE: " + str(player.score)
 				view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
@@ -138,23 +147,11 @@ func start_level() -> void:
 
 				model.spawn_timer = Timer.new()
 				model.timers.add_child(model.spawn_timer)
-				model.spawn_timer.wait_time = model.spawn_interval
-				model.spawn_timer.one_shot = false
 				model.spawn_timer.stop()
-				model.spawn_timer.timeout.connect(spawn_enemies_in_room.bind(room_node))
-
-				model.stop_timer = Timer.new()
-				model.timers.add_child(model.stop_timer)
-				model.stop_timer.wait_time = model.spawn_duration
-				model.stop_timer.one_shot = true
-				model.stop_timer.stop()
-				model.stop_timer.timeout.connect(enemy_spawning_finished)
-
+				model.spawn_timer.timeout.connect(spawn_enemy.bind(room_node))
 				model.spawning_enabled = true
-				model.stop_timer.start()
-				model.spawn_timer.start()
-				
-				
+				model.spawn_timer.start(model.spawn_interval)
+
 				break
 
 # clears all the tiles on the screen
@@ -867,10 +864,13 @@ func give_player_key():
 	proc_gen_data.has_key = true
 	view.play_key_animation()
 
+func player_has_key() -> bool:
+	return proc_gen_data.has_key || proc_gen_data.permanent_key
+
 # handle player collision with a door
 func handle_door_collision(collider : Object) -> void:
 	# check if the player has a key
-	if proc_gen_data.has_key:
+	if player_has_key():
 		# unlock the door and remove it from the scene
 		collider.queue_free()
 		# set key flag to false after use
@@ -878,31 +878,32 @@ func handle_door_collision(collider : Object) -> void:
 
 		view.stop_key_animation()
 
+		# move to next room
 		if (proc_gen_data.current_room.next_room != null):
 			proc_gen_data.current_room = proc_gen_data.current_room.next_room
 			
+			# rebidn the spawn timer to the new room
 			model.spawn_timer.stop()
-			model.spawn_timer.disconnect("timeout", spawn_enemies_in_room)
-			model.spawn_timer.timeout.connect(spawn_enemies_in_room.bind(proc_gen_data.current_room))
-			model.stop_timer.stop()
+			model.spawn_timer.disconnect("timeout", spawn_enemy)
+			model.spawn_timer.timeout.connect(spawn_enemy.bind(proc_gen_data.current_room))
 			model.spawning_enabled = true
-			model.stop_timer.start()
 			model.spawn_timer.start()
 
 # handle player collision with a stair
 func handle_stair_collision(collider : Object) -> void:
 	# check if the player has a key
-	if proc_gen_data.has_key:
+	if player_has_key():
 
 		# set key flag to false after use
 		proc_gen_data.has_key = false
 
 		view.stop_key_animation()
 
+		proc_gen_data.current_dungeon_floor += 1
+
 		start_level()
 
 func enemy_spawning_finished() -> void:
-	model.stop_timer.stop()
 	model.spawn_timer.stop()
 	model.spawning_enabled = false
 
@@ -952,7 +953,8 @@ func attack(attack_direction: Vector2) -> void:
 	player.weapon.current_weapon.hitbox.disabled = true
 
 func update_animation() -> void:
-	if player.is_attacking : return
+	if player.is_attacking: 
+		return
 
 	if player.velocity == Vector2.ZERO:
 		if player.animations.is_playing():
@@ -986,14 +988,25 @@ func game_over() -> void:
 	proc_gen_data.dungeon_created = false
 	view.game_over()
 
-func spawn_enemies_in_room(room_node : RoomNode):
-	var random_tile : Vector2i = get_random_tile_in_room(room_node)
-	
-	var enemy = model.minotaur_enemy.instantiate()
-	enemy.position = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile)
-	enemy.player = player
-	enemy.controller = self
-	model.enemy_spawner.add_child(enemy)
+func spawn_enemy(room_node : RoomNode) -> void:
+	if room_node.enemies.size() > 0:
+		var enemy = room_node.remove_enemy().instantiate()
+		var random_tile : Vector2i = get_random_tile_in_room(room_node)
+		enemy.position = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile)
+		enemy.player = player
+		enemy.controller = self
+		model.enemy_spawner.add_child(enemy)
+	else:
+		enemy_spawning_finished()
+
+#func spawn_enemies_in_room(room_node : RoomNode):
+	#var random_tile : Vector2i = get_random_tile_in_room(room_node)
+	#
+	#var enemy = model.minotaur_enemy.instantiate()
+	#enemy.position = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile)
+	#enemy.player = player
+	#enemy.controller = self
+	#model.enemy_spawner.add_child(enemy)
 
 func quit_game() -> void:
 	get_tree().quit()
@@ -1007,7 +1020,9 @@ func play_again() -> void:
 	player.level = 1
 	view.player_level_label.text = "LVL: " + str(player.level)
 	player.experience = 0
+	player.level_up_threshold = 100
 	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
+	proc_gen_data.current_dungeon_floor = 1
 
 func update_score(score_amount : float) -> void:
 	player.score += score_amount
@@ -1024,6 +1039,44 @@ func get_random_room_type() -> int:
 func assign_random_room_types(room_nodes : Array[RoomNode]) -> void:
 	for room_node in room_nodes:
 		room_node.room_type = get_random_room_type()
+		give_room_enemies(room_node)
+
+func give_room_enemies(room_node : RoomNode) -> void:
+	var room_type_name : String = get_room_type_name(room_node.room_type)
+	
+	var skeleton_count : int
+	var minotaur_count : int
+	
+	match room_type_name:
+		"DEFAULT":
+			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1)
+			for i in range(skeleton_count):
+				room_node.add_enemy(model.skeleton_enemy)
+		"GOBLIN_LAIR":
+			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1 * 0.5)
+			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6)
+
+			for i in range(skeleton_count):
+				room_node.add_enemy(model.skeleton_enemy)
+
+			for i in range(minotaur_count):
+				room_node.add_enemy(model.minotaur_enemy)
+
+		"TROLL_TUNNEL":
+			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1 * 0.5)
+			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6)
+
+			for i in range(minotaur_count):
+				room_node.add_enemy(model.minotaur_enemy)
+
+			for i in range(skeleton_count):
+				room_node.add_enemy(model.skeleton_enemy)
+
+		"DRAGON_DEN":
+			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6)
+			for i in range(minotaur_count):
+				room_node.add_enemy(model.minotaur_enemy)
+
 
 func get_room_type_name(value : int) -> String:
 	var enum_keys = proc_gen_data.ROOM_TYPE.keys()
@@ -1053,8 +1106,8 @@ func paint_room_specific_tiles(room_nodes : Array[RoomNode], corridor_exclusive_
 
 		match room_type:
 			"DEFAULT":
-				floor_tile_pos = proc_gen_data.floor_tilemap_layer.red_floor_tile_atlas_position
-				wall_tile_pos = proc_gen_data.wall_tilemap_layer.brick_wall_tile_atlas_position
+				floor_tile_pos = proc_gen_data.floor_tilemap_layer.green_floor_tile_atlas_position
+				wall_tile_pos = proc_gen_data.wall_tilemap_layer.clay_wall_tile_atlas_position
 			"GOBLIN_LAIR":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.light_green_floor_tile_atlas_position
 				wall_tile_pos = proc_gen_data.wall_tilemap_layer.ice_wall_tile_atlas_position
@@ -1062,14 +1115,15 @@ func paint_room_specific_tiles(room_nodes : Array[RoomNode], corridor_exclusive_
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.light_brown_floor_tile_atlas_position
 				wall_tile_pos = proc_gen_data.wall_tilemap_layer.sponge_wall_tile_atlas_position
 			"DRAGON_DEN":
-				floor_tile_pos = proc_gen_data.floor_tilemap_layer.green_floor_tile_atlas_position
-				wall_tile_pos = proc_gen_data.wall_tilemap_layer.clay_wall_tile_atlas_position
+				floor_tile_pos = proc_gen_data.floor_tilemap_layer.red_floor_tile_atlas_position
+				wall_tile_pos = proc_gen_data.wall_tilemap_layer.brick_wall_tile_atlas_position
 
 		# paint the floor tiles
 		paint_tiles(room_tiles, proc_gen_data.floor_tilemap_layer, floor_atlas_id, floor_tile_pos)
 		# paint the wall tiles
 		#create_walls(room_tiles, proc_gen_data.wall_tilemap_layer, wall_atlas_id, wall_tile_pos)
-		create_room_walls(room_tiles, proc_gen_data.wall_tilemap_layer, wall_atlas_id, wall_tile_pos, corridor_exclusive_tiles)
+		if (proc_gen_data.paint_walls):
+			create_room_walls(room_tiles, proc_gen_data.wall_tilemap_layer, wall_atlas_id, wall_tile_pos, corridor_exclusive_tiles)
 
 func paint_all_corridor_exclusive_tiles(corridor_exclusive_tiles : Array) -> void:
 	
