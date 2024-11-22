@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://mtmlyb350jdp"]
+[gd_scene load_steps=7 format=3 uid="uid://mtmlyb350jdp"]
 
 [ext_resource type="Script" path="res://Scenes/healthbar.gd" id="1_tp7b3"]
 
@@ -8,7 +8,7 @@
 bg_color = Color(0.69246, 1.841e-06, 7.70092e-07, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4cadv"]
-bg_color = Color(0.129558, 0.129559, 0.129558, 1)
+bg_color = Color(0, 0, 0, 1)
 expand_margin_left = 1.0
 expand_margin_top = 1.0
 expand_margin_right = 1.0
@@ -19,10 +19,16 @@ shadow_offset = Vector2(0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ji88"]
 bg_color = Color(1, 1, 1, 1)
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_5qjwx"]
+load_path = "res://.godot/imported/Screenshot 2024-11-21 232245-1.png (1).png-a8804af66496eb9e40478bdcac063ca4.ctex"
+
 [node name="HealthBar" type="ProgressBar"]
 z_index = 1
-offset_right = 350.0
-offset_bottom = 20.0
+offset_left = 89.0
+offset_top = 32.0
+offset_right = 390.0
+offset_bottom = 72.0
+scale = Vector2(0.7, 0.7)
 theme_override_styles/background = SubResource("StyleBoxEmpty_a216e")
 theme_override_styles/fill = SubResource("StyleBoxFlat_jyitg")
 max_value = 200.0
@@ -46,3 +52,12 @@ show_percentage = false
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.4
 one_shot = true
+
+[node name="TextureRect" type="TextureRect" parent="."]
+z_index = -2
+layout_mode = 0
+offset_left = -135.0
+offset_top = -49.0
+offset_right = 366.0
+offset_bottom = 87.0
+texture = SubResource("CompressedTexture2D_5qjwx")

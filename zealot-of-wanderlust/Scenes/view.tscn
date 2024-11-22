@@ -313,20 +313,20 @@ z_index = 0
 
 [node name="PlayerHealth" type="Label" parent="."]
 visible = false
-offset_left = 19.0
-offset_top = 31.0
-offset_right = 129.0
-offset_bottom = 101.0
+offset_left = 11.0
+offset_top = 99.0
+offset_right = 121.0
+offset_bottom = 169.0
 text = "HEALTH: "
 label_settings = SubResource("LabelSettings_p1aeb")
 horizontal_alignment = 1
 
 [node name="PlayerScore" type="Label" parent="."]
 visible = false
-offset_left = 20.0
-offset_top = 78.0
-offset_right = 137.0
-offset_bottom = 118.0
+offset_left = 12.0
+offset_top = 146.0
+offset_right = 129.0
+offset_bottom = 186.0
 text = "Score: 0"
 label_settings = SubResource("LabelSettings_i30tg")
 
