@@ -4,7 +4,8 @@ class_name Model
 # Player variable
 @export var player : Player
 
-@export var basic_enemy : PackedScene
+@export var skeleton_enemy : PackedScene
+@export var minotaur_enemy : PackedScene
 
 @export var enemy_spawner : Node
 
@@ -18,6 +19,6 @@ var spawning_enabled = true
 @export var timers : Node
 
 # Enemies
-@export var enemies := Array([], TYPE_OBJECT, "CharacterBody2D", Enemy)
+#@export var enemies := Array([], TYPE_OBJECT, "CharacterBody2D", Enemy)
 
 @export var proc_gen_data : ProcGenData

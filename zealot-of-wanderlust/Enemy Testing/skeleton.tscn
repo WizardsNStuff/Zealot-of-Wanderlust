@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://d3xseqrxnwvjh"]
 
 [ext_resource type="Texture2D" uid="uid://ubj5y2wlu8ln" path="res://Assets/monsters.png" id="1_fwdy1"]
-[ext_resource type="Script" path="res://Enemy Testing/enemy_1.gd" id="1_n3po6"]
+[ext_resource type="Script" path="res://Enemy Testing/skeleton.gd" id="1_n3po6"]
 [ext_resource type="PackedScene" uid="uid://bflc4dyyluhbu" path="res://Scenes/enemy_healthbar.tscn" id="3_tq68h"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_eftm7"]
@@ -10,7 +10,7 @@ load_path = "res://.godot/imported/monsters-damaged.png-c1ad31d52634828343350653
 [sub_resource type="CircleShape2D" id="CircleShape2D_a5rah"]
 radius = 9.0
 
-[node name="Enemy1" type="CharacterBody2D"]
+[node name="Skeleton" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 15
 motion_mode = 1

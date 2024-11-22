@@ -989,7 +989,7 @@ func game_over() -> void:
 func spawn_enemies_in_room(room_node : RoomNode):
 	var random_tile : Vector2i = get_random_tile_in_room(room_node)
 	
-	var enemy = model.basic_enemy.instantiate()
+	var enemy = model.minotaur_enemy.instantiate()
 	enemy.position = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile)
 	enemy.player = player
 	enemy.controller = self
