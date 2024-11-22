@@ -1,23 +1,32 @@
-[gd_scene load_steps=4 format=3 uid="uid://bwv3arxa4rs65"]
+[gd_scene load_steps=6 format=3 uid="uid://bwv3arxa4rs65"]
 
 [ext_resource type="Texture2D" uid="uid://ubj5y2wlu8ln" path="res://Assets/monsters.png" id="1_kw7yk"]
 [ext_resource type="Script" path="res://Enemy Testing/minotaur.gd" id="1_x02qx"]
+[ext_resource type="Texture2D" uid="uid://7wl77j3vsg" path="res://Assets/monsters-damaged.png" id="3_6hbj2"]
+[ext_resource type="PackedScene" uid="uid://bflc4dyyluhbu" path="res://Scenes/enemy_healthbar.tscn" id="4_a3i3c"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7n77i"]
 radius = 11.0454
 
-[node name="Enemy2" type="CharacterBody2D"]
+[node name="Minotaur" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 3
 motion_mode = 1
 script = ExtResource("1_x02qx")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="MainSprite" type="Sprite2D" parent="."]
 texture = ExtResource("1_kw7yk")
 region_enabled = true
 region_rect = Rect2(227.806, 224.011, 26.9925, 30.7317)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="DamagedSprite" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("3_6hbj2")
+region_enabled = true
+region_rect = Rect2(227.806, 224.011, 26.9925, 30.7317)
+
+[node name="HitBox" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("CircleShape2D_7n77i")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
@@ -25,3 +34,19 @@ shape = SubResource("CircleShape2D_7n77i")
 [node name="RayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(200, 0)
 collision_mask = 2
+
+[node name="HealthBarTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="DamagedSpriteTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="HealthBar" parent="." instance=ExtResource("4_a3i3c")]
+visible = false
+offset_left = -11.0
+offset_top = -18.0
+offset_right = 139.0
+offset_bottom = -3.0
+scale = Vector2(0.15, 0.15)
