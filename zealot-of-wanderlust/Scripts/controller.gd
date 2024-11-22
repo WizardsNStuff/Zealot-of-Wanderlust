@@ -992,7 +992,7 @@ func quit_game() -> void:
 
 func play_again() -> void:
 	player.health = player.original_health
-	$View/HealthBar.health = player.health
+	$View/HealthBar.init_health(player.health)
 	view.health_label.text = "Health: " + str(player.health)
 	player.score = 0
 	view.score_label.text = "Health: " + str(player.score)
