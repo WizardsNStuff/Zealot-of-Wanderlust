@@ -5,8 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://bwv3arxa4rs65" path="res://Enemy Testing/minotaur.tscn" id="3_5sxsp"]
 [ext_resource type="Texture2D" uid="uid://b36g8amcnnwwo" path="res://Assets/tiles.png" id="4_3hyqv"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_kvrhi"]
-radius = 14.0357
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jek5g"]
+size = Vector2(12, 24)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_a27tw"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
@@ -480,7 +480,8 @@ region_enabled = true
 region_rect = Rect2(31.2087, 128.17, 33.2563, 32.9695)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-shape = SubResource("CircleShape2D_kvrhi")
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_jek5g")
 
 [node name="Enemy2" parent="." node_paths=PackedStringArray("player") instance=ExtResource("3_5sxsp")]
 position = Vector2(-299, -125)
