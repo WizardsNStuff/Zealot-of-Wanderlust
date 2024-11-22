@@ -2,21 +2,25 @@
 
 [ext_resource type="Script" path="res://Scripts/controller.gd" id="1_hhabl"]
 [ext_resource type="PackedScene" uid="uid://cgu6hwypoqcg3" path="res://Scenes/model.tscn" id="2_4gxgj"]
-[ext_resource type="PackedScene" path="res://Scenes/view.tscn" id="3_eky8r"]
+[ext_resource type="PackedScene" uid="uid://dhhruhsbpp7ss" path="res://Scenes/view.tscn" id="3_eky8r"]
 [ext_resource type="AudioStream" uid="uid://6mut3ae27vk1" path="res://cloaks_daggers.mp3" id="10_3fdig"]
 
 [node name="WizardGame" type="Node" node_paths=PackedStringArray("model", "view")]
+process_mode = 3
 script = ExtResource("1_hhabl")
 model = NodePath("Model")
 view = NodePath("View")
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
+process_mode = 3
 stream = ExtResource("10_3fdig")
 volume_db = -15.0
 autoplay = true
 
 [node name="Model" parent="." instance=ExtResource("2_4gxgj")]
+process_mode = 1
 enemies = []
 
 [node name="View" parent="." node_paths=PackedStringArray("controller") instance=ExtResource("3_eky8r")]
+process_mode = 1
 controller = NodePath("..")
