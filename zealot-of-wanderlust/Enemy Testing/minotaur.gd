@@ -65,9 +65,18 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity = last_known_dir * 300
 		move_and_slide()
+	
+		var collision
+	
+		for i in range(get_slide_collision_count()):
+			collision = get_slide_collision(i)
+			if collision || locked_on_player_timer >= 2.0:
+				velocity = Vector2i.ZERO
+				break
+
 		locked_on_player_timer += delta
 		# this is how we go back to the 'ready/normal' state
-		if (locked_on_player_timer >= 2.0):
+		if (locked_on_player_timer >= 2.0) || collision:
 			rushing = false
 			locked_on_player_timer = 0.0
 			can_charge_again_timer = 3.5
