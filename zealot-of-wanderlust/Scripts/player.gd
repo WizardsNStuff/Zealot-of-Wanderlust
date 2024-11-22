@@ -14,7 +14,7 @@ var projectile_life_span : float = 0.5
 var damage_cooldown: float = 0.75
 
 var level : int = 1
-var level_up_threshold : int = 29
+var level_up_threshold : int = 100
 signal level_up
 var experience : int = 0 :
 	set(value):

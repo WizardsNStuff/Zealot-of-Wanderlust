@@ -7,6 +7,8 @@ class_name View
 @export var game_over_node : GameOver
 @export var health_label : Label
 @export var score_label : Label
+@export var exp_label : Label
+@export var player_level_label : Label
 @export var animated_key_sprite : AnimatedSprite2D
 @export var key_animation_player : AnimationPlayer
 @export var health_bar : HealthBar
@@ -36,6 +38,8 @@ func game_over() -> void:
 	main_menu_node.hide()
 	health_label.hide()
 	health_bar.hide()
+	exp_label.hide()
+	player_level_label.hide()
 	score_label.hide()
 	game_over_node.show()
 

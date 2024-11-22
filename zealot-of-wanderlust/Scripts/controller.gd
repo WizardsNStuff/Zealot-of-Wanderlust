@@ -100,6 +100,8 @@ func start_level() -> void:
 		# update the generated rooms in proc gen data with the newly generated room nodes
 		proc_gen_data.generated_rooms = room_nodes
 
+		print("number of rooms: ", proc_gen_data.generated_rooms.size())
+
 		# check all the room nodes
 		for room_node in room_nodes:
 			# if the room node is and entrance
@@ -123,7 +125,11 @@ func start_level() -> void:
 				view.health_label.visible = true
 				view.score_label.visible = true
 				view.health_bar.visible = true
+				view.exp_label.visible = true
+				view.player_level_label.visible = true
 				view.health_label.text = "HEALTH: " + str(player.health)
+				view.score_label.text = "SCORE: " + str(player.score)
+				view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 
 				# mark the dungeon generation as successful
 				proc_gen_data.dungeon_created = true
@@ -930,7 +936,7 @@ func attack(attack_direction: Vector2) -> void:
 		player.animations.play("attack_right")
 	else:
 		player.animations.play("attack_left")
-	print(attack_direction)
+	#print(attack_direction)
 	# shoot projectile
 	var projectile_scene := load("res://Player Combat/projectile.tscn")
 	var projectile : Projectile = projectile_scene.instantiate()
@@ -998,11 +1004,17 @@ func play_again() -> void:
 	view.health_label.text = "Health: " + str(player.health)
 	player.score = 0
 	view.score_label.text = "Health: " + str(player.score)
+	player.level = 1
+	view.player_level_label.text = "LVL: " + str(player.level)
+	player.experience = 0
+	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 
 func update_score(score_amount : float) -> void:
 	player.score += score_amount
 	player.experience += score_amount
 	view.score_label.text = "Score: " + str(player.score)
+	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
+	view.player_level_label.text = "LVL: " + str(player.level)
 
 func get_random_room_type() -> int:
 	var room_types = proc_gen_data.ROOM_TYPE.keys()
