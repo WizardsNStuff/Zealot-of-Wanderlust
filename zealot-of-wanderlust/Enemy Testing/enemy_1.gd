@@ -11,7 +11,7 @@ var score = 10
 
 func _ready() -> void:
 	### Declaring attributes from GameCharacterScript ###
-	health = 50
+	health = 75
 	defense = 20
 	main_damage = 15
 	main_damage_cooldown = 1.5
@@ -40,11 +40,6 @@ func take_damage(damage_amount : float) -> void:
 	
 	# a timer could be added here to let enemy turn red and show healthbar
 	# one last time before queue_free'ing, lmk if you want that to happen
-	if health <= 0:
-		controller.update_score(score)
-		if controller.check_key_status():
-			controller.give_player_key()
-		self.queue_free()
 
 # damage timer cooldown
 func startCooldown(delta: float) -> void:
@@ -61,6 +56,11 @@ func canEnemyHit() -> bool:
 func damaged_sprite_timer_timeout():
 	$MainSprite.show()
 	$DamagedSprite.hide()
+	if health <= 0:
+		controller.update_score(score)
+		if controller.check_key_status():
+			controller.give_player_key()
+		self.queue_free()
 
 func health_bar_timer_timeout():
 	$HealthBar.hide()
