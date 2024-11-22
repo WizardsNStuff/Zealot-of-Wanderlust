@@ -14,14 +14,14 @@ var projectile_life_span : float = 0.5
 var damage_cooldown: float = 0.75
 
 var level : int = 1
-var level_up_threshold : int = 100
+var level_up_threshold : int = 29
 signal level_up
 var experience : int = 0 :
 	set(value):
 		if value >= level_up_threshold:
 			level_up.emit()
 			level += 1
-			experience = level_up_threshold - value
+			experience = abs(level_up_threshold - value)
 			level_up_threshold *= 1.1
 		else:
 			experience = value
