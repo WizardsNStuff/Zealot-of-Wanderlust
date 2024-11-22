@@ -14,11 +14,18 @@ func _ready() -> void:
 	health = 100
 	defense = 20
 	main_damage = 15
-	main_damage_cooldown = 3.5
+	main_damage_cooldown = 1.5
+	$Timer.connect("timeout", Callable(self, "damaged_sprite_timer_timeout"))
 
 func take_damage(damage_amount : float) -> void:
 	health -= damage_amount
+	$MainSprite.hide()
+	$DamagedSprite.show()
+	$Timer.start()
 	if health <= 0:
+		$MainSprite.hide()
+		$DamagedSprite.show()
+		$Timer.start()
 		controller.update_score(score)
 		if controller.check_key_status():
 			controller.give_player_key()
@@ -43,3 +50,7 @@ func _physics_process(delta: float) -> void:
 	self.velocity = direction_to_player * speed
 	
 	move_and_slide()
+
+func damaged_sprite_timer_timeout():
+	$MainSprite.show()
+	$DamagedSprite.hide()

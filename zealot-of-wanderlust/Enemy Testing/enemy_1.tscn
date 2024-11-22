@@ -1,10 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://d3xseqrxnwvjh"]
+[gd_scene load_steps=5 format=3 uid="uid://d3xseqrxnwvjh"]
 
 [ext_resource type="Texture2D" uid="uid://ubj5y2wlu8ln" path="res://Assets/monsters.png" id="1_fwdy1"]
 [ext_resource type="Script" path="res://Enemy Testing/enemy_1.gd" id="1_n3po6"]
 
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_eftm7"]
+load_path = "res://.godot/imported/monsters-damaged.png-c1ad31d526348283433506534646f152.ctex"
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_a5rah"]
-radius = 12.0
+radius = 9.0
 
 [node name="Enemy1" type="CharacterBody2D"]
 collision_layer = 2
@@ -14,10 +17,21 @@ platform_on_leave = 2
 platform_floor_layers = 4294967041
 script = ExtResource("1_n3po6")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="MainSprite" type="Sprite2D" parent="."]
 texture = ExtResource("1_fwdy1")
 region_enabled = true
 region_rect = Rect2(0, 129.354, 26.9761, 29.713)
 
+[node name="DamagedSprite" type="Sprite2D" parent="."]
+visible = false
+texture = SubResource("CompressedTexture2D_eftm7")
+region_enabled = true
+region_rect = Rect2(0, 129.354, 26.9761, 29.713)
+
 [node name="Hitbox" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("CircleShape2D_a5rah")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
