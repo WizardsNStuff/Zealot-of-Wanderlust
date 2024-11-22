@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://d3xseqrxnwvjh"]
+[gd_scene load_steps=6 format=3 uid="uid://d3xseqrxnwvjh"]
 
 [ext_resource type="Texture2D" uid="uid://ubj5y2wlu8ln" path="res://Assets/monsters.png" id="1_fwdy1"]
 [ext_resource type="Script" path="res://Enemy Testing/enemy_1.gd" id="1_n3po6"]
+[ext_resource type="PackedScene" uid="uid://bflc4dyyluhbu" path="res://Scenes/enemy_healthbar.tscn" id="3_tq68h"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_eftm7"]
 load_path = "res://.godot/imported/monsters-damaged.png-c1ad31d526348283433506534646f152.ctex"
@@ -32,6 +33,18 @@ region_rect = Rect2(0, 129.354, 26.9761, 29.713)
 visible = false
 shape = SubResource("CircleShape2D_a5rah")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="HealthBarTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="DamagedSpriteTimer" type="Timer" parent="."]
 wait_time = 0.2
 one_shot = true
+
+[node name="HealthBar" parent="." instance=ExtResource("3_tq68h")]
+visible = false
+offset_left = -11.0
+offset_top = -18.0
+offset_right = 139.0
+offset_bottom = -3.0
+scale = Vector2(0.15, 0.15)
