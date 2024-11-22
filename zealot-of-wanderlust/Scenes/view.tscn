@@ -309,6 +309,7 @@ view = NodePath("..")
 
 [node name="HealthBar" parent="." instance=ExtResource("4_25atk")]
 visible = false
+z_index = 0
 
 [node name="PlayerHealth" type="Label" parent="."]
 visible = false

@@ -967,11 +967,12 @@ func get_random_tile_in_room(room_node : RoomNode) -> Vector2i:
 
 func player_take_damage(damage_amount : float) -> void:
 	player.health -= damage_amount
-	$View/HealthBar.health = player.health
+	
 	if player.health <= 0:
 		player.health = 0
 		view.health_label.text = "Health: " + str(player.health)
 		game_over()
+	$View/HealthBar.health = player.health
 	view.health_label.text = "Health: " + str(player.health)
 
 func game_over() -> void:

@@ -25,6 +25,7 @@ offset_right = 350.0
 offset_bottom = 20.0
 theme_override_styles/background = SubResource("StyleBoxEmpty_a216e")
 theme_override_styles/fill = SubResource("StyleBoxFlat_jyitg")
+max_value = 200.0
 value = 60.0
 show_percentage = false
 script = ExtResource("1_tp7b3")
