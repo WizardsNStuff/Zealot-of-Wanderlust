@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://d3j48o1j7sdd4"]
+[gd_scene load_steps=16 format=3 uid="uid://d3j48o1j7sdd4"]
 
 [ext_resource type="Script" path="res://Scripts/proc_gen_data.gd" id="1_tg1o3"]
 [ext_resource type="Texture2D" uid="uid://b36g8amcnnwwo" path="res://Assets/tiles.png" id="2_he0n7"]
@@ -7,48 +7,91 @@
 [ext_resource type="Script" path="res://Scripts/Proc Gen TileMaps/staircase_tilemap_layer.gd" id="5_4w743"]
 [ext_resource type="Script" path="res://Scripts/Proc Gen TileMaps/door_tilemap_layer.gd" id="6_j24jv"]
 
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_af13t"]
+vertices = PackedVector2Array(16, 16, -16, 16, -16, -16, 16, -16)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)])
+agent_radius = 0.0
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_d76g3"]
 texture = ExtResource("2_he0n7")
 texture_region_size = Vector2i(32, 32)
 0:6/0 = 0
+0:6/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 1:6/0 = 0
+1:6/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 2:6/0 = 0
+2:6/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 3:6/0 = 0
+3:6/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 0:7/0 = 0
+0:7/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 1:7/0 = 0
+1:7/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 2:7/0 = 0
+2:7/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 3:7/0 = 0
+3:7/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 1:8/0 = 0
+1:8/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 2:8/0 = 0
+2:8/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 3:8/0 = 0
+3:8/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 1:9/0 = 0
+1:9/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 2:9/0 = 0
+2:9/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 3:9/0 = 0
+3:9/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 1:10/0 = 0
+1:10/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 2:10/0 = 0
+2:10/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 3:10/0 = 0
+3:10/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 0:11/0 = 0
+0:11/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 1:11/0 = 0
+1:11/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 2:11/0 = 0
+2:11/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 3:11/0 = 0
+3:11/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 0:12/0 = 0
+0:12/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 1:12/0 = 0
+1:12/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 2:12/0 = 0
+2:12/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 3:12/0 = 0
+3:12/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 0:13/0 = 0
+0:13/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 1:13/0 = 0
+1:13/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 2:13/0 = 0
+2:13/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 3:13/0 = 0
+3:13/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 1:14/0 = 0
+1:14/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 2:14/0 = 0
+2:14/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 3:14/0 = 0
+3:14/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 0:15/0 = 0
+0:15/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 1:15/0 = 0
+1:15/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 2:15/0 = 0
+2:15/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 3:15/0 = 0
+3:15/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_af13t")
 
 [sub_resource type="TileSet" id="TileSet_ex2na"]
 tile_size = Vector2i(32, 32)
+navigation_layer_0/layers = 1
 sources/0 = SubResource("TileSetAtlasSource_d76g3")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yiqo6"]

@@ -1,5 +1,5 @@
 extends GameCharacter
-class_name Skeleton
+class_name Enemy
 
 var speed = 75
 var attack_range = 28

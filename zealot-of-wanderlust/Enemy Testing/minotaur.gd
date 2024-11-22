@@ -19,7 +19,7 @@ func _ready() -> void:
 	self.max_slides = 1
 	
 	# redefining variables inherited from Enemy
-	speed = 65
+	speed = 50
 	attack_range = 20
 	score = 100
 	
@@ -28,6 +28,9 @@ func _ready() -> void:
 	defense = 20
 	main_damage = 35
 	main_damage_cooldown = 5
+	$DamagedSpriteTimer.connect("timeout", Callable(self, "damaged_sprite_timer_timeout"))
+	$HealthBarTimer.connect("timeout", Callable(self, "health_bar_timer_timeout"))
+	#$Timer.connect("timeout", Callable(self, "test"))
 
 
 
@@ -48,6 +51,8 @@ func _physics_process(delta: float) -> void:
 			can_charge_again_timer -= delta
 		
 		# add time when raycast collides with player so enemy can soon change states
+		# you could check if the raycast collider is player but it should be fine with just collision
+		# mask layers (both raycast and player are on collision layer 3 so it works fine) 
 		if ($RayCast2D.is_colliding() and can_charge_again_timer <= 0):
 			locked_on_player_timer += delta
 		
@@ -71,3 +76,8 @@ func _physics_process(delta: float) -> void:
 # sets the target pos of the path to the players global pos
 func makepath() -> void:
 	nav_agent.target_position = player.global_position
+
+# connect this to 'Timer' if you want to actually see the pathfinding path
+# cause in physics process it goes too fast to be visible
+func test():
+	makepath()
