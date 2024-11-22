@@ -1048,11 +1048,11 @@ func give_room_enemies(room_node : RoomNode) -> void:
 	var minotaur_count : int
 	
 	match room_type_name:
-		"DEFAULT":
+		"SKELETONS":
 			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1)
 			for i in range(skeleton_count):
 				room_node.add_enemy(model.skeleton_enemy)
-		"GOBLIN_LAIR":
+		"SKELETONS_AND_MINOTAURS":
 			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1 * 0.5)
 			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6)
 
@@ -1062,7 +1062,7 @@ func give_room_enemies(room_node : RoomNode) -> void:
 			for i in range(minotaur_count):
 				room_node.add_enemy(model.minotaur_enemy)
 
-		"TROLL_TUNNEL":
+		"MINOTAURS_AND_SKELETONS":
 			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1 * 0.5)
 			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6)
 
@@ -1072,7 +1072,7 @@ func give_room_enemies(room_node : RoomNode) -> void:
 			for i in range(skeleton_count):
 				room_node.add_enemy(model.skeleton_enemy)
 
-		"DRAGON_DEN":
+		"MINOTAURS":
 			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6)
 			for i in range(minotaur_count):
 				room_node.add_enemy(model.minotaur_enemy)
@@ -1085,7 +1085,7 @@ func get_room_type_name(value : int) -> String:
 		if proc_gen_data.ROOM_TYPE[key] == value:
 			return key
 
-	return "DEFAULT"
+	return "SKELETONS"
 
 func paint_room_specific_tiles(room_nodes : Array[RoomNode], corridor_exclusive_tiles : Array) -> void:
 	for room_node in room_nodes:
@@ -1105,16 +1105,16 @@ func paint_room_specific_tiles(room_nodes : Array[RoomNode], corridor_exclusive_
 		var wall_tile_pos : Vector2i
 
 		match room_type:
-			"DEFAULT":
+			"SKELETONS":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.green_floor_tile_atlas_position
 				wall_tile_pos = proc_gen_data.wall_tilemap_layer.clay_wall_tile_atlas_position
-			"GOBLIN_LAIR":
+			"SKELETONS_AND_MINOTAURS":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.light_green_floor_tile_atlas_position
 				wall_tile_pos = proc_gen_data.wall_tilemap_layer.ice_wall_tile_atlas_position
-			"TROLL_TUNNEL":
+			"MINOTAURS_AND_SKELETONS":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.light_brown_floor_tile_atlas_position
 				wall_tile_pos = proc_gen_data.wall_tilemap_layer.sponge_wall_tile_atlas_position
-			"DRAGON_DEN":
+			"MINOTAURS":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.red_floor_tile_atlas_position
 				wall_tile_pos = proc_gen_data.wall_tilemap_layer.brick_wall_tile_atlas_position
 

@@ -27,7 +27,7 @@ func _ready() -> void:
 	health = 200
 	defense = 20
 	main_damage = 35
-	main_damage_cooldown = 5
+	main_damage_cooldown = 2
 	$DamagedSpriteTimer.connect("timeout", Callable(self, "damaged_sprite_timer_timeout"))
 	$HealthBarTimer.connect("timeout", Callable(self, "health_bar_timer_timeout"))
 	#$Timer.connect("timeout", Callable(self, "test"))
