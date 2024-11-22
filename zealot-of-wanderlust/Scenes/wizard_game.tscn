@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/controller.gd" id="1_hhabl"]
 [ext_resource type="PackedScene" uid="uid://cgu6hwypoqcg3" path="res://Scenes/model.tscn" id="2_4gxgj"]
-[ext_resource type="PackedScene" uid="uid://b2hi00650vmq1" path="res://Scenes/view.tscn" id="3_eky8r"]
+[ext_resource type="PackedScene" path="res://Scenes/view.tscn" id="3_eky8r"]
 [ext_resource type="AudioStream" uid="uid://6mut3ae27vk1" path="res://cloaks_daggers.mp3" id="10_3fdig"]
 
 [node name="WizardGame" type="Node" node_paths=PackedStringArray("model", "view")]
