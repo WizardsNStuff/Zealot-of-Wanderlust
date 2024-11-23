@@ -16,6 +16,9 @@ class_name ProcGenData
 # the tilemap layer for the objects
 @export var object_tilemap_layer : ObjectTileMapLayer
 
+# the tilemap layer for the background
+@export var background_tilemap_layer : BackgroundTileMapLayer
+
 @export var doors_root_node : Node
 
 # number of iterations to run the random walk aglorithm
@@ -39,6 +42,9 @@ class_name ProcGenData
 
 # total height of the dungeon
 @export var dungeon_height : int = 80
+
+# number of extra tiles added around the dungeon for the background tile generation
+@export var background_padding : int = 10
 
 # 
 @export var bsp_random_splits : bool = false

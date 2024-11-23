@@ -1,12 +1,23 @@
-[gd_scene load_steps=19 format=3 uid="uid://d3j48o1j7sdd4"]
+[gd_scene load_steps=22 format=3 uid="uid://d3j48o1j7sdd4"]
 
 [ext_resource type="Script" path="res://Scripts/proc_gen_data.gd" id="1_tg1o3"]
+[ext_resource type="Script" path="res://Scripts/Proc Gen TileMaps/background_tilemap_layer.gd" id="2_5e75w"]
 [ext_resource type="Texture2D" uid="uid://b36g8amcnnwwo" path="res://Assets/tiles.png" id="2_he0n7"]
 [ext_resource type="Script" path="res://Scripts/Proc Gen TileMaps/floor_tilemap_layer.gd" id="3_ggecx"]
 [ext_resource type="Script" path="res://Scripts/Proc Gen TileMaps/wall_tilemap_layer.gd" id="4_4qf0y"]
 [ext_resource type="Script" path="res://Scripts/Proc Gen TileMaps/object_tilemap_layer.gd" id="4_ojkf4"]
 [ext_resource type="Script" path="res://Scripts/Proc Gen TileMaps/staircase_tilemap_layer.gd" id="5_4w743"]
 [ext_resource type="Script" path="res://Scripts/Proc Gen TileMaps/door_tilemap_layer.gd" id="6_j24jv"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4tfh5"]
+texture = ExtResource("2_he0n7")
+texture_region_size = Vector2i(32, 32)
+3:14/0 = 0
+0:13/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_7xpjg"]
+tile_size = Vector2i(32, 32)
+sources/5 = SubResource("TileSetAtlasSource_4tfh5")
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_af13t"]
 vertices = PackedVector2Array(16, 16, -16, 16, -16, -16, 16, -16)
@@ -203,14 +214,19 @@ tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/3 = SubResource("TileSetAtlasSource_wvxqh")
 
-[node name="ProcGenData" type="Node" node_paths=PackedStringArray("floor_tilemap_layer", "wall_tilemap_layer", "staircase_tilemap_layer", "door_tilemap_layer", "object_tilemap_layer", "doors_root_node")]
+[node name="ProcGenData" type="Node" node_paths=PackedStringArray("floor_tilemap_layer", "wall_tilemap_layer", "staircase_tilemap_layer", "door_tilemap_layer", "object_tilemap_layer", "background_tilemap_layer", "doors_root_node")]
 script = ExtResource("1_tg1o3")
 floor_tilemap_layer = NodePath("Floor")
 wall_tilemap_layer = NodePath("Wall")
 staircase_tilemap_layer = NodePath("Staircase")
 door_tilemap_layer = NodePath("Door")
 object_tilemap_layer = NodePath("Object")
+background_tilemap_layer = NodePath("Background")
 doors_root_node = NodePath("Doors")
+
+[node name="Background" type="TileMapLayer" parent="."]
+tile_set = SubResource("TileSet_7xpjg")
+script = ExtResource("2_5e75w")
 
 [node name="Floor" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_ex2na")

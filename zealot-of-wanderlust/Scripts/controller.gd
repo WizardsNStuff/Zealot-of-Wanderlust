@@ -91,6 +91,8 @@ func start_level() -> void:
 	# generate rooms and return whether or not the dungeon passes evaluation
 	var valid_generation : bool = room_first_gen(room_nodes)
 
+	paint_background()
+
 	# if the generation does not pass evaluation, retry
 	if (!valid_generation):
 		#print("retry")
@@ -1200,7 +1202,23 @@ func paint_all_corridor_exclusive_tiles(corridor_exclusive_tiles : Array) -> voi
 	for sub_arr in corridor_exclusive_tiles:
 		for tile in sub_arr:
 			paint_single_tile(proc_gen_data.floor_tilemap_layer, floor_atlas_id, tile, floor_tile_pos)
+
+func paint_background() -> void:
+	var tilemap_layer = proc_gen_data.background_tilemap_layer
+	var atlas_id = proc_gen_data.background_tilemap_layer.atlas_id
+	var normal_tile = proc_gen_data.background_tilemap_layer.background_tile_atlas_position
+	var grass_tile = proc_gen_data.background_tilemap_layer.grass_background_tile_atlas_position
 	
+	var w = proc_gen_data.dungeon_width + (proc_gen_data.background_padding * 2)
+	var h = proc_gen_data.dungeon_height + (proc_gen_data.background_padding * 2)
+	
+	for i in range(-w / 2, w / 2):
+		for j in range(-h / 2, h / 2):
+			var tile_pos = Vector2i(i,j)
+			if (randi() % 100 < 10):
+				paint_single_tile(tilemap_layer, atlas_id, tile_pos, grass_tile)
+			else:
+				paint_single_tile(tilemap_layer, atlas_id, tile_pos, normal_tile)
 
 func get_living_enemy_count() -> int:
 	return model.enemy_spawner.get_child_count(false)
