@@ -13,6 +13,9 @@ class_name ProcGenData
 # the tilemap layer for the doors
 @export var door_tilemap_layer : DoorTileMapLayer
 
+# the tilemap layer for the objects
+@export var object_tilemap_layer : ObjectTileMapLayer
+
 @export var doors_root_node : Node
 
 # number of iterations to run the random walk aglorithm

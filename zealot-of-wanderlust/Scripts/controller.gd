@@ -107,7 +107,7 @@ func start_level() -> void:
 		# update the generated rooms in proc gen data with the newly generated room nodes
 		proc_gen_data.generated_rooms = room_nodes
 
-		print("number of rooms: ", proc_gen_data.generated_rooms.size())
+		#print("number of rooms: ", proc_gen_data.generated_rooms.size())
 
 		# check all the room nodes
 		for room_node in room_nodes:
@@ -167,6 +167,7 @@ func room_first_gen(room_nodes : Array[RoomNode]) -> bool:
 	clear_tiles(proc_gen_data.wall_tilemap_layer)
 	clear_tiles(proc_gen_data.staircase_tilemap_layer)
 	clear_tiles(proc_gen_data.door_tilemap_layer)
+	clear_tiles(proc_gen_data.object_tilemap_layer)
 	clear_doors()
 
 	# array to store room nodes
@@ -1088,35 +1089,84 @@ func get_room_type_name(value : int) -> String:
 	return "SKELETONS"
 
 func paint_room_specific_tiles(room_nodes : Array[RoomNode], corridor_exclusive_tiles : Array) -> void:
+	# the a	tlas ID for the floor tilemap layer
+	var floor_atlas_id : int = proc_gen_data.floor_tilemap_layer.atlas_id
+	# get the atlas ID for the wall tilemap layer
+	var wall_atlas_id : int = proc_gen_data.wall_tilemap_layer.atlas_id
+	# get the atlas ID for the object tilemap layer
+	var object_atlas_id : int = proc_gen_data.object_tilemap_layer.atlas_id
+	
 	for room_node in room_nodes:
 		# get all floor tile positions for the generated rooms and corridors 
 		var room_tiles = room_node.get_room_tiles()
 		
 		var room_type = get_room_type_name(room_node.get_room_type())
 
-		# the atlas ID for the floor tilemap layer
-		var floor_atlas_id : int = proc_gen_data.floor_tilemap_layer.atlas_id
-		# get the atlas ID for the wall tilemap layer
-		var wall_atlas_id : int = proc_gen_data.wall_tilemap_layer.atlas_id
-
 		# the position of the floor tile in the atlas
 		var floor_tile_pos : Vector2i
 		# the position of the wall tile in the atlas
 		var wall_tile_pos : Vector2i
 
+		var objects : Dictionary = {}
+
+		#closed_chest_object_tile_atlas_position: 0,
+		#open_chest_object_tile_atlas_position: 0,
+		#closed_pot_object_tile_atlas_position: 0,
+		#open_pot_object_tile_atlas_position: 0,
+		#barrel_object_tile_atlas_position: 0,
+		#sack_object_tile_atlas_position: 0,
+		#log_object_tile_atlas_position: 0,
+		#blue_rock_object_tile_atlas_position: 0,
+		#tan_rock_object_tile_atlas_position: 0,
+		#
+		#white_grass_1_object_tile_atlas_position: 0,
+		#white_grass_2_object_tile_atlas_position: 0,
+		#red_tall_grass_object_tile_atlas_position: 0,
+		#leaf_pile_1_object_tile_atlas_position: 0,
+		#leaf_pile_2_object_tile_atlas_position: 0,
+		#tall_grass_object_tile_atlas_position: 0,
+		#white_tall_grass_object_tile_atlas_position: 0,
+		#wheat_object_tile_atlas_position: 0,
+		#corn_object_tile_atlas_position: 0,
+		#roses_object_tile_atlas_position: 0,
+		#red_bush_object_tile_atlas_position : 0,
+		#small_red_grass_object_tile_atlas_position : 0,
+		#tulips_object_tile_atlas_position : 0,
+		#small_orange_grass_object_tile_atlas_position : 0,
+		#small_white_sapling_object_tile_atlas_position : 0,
+		#small_pink_flowers_object_tile_atlas_position : 0,
+		#small_red_mushrooms_object_tile_atlas_position: 0,
+		#big_red_mushroom_object_tile_atlas_position: 0,
+		#bone_pile_1_object_tile_atlas_position: 0,
+		#bone_pile_2_object_tile_atlas_position: 0,
+		#blood_spill_1_object_tile_atlas_position: 0,
+		#blood_spill_2_object_tile_atlas_position: 0
+
 		match room_type:
 			"SKELETONS":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.green_floor_tile_atlas_position
 				wall_tile_pos = proc_gen_data.wall_tilemap_layer.clay_wall_tile_atlas_position
+				objects[proc_gen_data.object_tilemap_layer.white_tall_grass_object_tile_atlas_position] = 5
+				objects[proc_gen_data.object_tilemap_layer.bone_pile_1_object_tile_atlas_position] = 5
+				objects[proc_gen_data.object_tilemap_layer.small_white_sapling_object_tile_atlas_position] = 5
 			"SKELETONS_AND_MINOTAURS":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.light_green_floor_tile_atlas_position
 				wall_tile_pos = proc_gen_data.wall_tilemap_layer.ice_wall_tile_atlas_position
+				objects[proc_gen_data.object_tilemap_layer.red_tall_grass_object_tile_atlas_position] = 5
+				objects[proc_gen_data.object_tilemap_layer.small_pink_flowers_object_tile_atlas_position] = 5
+				objects[proc_gen_data.object_tilemap_layer.leaf_pile_1_object_tile_atlas_position] = 5
 			"MINOTAURS_AND_SKELETONS":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.light_brown_floor_tile_atlas_position
 				wall_tile_pos = proc_gen_data.wall_tilemap_layer.sponge_wall_tile_atlas_position
+				objects[proc_gen_data.object_tilemap_layer.red_bush_object_tile_atlas_position] = 5
+				objects[proc_gen_data.object_tilemap_layer.tulips_object_tile_atlas_position] = 5
+				objects[proc_gen_data.object_tilemap_layer.corn_object_tile_atlas_position] = 5
 			"MINOTAURS":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.red_floor_tile_atlas_position
 				wall_tile_pos = proc_gen_data.wall_tilemap_layer.brick_wall_tile_atlas_position
+				objects[proc_gen_data.object_tilemap_layer.small_red_mushrooms_object_tile_atlas_position] = 5
+				objects[proc_gen_data.object_tilemap_layer.blood_spill_1_object_tile_atlas_position] = 5
+				objects[proc_gen_data.object_tilemap_layer.small_orange_grass_object_tile_atlas_position] = 5
 
 		# paint the floor tiles
 		paint_tiles(room_tiles, proc_gen_data.floor_tilemap_layer, floor_atlas_id, floor_tile_pos)
@@ -1124,6 +1174,16 @@ func paint_room_specific_tiles(room_nodes : Array[RoomNode], corridor_exclusive_
 		#create_walls(room_tiles, proc_gen_data.wall_tilemap_layer, wall_atlas_id, wall_tile_pos)
 		if (proc_gen_data.paint_walls):
 			create_room_walls(room_tiles, proc_gen_data.wall_tilemap_layer, wall_atlas_id, wall_tile_pos, corridor_exclusive_tiles)
+
+		paint_collision_free_objects_randomly(objects, room_node, proc_gen_data.object_tilemap_layer, object_atlas_id)
+
+func paint_collision_free_objects_randomly(objects : Dictionary, room_node : RoomNode, tilemap_layer : TileMapLayer, atlas_id : int) -> void:
+	for tile_atlas_pos in objects.keys():
+		var object_amount = objects[tile_atlas_pos]
+	
+		for i in range(object_amount):
+			var random_tile : Vector2i = get_random_tile_in_room(room_node)
+			paint_single_tile(tilemap_layer, atlas_id, random_tile, tile_atlas_pos)
 
 func paint_all_corridor_exclusive_tiles(corridor_exclusive_tiles : Array) -> void:
 	

@@ -1,0 +1,37 @@
+extends TileMapLayer
+class_name ObjectTileMapLayer
+
+var atlas_id : int = 4
+
+var closed_chest_object_tile_atlas_position : Vector2i = Vector2i(0, 17)
+var open_chest_object_tile_atlas_position : Vector2i = Vector2i(1, 17)
+var closed_pot_object_tile_atlas_position : Vector2i = Vector2i(2, 17)
+var open_pot_object_tile_atlas_position : Vector2i = Vector2i(3, 17)
+var barrel_object_tile_atlas_position : Vector2i = Vector2i(4, 17)
+var sack_object_tile_atlas_position : Vector2i = Vector2i(5, 17)
+var log_object_tile_atlas_position : Vector2i = Vector2i(6, 17)
+var blue_rock_object_tile_atlas_position : Vector2i = Vector2i(0, 18)
+var tan_rock_object_tile_atlas_position : Vector2i = Vector2i(1, 18)
+
+var white_grass_1_object_tile_atlas_position : Vector2i = Vector2i(0, 19)
+var white_grass_2_object_tile_atlas_position : Vector2i = Vector2i(1, 19)
+var red_tall_grass_object_tile_atlas_position : Vector2i = Vector2i(2, 19)
+var leaf_pile_1_object_tile_atlas_position : Vector2i = Vector2i(3, 19)
+var leaf_pile_2_object_tile_atlas_position : Vector2i = Vector2i(4, 19)
+var tall_grass_object_tile_atlas_position : Vector2i = Vector2i(5, 19)
+var white_tall_grass_object_tile_atlas_position : Vector2i = Vector2i(6, 19)
+var wheat_object_tile_atlas_position : Vector2i = Vector2i(7, 19)
+var corn_object_tile_atlas_position : Vector2i = Vector2i(8, 19)
+var roses_object_tile_atlas_position : Vector2i = Vector2i(9, 19)
+var red_bush_object_tile_atlas_position : Vector2i = Vector2i(10, 19)
+var small_red_grass_object_tile_atlas_position : Vector2i = Vector2i(11, 19)
+var tulips_object_tile_atlas_position : Vector2i = Vector2i(12, 19)
+var small_orange_grass_object_tile_atlas_position : Vector2i = Vector2i(13, 19)
+var small_white_sapling_object_tile_atlas_position : Vector2i = Vector2i(14, 19)
+var small_pink_flowers_object_tile_atlas_position : Vector2i = Vector2i(15, 19)
+var small_red_mushrooms_object_tile_atlas_position : Vector2i = Vector2i(0, 20)
+var big_red_mushroom_object_tile_atlas_position : Vector2i = Vector2i(1, 20)
+var bone_pile_1_object_tile_atlas_position : Vector2i = Vector2i(0, 21)
+var bone_pile_2_object_tile_atlas_position : Vector2i = Vector2i(1, 21)
+var blood_spill_1_object_tile_atlas_position : Vector2i = Vector2i(0, 22)
+var blood_spill_2_object_tile_atlas_position : Vector2i = Vector2i(1, 22)
