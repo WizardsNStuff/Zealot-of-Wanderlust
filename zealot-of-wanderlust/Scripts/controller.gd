@@ -205,6 +205,8 @@ func room_first_gen(room_nodes : Array[RoomNode]) -> bool:
 	for room_node in room_nodes:
 		all_room_tiles.merge(room_node.get_room_tiles())
 
+	spawn_hearts(1, all_room_tiles)
+
 	var corridor_exclusive_tiles : Array = []
 	# add doors to each corridor
 	# if a door cannot be added to a corridor becasue the corridor only exists as part of a room
@@ -223,7 +225,7 @@ func room_first_gen(room_nodes : Array[RoomNode]) -> bool:
 			all_corridor_exclusive_tiles.append(tile)
 
 	paint_room_specific_tiles(room_nodes, all_corridor_exclusive_tiles)
-	
+
 	# paint walls around the corridors
 	create_corridor_walls(room_nodes, proc_gen_data.wall_tilemap_layer, proc_gen_data.wall_tilemap_layer.atlas_id, proc_gen_data.wall_tilemap_layer.cobblestone_wall_tile_atlas_position, all_corridor_exclusive_tiles)
 	# paint walls around all the floor tiles
@@ -1229,6 +1231,23 @@ func check_key_status() -> bool:
 	if get_living_enemy_count() == 1 && model.spawning_enabled == false:
 		return true
 	return false
+
+func spawn_hearts(amount : int, tiles : Dictionary) -> void:
+	var heart = model.heart.instantiate()
+	
+	for i in range(amount):
+		randomize()
+		var random_tile_pos : Vector2i = tiles.keys().pick_random()
+
+		# convert the floor position to world coordinates
+		var spawn_global_position : Vector2 = proc_gen_data.floor_tilemap_layer.map_to_local(random_tile_pos)
+
+		# move the heart to the spawn location
+		heart.position = spawn_global_position
+
+		model.consumables_node.add_child(heart)
+
+		print("spawned heart")
 
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:

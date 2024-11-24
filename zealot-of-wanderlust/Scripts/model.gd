@@ -16,6 +16,10 @@ var stop_timer : Timer
 
 var spawning_enabled = true
 
+@export var heart : PackedScene
+
+@export var consumables_node : Node
+
 @export var timers : Node
 
 # Enemies
