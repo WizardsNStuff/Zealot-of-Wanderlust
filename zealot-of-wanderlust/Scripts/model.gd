@@ -21,3 +21,11 @@ var spawning_enabled = true
 @export var enemies := Array([], TYPE_OBJECT, "CharacterBody2D", Enemy)
 
 @export var proc_gen_data : ProcGenData
+
+# Skills
+var skills := Array([], TYPE_OBJECT, "Node", Skill)
+
+func _ready() -> void:
+	skills.append(AttackUp.new())
+	skills.append(FireRateUp.new())
+	skills.append(MeleeUp.new())
