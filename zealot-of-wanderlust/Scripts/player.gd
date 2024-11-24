@@ -8,6 +8,9 @@ var original_health : float
 
 var score : float = 0
 
+var iframes := 1.0
+
+# Projectile Stats
 var damage : float = 25
 var projectile_speed : float = 225
 var projectile_life_span : float = 0.5
@@ -27,6 +30,8 @@ var experience : int = 0 :
 			experience = value
 
 @export var animations : AnimationPlayer
+@onready var sprite : Sprite2D = $Sprite2D
+@onready var damage_flash_timer : Timer = $DamageFlashTimer
 
 @export var weapon : Weapon
 
@@ -37,27 +42,14 @@ var is_attacking : bool = false
 func _ready() -> void:
 	original_health = health
 
-
 ##### Player Stats #####
 # Leviathan
 var charged_damage : int
 var charged_damage_cooldown : float
 # Counter
 var parry_cooldown : float
-# Enhancement
-var active_buffs := {
-	# Damage applicable to any instance of damage
-	"all_damage_buff": 0,
-	# Blitz magic buff
-	"main_damage_buff": 0,
-	"main_cooldown_buff": 0,
-	# Leviathan Magic buff
-	"charged_damage_buff": 0,
-	"charged_cooldown_buff": 0,
-	# Counter Magic buff
-	"parry_cooldown_buff": 0,
-	# Basic Stat Buffs
-	"health_buff": 0,
-	"defense_buff": 0
-}
 ########################
+
+
+func _on_timer_timeout() -> void:
+	sprite.modulate = Color.WHITE
