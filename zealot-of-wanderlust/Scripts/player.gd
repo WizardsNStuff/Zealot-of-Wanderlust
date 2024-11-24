@@ -30,7 +30,8 @@ var experience : int = 0 :
 			experience = value
 
 @export var animations : AnimationPlayer
-@onready var sprite :Sprite2D = $Sprite2D
+@onready var sprite : Sprite2D = $Sprite2D
+@onready var damage_flash_timer : Timer = $DamageFlashTimer
 
 @export var weapon : Weapon
 
@@ -48,3 +49,7 @@ var charged_damage_cooldown : float
 # Counter
 var parry_cooldown : float
 ########################
+
+
+func _on_timer_timeout() -> void:
+	sprite.modulate = Color.WHITE

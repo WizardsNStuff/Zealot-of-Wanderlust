@@ -13,7 +13,7 @@ var proc_gen_data : ProcGenData
 var player : Player
 var player_cooldown : float
 var player_iframes : float
-var player_can_be_damaged := true
+var player_can_be_damaged : bool = true
 
 func _ready() -> void:
 	proc_gen_data = model.proc_gen_data
@@ -990,13 +990,12 @@ func get_random_tile_in_room(room_node : RoomNode) -> Vector2i:
 	return room_node.room_tiles.keys().pick_random()
 
 func player_take_damage(damage_amount : float) -> void:
+	player.health -= damage_amount
 	player_can_be_damaged = false
 	player_iframes = Time.get_unix_time_from_system() + player.iframes
-	player.health -= damage_amount
 	# flashes the player sprite on damage
 	player.sprite.modulate = Color.RED
-	await get_tree().create_timer(0.25).timeout
-	player.sprite.modulate = Color.WHITE
+	player.damage_flash_timer.start()
 
 	if player.health <= 0:
 		player.health = 0
@@ -1274,8 +1273,9 @@ func add_player_health(amount) -> void:
 	view.health_label.text = "Health: " + str(player.health)
 
 func collect_heart(heart) -> void:
-	add_player_health(10)
-	heart.queue_free()
+	if player.health < player.original_health:
+		add_player_health(10)
+		heart.queue_free()
 
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
