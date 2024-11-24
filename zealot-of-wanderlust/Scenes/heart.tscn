@@ -1,0 +1,109 @@
+[gd_scene load_steps=12 format=3 uid="uid://m34g63rl82k3"]
+
+[ext_resource type="Script" path="res://Scripts/heart.gd" id="1_gec1v"]
+[ext_resource type="Texture2D" uid="uid://docxet1yt4mmu" path="res://Assets/heart.png" id="1_s2tss"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qtx4o"]
+atlas = ExtResource("1_s2tss")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t62c4"]
+atlas = ExtResource("1_s2tss")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rxqyn"]
+atlas = ExtResource("1_s2tss")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yi4ui"]
+atlas = ExtResource("1_s2tss")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rn20c"]
+animations = [{
+"frames": [{
+"duration": 0.5,
+"texture": SubResource("AtlasTexture_qtx4o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t62c4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rxqyn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yi4ui")
+}],
+"loop": true,
+"name": &"heart_spin",
+"speed": 4.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_twi34"]
+
+[sub_resource type="Animation" id="Animation_wnr3p"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_5mx1y"]
+resource_name = "heart_spring"
+length = 3.75
+loop_mode = 1
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.75, 1.1, 1.5, 2.45, 2.9, 3.35, 3.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -12), Vector2(0, -8), Vector2(0, -12), Vector2(0, 6), Vector2(0, 0), Vector2(0, 6), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_t4p7q"]
+_data = {
+"RESET": SubResource("Animation_wnr3p"),
+"heart_spring": SubResource("Animation_5mx1y")
+}
+
+[node name="Heart" type="Node2D" node_paths=PackedStringArray("animated_heart_sprite", "heart_animation_player", "area_2d")]
+script = ExtResource("1_gec1v")
+animated_heart_sprite = NodePath("AnimationRoot/Sprite")
+heart_animation_player = NodePath("AnimationRoot/AnimationPlayer")
+area_2d = NodePath("AnimationRoot/Area2D")
+
+[node name="AnimationRoot" type="Node2D" parent="."]
+
+[node name="Sprite" type="AnimatedSprite2D" parent="AnimationRoot"]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_rn20c")
+animation = &"heart_spin"
+frame_progress = 0.298457
+
+[node name="Area2D" type="Area2D" parent="AnimationRoot"]
+collision_mask = 4
+
+[node name="HitBox" type="CollisionShape2D" parent="AnimationRoot/Area2D"]
+position = Vector2(0, -3)
+shape = SubResource("CircleShape2D_twi34")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AnimationRoot"]
+libraries = {
+"": SubResource("AnimationLibrary_t4p7q")
+}
+
+[connection signal="body_entered" from="AnimationRoot/Area2D" to="." method="_on_area_2d_body_entered"]
