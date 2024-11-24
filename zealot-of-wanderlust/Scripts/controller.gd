@@ -993,7 +993,11 @@ func player_take_damage(damage_amount : float) -> void:
 	player_can_be_damaged = false
 	player_iframes = Time.get_unix_time_from_system() + player.iframes
 	player.health -= damage_amount
-	
+	# flashes the player sprite on damage
+	player.sprite.modulate = Color.RED
+	await get_tree().create_timer(0.25).timeout
+	player.sprite.modulate = Color.WHITE
+
 	if player.health <= 0:
 		player.health = 0
 		view.health_label.text = "Health: " + str(player.health)

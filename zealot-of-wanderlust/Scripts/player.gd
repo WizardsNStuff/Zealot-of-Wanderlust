@@ -30,6 +30,7 @@ var experience : int = 0 :
 			experience = value
 
 @export var animations : AnimationPlayer
+@onready var sprite :Sprite2D = $Sprite2D
 
 @export var weapon : Weapon
 
@@ -39,7 +40,6 @@ var is_attacking : bool = false
 
 func _ready() -> void:
 	original_health = health
-
 
 ##### Player Stats #####
 # Leviathan

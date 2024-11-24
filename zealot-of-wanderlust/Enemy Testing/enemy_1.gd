@@ -8,6 +8,8 @@ var score = 10
 
 @export var player : Player
 @export var controller : Controller
+@onready var sprite : Sprite2D = $MainSprite
+@export var damage_timer : Timer
 
 func _ready() -> void:
 	### Declaring attributes from GameCharacterScript ###
@@ -16,7 +18,6 @@ func _ready() -> void:
 	main_damage = 15
 	main_damage_cooldown = 1.5
 	$HealthBar.init_health(health)
-	$DamagedSpriteTimer.connect("timeout", Callable(self, "damaged_sprite_timer_timeout"))
 	$HealthBarTimer.connect("timeout", Callable(self, "health_bar_timer_timeout"))
 
 func _physics_process(delta: float) -> void:
@@ -29,31 +30,22 @@ func _physics_process(delta: float) -> void:
 
 func take_damage(damage_amount : float) -> void:
 	health -= damage_amount
-	
-	# show/hide certain nodes when damage is taken
-	$HealthBar.show()
-	$HealthBarTimer.start()
-	$HealthBar._set_health(health)
-	$MainSprite.hide()
-	$DamagedSprite.show()
-	$DamagedSpriteTimer.start()
-	
-	# a timer could be added here to let enemy turn red and show healthbar
-	# one last time before queue_free'ing, lmk if you want that to happen
-
-# damage timer cooldown
-func startCooldown(delta: float) -> void:
-	if cooldown > 0:
-		cooldown -= delta
-
-func damaged_sprite_timer_timeout():
-	$MainSprite.show()
-	$DamagedSprite.hide()
 	if health <= 0:
 		controller.update_score(score)
 		if controller.check_key_status():
 			controller.give_player_key()
 		self.queue_free()
+	
+	# show/hide certain nodes when damage is taken
+	$HealthBar.show()
+	$HealthBarTimer.start()
+	$HealthBar._set_health(health)
+	sprite.modulate = Color.RED
+	damage_timer.start()
 
 func health_bar_timer_timeout():
 	$HealthBar.hide()
+
+
+func _on_timer_timeout() -> void:
+	sprite.modulate = Color.WHITE
