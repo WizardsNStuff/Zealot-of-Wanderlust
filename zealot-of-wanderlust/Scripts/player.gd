@@ -8,6 +8,9 @@ var original_health : float
 
 var score : float = 0
 
+var iframes := 1.0
+
+# Projectile Stats
 var damage : float = 25
 var projectile_speed : float = 225
 var projectile_life_span : float = 0.5
@@ -44,20 +47,4 @@ var charged_damage : int
 var charged_damage_cooldown : float
 # Counter
 var parry_cooldown : float
-# Enhancement
-var active_buffs := {
-	# Damage applicable to any instance of damage
-	"all_damage_buff": 0,
-	# Blitz magic buff
-	"main_damage_buff": 0,
-	"main_cooldown_buff": 0,
-	# Leviathan Magic buff
-	"charged_damage_buff": 0,
-	"charged_cooldown_buff": 0,
-	# Counter Magic buff
-	"parry_cooldown_buff": 0,
-	# Basic Stat Buffs
-	"health_buff": 0,
-	"defense_buff": 0
-}
 ########################

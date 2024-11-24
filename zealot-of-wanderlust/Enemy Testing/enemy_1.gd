@@ -46,13 +46,6 @@ func startCooldown(delta: float) -> void:
 	if cooldown > 0:
 		cooldown -= delta
 
-func canEnemyHit() -> bool:
-	if cooldown <= 0:
-		cooldown = main_damage_cooldown
-		return true
-	else:
-		return false
-
 func damaged_sprite_timer_timeout():
 	$MainSprite.show()
 	$DamagedSprite.hide()

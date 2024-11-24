@@ -12,6 +12,8 @@ var proc_gen_data : ProcGenData
 # reference to the player
 var player : Player
 var player_cooldown : float
+var player_iframes : float
+var player_can_be_damaged := true
 
 func _ready() -> void:
 	proc_gen_data = model.proc_gen_data
@@ -988,6 +990,8 @@ func get_random_tile_in_room(room_node : RoomNode) -> Vector2i:
 	return room_node.room_tiles.keys().pick_random()
 
 func player_take_damage(damage_amount : float) -> void:
+	player_can_be_damaged = false
+	player_iframes = Time.get_unix_time_from_system() + player.iframes
 	player.health -= damage_amount
 	
 	if player.health <= 0:
@@ -1275,6 +1279,7 @@ func _physics_process(delta: float) -> void:
 	if proc_gen_data.dungeon_created:
 		handle_input()
 		
+		# don't process anything if paused
 		if get_tree().paused: return
 		
 		if Time.get_unix_time_from_system() >= player_cooldown:
@@ -1301,10 +1306,11 @@ func _physics_process(delta: float) -> void:
 				var collider_name = collider.name
 
 				if (collider is Enemy):
-					collider.startCooldown(delta)
-					#print("collider test: " + str(collider.cooldown))
-					if (collider.canEnemyHit() == true):
+					if (player_can_be_damaged):
 						player_take_damage(collider.main_damage)
+					# check if iFrames are over
+					if (Time.get_unix_time_from_system() >= player_iframes):
+						player_can_be_damaged = true
 
 				# check if the collision is with a door
 				if (collider_name.contains("Door")):
