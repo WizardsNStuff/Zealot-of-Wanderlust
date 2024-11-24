@@ -19,7 +19,6 @@ timers = NodePath("Timers")
 proc_gen_data = NodePath("ProcGenData")
 
 [node name="ProcGenData" parent="." instance=ExtResource("4_te031")]
-paint_walls = false
 
 [node name="Player" parent="." instance=ExtResource("5_lonvu")]
 z_index = 100

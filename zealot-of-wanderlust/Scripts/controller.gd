@@ -171,6 +171,7 @@ func room_first_gen(room_nodes : Array[RoomNode]) -> bool:
 	clear_tiles(proc_gen_data.door_tilemap_layer)
 	clear_tiles(proc_gen_data.object_tilemap_layer)
 	clear_doors()
+	clear_consumables()
 
 	# array to store room nodes
 	var rooms_dict_array : Array[RoomNode] = []
@@ -258,6 +259,13 @@ func clear_doors() -> void:
 
 		# delete each door (tilemap layer) to reset the layout 
 		door.queue_free()
+
+# removes all existing consumables from the dungeon
+func clear_consumables() -> void:
+	# loop through each child node of consumables_node
+	for object in model.consumables_node.get_children():
+		# delete each object 
+		object.queue_free()
 
 # creates a binary space partitioning (BSP) tree by recursively splitting the given space into smaller rooms
 # returns the root RoomNode of the generated BSP tree
@@ -1234,7 +1242,8 @@ func check_key_status() -> bool:
 
 func spawn_hearts(amount : int, tiles : Dictionary) -> void:
 	var heart = model.heart.instantiate()
-	
+	heart.controller = self
+
 	for i in range(amount):
 		randomize()
 		var random_tile_pos : Vector2i = tiles.keys().pick_random()
@@ -1247,7 +1256,18 @@ func spawn_hearts(amount : int, tiles : Dictionary) -> void:
 
 		model.consumables_node.add_child(heart)
 
-		print("spawned heart")
+func add_player_health(amount) -> void:
+	player.health += amount
+	
+	if player.health > player.original_health:
+		player.health = player.original_health
+
+	view.health_bar.health = player.health
+	view.health_label.text = "Health: " + str(player.health)
+
+func collect_heart(heart) -> void:
+	add_player_health(10)
+	heart.queue_free()
 
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
