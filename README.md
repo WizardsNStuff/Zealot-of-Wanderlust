@@ -2,7 +2,7 @@
 
 WASD - Move Player
 
-Arrow Keys - Swing Sword
+Arrow Keys - Swing Staff and Shoot Projectile
 
 The doors unlock once all enemies have been defeated within the room.
 
