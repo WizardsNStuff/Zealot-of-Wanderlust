@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://bxk3dqwknh6ue"]
+[gd_scene load_steps=7 format=3 uid="uid://bxk3dqwknh6ue"]
 
+[ext_resource type="Script" path="res://Scripts/level_up.gd" id="1_g7ghp"]
 [ext_resource type="FontFile" uid="uid://dguq661xgdfvr" path="res://Assets/Geizer.otf" id="1_x72ym"]
 [ext_resource type="Texture2D" uid="uid://edfq8ttk4u1m" path="res://icon.svg" id="2_vcc68"]
 
@@ -12,13 +13,18 @@ font_size = 32
 [sub_resource type="LabelSettings" id="LabelSettings_k75lg"]
 font_size = 10
 
-[node name="LevelUp" type="Control"]
+[node name="LevelUp" type="Control" node_paths=PackedStringArray("skill1Btn", "skill2Btn", "skill3Btn")]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_g7ghp")
+skill1Btn = NodePath("Skill1Btn")
+skill2Btn = NodePath("Skill1Btn2")
+skill3Btn = NodePath("Skill1Btn3")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 0
@@ -43,9 +49,10 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Skill1Container" type="HBoxContainer" parent="CenterContainer/MainContainer"]
+custom_minimum_size = Vector2(415, 60)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="CenterContainer/MainContainer/Skill1Container"]
+[node name="Skill1Icon" type="TextureRect" parent="CenterContainer/MainContainer/Skill1Container"]
 layout_mode = 2
 texture = ExtResource("2_vcc68")
 expand_mode = 2
@@ -60,14 +67,14 @@ label_settings = SubResource("LabelSettings_mwxg8")
 
 [node name="Skill1Description" type="Label" parent="CenterContainer/MainContainer/Skill1Container/VBoxContainer"]
 layout_mode = 2
-text = "Brief short skill description would go here like this eeeeeeeeeeeeeeeeee
-oooooooooooooooooooooooooooooo"
+text = "Increases Damage of Projectiles"
 label_settings = SubResource("LabelSettings_k75lg")
 
 [node name="Skill2Container" type="HBoxContainer" parent="CenterContainer/MainContainer"]
+custom_minimum_size = Vector2(415, 60)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="CenterContainer/MainContainer/Skill2Container"]
+[node name="Skill2Icon" type="TextureRect" parent="CenterContainer/MainContainer/Skill2Container"]
 layout_mode = 2
 texture = ExtResource("2_vcc68")
 expand_mode = 2
@@ -82,52 +89,51 @@ label_settings = SubResource("LabelSettings_mwxg8")
 
 [node name="Skill2Description" type="Label" parent="CenterContainer/MainContainer/Skill2Container/VBoxContainer"]
 layout_mode = 2
-text = "Brief short skill description would go here like this eeeeeeeeeeeeeeeeee
-oooooooooooooooooooooooooooooo"
+text = "Increases Speed of Attacks"
 label_settings = SubResource("LabelSettings_k75lg")
 
-[node name="Skill2Container2" type="HBoxContainer" parent="CenterContainer/MainContainer"]
+[node name="Skill3Container" type="HBoxContainer" parent="CenterContainer/MainContainer"]
+custom_minimum_size = Vector2(415, 60)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="CenterContainer/MainContainer/Skill2Container2"]
+[node name="Skill3Icon" type="TextureRect" parent="CenterContainer/MainContainer/Skill3Container"]
 layout_mode = 2
 texture = ExtResource("2_vcc68")
 expand_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MainContainer/Skill2Container2"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/MainContainer/Skill3Container"]
 layout_mode = 2
 
-[node name="Skill3Name" type="Label" parent="CenterContainer/MainContainer/Skill2Container2/VBoxContainer"]
+[node name="Skill3Name" type="Label" parent="CenterContainer/MainContainer/Skill3Container/VBoxContainer"]
 layout_mode = 2
 text = "Skill 3"
 label_settings = SubResource("LabelSettings_mwxg8")
 
-[node name="Skill3Description" type="Label" parent="CenterContainer/MainContainer/Skill2Container2/VBoxContainer"]
+[node name="Skill3Description" type="Label" parent="CenterContainer/MainContainer/Skill3Container/VBoxContainer"]
 layout_mode = 2
-text = "Brief short skill description would go here like this eeeeeeeeeeeeeeeeee
-oooooooooooooooooooooooooooooo"
+text = "Increases Damage Of Melee Attack"
 label_settings = SubResource("LabelSettings_k75lg")
 
 [node name="Skill1Btn" type="Button" parent="."]
 z_index = -1
 layout_mode = 0
 offset_left = 427.0
-offset_top = 269.0
+offset_top = 267.0
 offset_right = 855.0
-offset_bottom = 338.0
+offset_bottom = 336.0
 
 [node name="Skill1Btn2" type="Button" parent="."]
 z_index = -1
 layout_mode = 0
 offset_left = 428.0
-offset_top = 352.0
+offset_top = 351.0
 offset_right = 856.0
-offset_bottom = 421.0
+offset_bottom = 420.0
 
 [node name="Skill1Btn3" type="Button" parent="."]
 z_index = -1
 layout_mode = 0
 offset_left = 429.0
-offset_top = 435.0
+offset_top = 437.0
 offset_right = 857.0
-offset_bottom = 504.0
+offset_bottom = 506.0
