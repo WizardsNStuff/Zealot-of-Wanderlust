@@ -5,6 +5,7 @@ class_name View
 
 @export var main_menu_node : MainMenu
 @export var game_over_node : GameOver
+@export var level_up_node: LevelUp
 @export var health_label : Label
 @export var score_label : Label
 @export var exp_label : Label
@@ -47,3 +48,33 @@ func game_over() -> void:
 
 func quit_game() -> void:
 	controller.quit_game()
+
+
+### ||| LEVEL UP RELATED FUNCTIONS ||| ###
+### vvv                            vvv ###
+
+func level_up() -> void:
+	level_up_node.show()
+
+func init_skill1(name: String, description: String, icon: Resource) -> void:
+	level_up_node.setSkill1Properties(name, description, icon)
+
+func init_skill2(name: String, description: String, icon: Resource) -> void:
+	level_up_node.setSkill2Properties(name, description, icon)
+
+func init_skill3(name: String, description: String, icon: Resource) -> void:
+	level_up_node.setSkill3Properties(name, description, icon)
+
+func skill1_chosen() -> void:
+	#controller.skill1_chosen()
+	level_up_node.hide()
+
+func skill2_chosen() -> void:
+	pass
+	#controller.skill2_chosen()
+	level_up_node.hide()
+
+func skill3_chosen() -> void:
+	pass
+	#controller.skill3_chosen()
+	level_up_node.hide()
