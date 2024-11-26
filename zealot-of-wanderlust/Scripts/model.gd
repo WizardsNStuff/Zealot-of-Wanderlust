@@ -29,6 +29,7 @@ var spawning_enabled = true
 
 # Skills
 var skills := Array([], TYPE_OBJECT, "Node", Skill)
+var skill_weights := PackedFloat32Array()
 
 func _ready() -> void:
 	skills.append(AttackUp.new())
@@ -37,6 +38,12 @@ func _ready() -> void:
 	skills.append(ProjectileSpeedUp.new())
 	skills.append(ProjectileSizeUp.new())
 	skills.append(AttackUpFireRateDown.new())
+	skills.append(FireRateUpAttackDown.new())
+	# array representing the Weights of each skill
 	for skill in skills:
 		(skill as Skill)._ready()
 		(skill as Skill).player = player
+		if ((skill as Skill).tier == Skill.Rarity.COMMON):
+			skill_weights.append(1.0)
+		else:
+			skill_weights.append(0.5/(skill as Skill).tier)

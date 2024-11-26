@@ -1265,7 +1265,11 @@ func handle_level_up() -> void:
 	# pause the game and allow the user to select a skill
 	get_tree().paused = true
 	leveling_up = true
-	view.init_skills(model.skills.pick_random(), model.skills.pick_random(), model.skills.pick_random())
+	var rng = RandomNumberGenerator.new()
+	var skill1 := model.skills[rng.rand_weighted(model.skill_weights)] as Skill
+	var skill2 := model.skills[rng.rand_weighted(model.skill_weights)] as Skill
+	var skill3 := model.skills[rng.rand_weighted(model.skill_weights)] as Skill
+	view.init_skills(skill1, skill2, skill3)
 	player.weapon.current_weapon.visible = false
 	view.level_up()
 
