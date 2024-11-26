@@ -33,4 +33,6 @@ var skills := Array([], TYPE_OBJECT, "Node", Skill)
 func _ready() -> void:
 	skills.append(AttackUp.new())
 	skills.append(FireRateUp.new())
-	skills.append(MeleeUp.new())
+	skills.append(ProjectileLifeUp.new())
+	for skill in skills:
+		(skill as Skill).player = player

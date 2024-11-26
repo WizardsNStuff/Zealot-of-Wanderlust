@@ -14,6 +14,7 @@ var player : Player
 var player_cooldown : float
 var player_iframes : float
 var player_can_be_damaged : bool = true
+var leveling_up := false
 
 func _ready() -> void:
 	proc_gen_data = model.proc_gen_data
@@ -927,7 +928,7 @@ func handle_input() -> void:
 	# get the input direction for movement
 	var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
 	
-	if Input.is_action_just_pressed("ui_cancel"):
+	if Input.is_action_just_pressed("ui_cancel") && !leveling_up:
 		# Switch the pause state
 		get_tree().paused = !get_tree().paused
 	elif !get_tree().paused:
@@ -1271,11 +1272,14 @@ func spawn_hearts(amount : int, tiles : Dictionary) -> void:
 func handle_level_up() -> void:
 	# pause the game and allow the user to select a skill
 	get_tree().paused = true
+	leveling_up = true
 	view.init_skills(model.skills.pick_random(), model.skills.pick_random(), model.skills.pick_random())
 	view.level_up()
 
 func add_skill(skill : Skill) -> void:
-	pass
+	player.skill_list.append(skill)
+	leveling_up = false
+	get_tree().paused = false
 
 func add_player_health(amount) -> void:
 	player.health += amount
