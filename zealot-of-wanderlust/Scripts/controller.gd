@@ -19,6 +19,7 @@ func _ready() -> void:
 	proc_gen_data = model.proc_gen_data
 	player = model.player
 	view.health_bar.init_health(player.health)
+	player.level_up.connect(handle_level_up)
 
 # class representing a room node in a dungeon
 class RoomNode:
@@ -1262,6 +1263,11 @@ func spawn_hearts(amount : int, tiles : Dictionary) -> void:
 		heart.position = spawn_global_position
 
 		model.consumables_node.add_child(heart)
+
+func handle_level_up() -> void:
+	# pause the game and allow the user to select a skill
+	get_tree().paused = true
+	view.level_up()
 
 func add_player_health(amount) -> void:
 	player.health += amount
