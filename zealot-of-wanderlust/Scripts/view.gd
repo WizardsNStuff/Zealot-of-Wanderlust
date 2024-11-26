@@ -6,6 +6,7 @@ class_name View
 @export var main_menu_node : MainMenu
 @export var game_over_node : GameOver
 @export var level_up_node: LevelUp
+@export var health_label : Label
 @export var score_label : Label
 @export var exp_label : Label
 @export var player_level_label : Label
@@ -37,6 +38,7 @@ func stop_key_animation() -> void:
 func game_over() -> void:
 	game_over_node.score_label.text = "Score: " + str(controller.player.score)
 	main_menu_node.hide()
+	health_label.hide()
 	health_bar.hide()
 	exp_label.hide()
 	floor_label.hide()

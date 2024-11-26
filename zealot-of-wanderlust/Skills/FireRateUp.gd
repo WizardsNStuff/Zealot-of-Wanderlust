@@ -9,8 +9,8 @@ func _ready() -> void:
 	description = "Increases Speed of Attacks"
 
 func add_effect(projectile : Projectile) -> void:
-	# Won't increase fire rate below 0.25 seconds
+	# Won't increase fire rate below 0 seconds
 	# Will only be used once
 	if (!skill_used && player.damage_cooldown >= 0.1):
 		skill_used = true
-		player.damage_cooldown -= 0.075
+		player.damage_cooldown -= 0.05
