@@ -135,14 +135,12 @@ func start_level() -> void:
 				# make the player visible
 				player.visible = true
 
-				view.health_label.visible = true
 				view.score_label.visible = true
 				view.health_bar.visible = true
 				view.exp_label.visible = true
 				view.player_level_label.visible = true
 				view.floor_label.visible = true
 				view.floor_label.text = "FLOOR: " + str(proc_gen_data.current_dungeon_floor)
-				view.health_label.text = "HEALTH: " + str(player.health)
 				view.score_label.text = "SCORE: " + str(player.score)
 				view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 
