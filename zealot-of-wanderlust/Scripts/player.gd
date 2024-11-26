@@ -13,8 +13,8 @@ var iframes := 1.0
 # Projectile Stats
 var damage : float = 25
 var projectile_speed : float = 225
-var projectile_life_span : float = 0.5
-var damage_cooldown: float = 0.75
+var projectile_life_span : float = 0.25
+var damage_cooldown: float = 1.0
 
 var skill_list := Array([], TYPE_OBJECT, "Node", Skill)
 

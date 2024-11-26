@@ -13,8 +13,8 @@ var skill3 : Skill
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	skill1Btn.pressed.connect(view.skill1_chosen)
-	skill1Btn.pressed.connect(view.skill2_chosen)
-	skill2Btn.pressed.connect(view.skill3_chosen)
+	skill2Btn.pressed.connect(view.skill2_chosen)
+	skill3Btn.pressed.connect(view.skill3_chosen)
 
 func setSkill1Properties(skill : Skill) -> void:
 	skill1 = skill
