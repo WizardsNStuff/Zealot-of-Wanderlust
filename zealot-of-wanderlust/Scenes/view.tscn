@@ -314,80 +314,8 @@ _data = {
 }
 
 [node name="View" type="CanvasLayer" node_paths=PackedStringArray("main_menu_node", "game_over_node", "level_up_node", "health_label", "score_label", "exp_label", "player_level_label", "animated_key_sprite", "key_animation_player", "health_bar", "floor_label")]
+[node name="View" type="CanvasLayer" node_paths=PackedStringArray("main_menu_node", "game_over_node", "level_up_node", "score_label", "exp_label", "player_level_label", "animated_key_sprite", "key_animation_player", "health_bar", "floor_label")]
 script = ExtResource("1_yc6w3")
 main_menu_node = NodePath("MainMenu")
 game_over_node = NodePath("GameOver")
 level_up_node = NodePath("LevelUp")
-health_label = NodePath("")
-score_label = NodePath("PlayerScore")
-exp_label = NodePath("PlayerEXP")
-player_level_label = NodePath("PlayerLevel")
-animated_key_sprite = NodePath("Key")
-key_animation_player = NodePath("Key/AnimationPlayer")
-health_bar = NodePath("HealthBar")
-floor_label = NodePath("FloorLevel")
-
-[node name="MainMenu" parent="." node_paths=PackedStringArray("view") instance=ExtResource("2_v62gn")]
-view = NodePath("..")
-
-[node name="GameOver" parent="." node_paths=PackedStringArray("view") instance=ExtResource("3_vdvbm")]
-visible = false
-view = NodePath("..")
-
-[node name="LevelUp" parent="." node_paths=PackedStringArray("view") instance=ExtResource("4_kx0dy")]
-visible = false
-view = NodePath("..")
-
-[node name="HealthBar" parent="." instance=ExtResource("4_25atk")]
-visible = false
-z_index = 0
-
-[node name="PlayerScore" type="Label" parent="."]
-visible = false
-offset_left = 11.0
-offset_top = 100.0
-offset_right = 128.0
-offset_bottom = 140.0
-text = "Score: 0"
-label_settings = SubResource("LabelSettings_i30tg")
-
-[node name="PlayerEXP" type="Label" parent="."]
-visible = false
-offset_left = 12.0
-offset_top = 150.0
-offset_right = 142.0
-offset_bottom = 190.0
-text = "EXP: 0 / 0"
-label_settings = SubResource("LabelSettings_sk2bi")
-
-[node name="PlayerLevel" type="Label" parent="."]
-visible = false
-offset_left = 13.0
-offset_top = 200.0
-offset_right = 130.0
-offset_bottom = 240.0
-text = "LVL: 1"
-label_settings = SubResource("LabelSettings_th4l4")
-
-[node name="FloorLevel" type="Label" parent="."]
-visible = false
-offset_left = 9.0
-offset_top = 673.0
-offset_right = 126.0
-offset_bottom = 713.0
-text = "FLOOR: 1"
-label_settings = SubResource("LabelSettings_rytsp")
-
-[node name="Key" type="AnimatedSprite2D" parent="."]
-visible = false
-modulate = Color(1, 1, 1, 0)
-texture_filter = 1
-position = Vector2(640, 360)
-sprite_frames = SubResource("SpriteFrames_cqj4j")
-animation = &"key_spin"
-frame_progress = 0.193043
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Key"]
-libraries = {
-"": SubResource("AnimationLibrary_psqwl")
-}
