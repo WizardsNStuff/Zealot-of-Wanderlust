@@ -21,6 +21,7 @@ func _ready() -> void:
 	player = model.player
 	view.health_bar.init_health(player.health)
 	player.level_up.connect(handle_level_up)
+	player.damage_taken.connect(player_take_damage)
 
 # class representing a room node in a dungeon
 class RoomNode:
@@ -1282,7 +1283,6 @@ func add_player_health(amount) -> void:
 	
 	if player.health > player.original_health:
 		player.health = player.original_health
-
 	view.health_bar.health = player.health
 
 func collect_heart(heart) -> void:

@@ -34,6 +34,8 @@ func _ready() -> void:
 	skills.append(AttackUp.new())
 	skills.append(FireRateUp.new())
 	skills.append(ProjectileRangeUp.new())
+	skills.append(ProjectileSpeedUp.new())
+	skills.append(ProjectileSizeUp.new())
 	for skill in skills:
 		(skill as Skill)._ready()
 		(skill as Skill).player = player
