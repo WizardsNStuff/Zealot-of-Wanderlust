@@ -1005,10 +1005,8 @@ func player_take_damage(damage_amount : float) -> void:
 
 	if player.health <= 0:
 		player.health = 0
-		view.health_label.text = "Health: " + str(player.health)
 		game_over()
 	view.health_bar.health = player.health
-	view.health_label.text = "Health: " + str(player.health)
 
 func game_over() -> void:
 	proc_gen_data.dungeon_created = false
@@ -1040,7 +1038,6 @@ func quit_game() -> void:
 func play_again() -> void:
 	player._ready()
 	view.health_bar.init_health(player.health)
-	view.health_label.text = "Health: " + str(player.health)
 	view.score_label.text = "Health: " + str(player.score)
 	view.player_level_label.text = "LVL: " + str(player.level)
 	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
@@ -1289,7 +1286,6 @@ func add_player_health(amount) -> void:
 		player.health = player.original_health
 
 	view.health_bar.health = player.health
-	view.health_label.text = "Health: " + str(player.health)
 
 func collect_heart(heart) -> void:
 	if player.health < player.original_health:

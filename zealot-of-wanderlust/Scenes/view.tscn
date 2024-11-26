@@ -325,11 +325,15 @@ _data = {
 }
 
 [node name="View" type="CanvasLayer" node_paths=PackedStringArray("main_menu_node", "game_over_node", "level_up_node", "health_label", "score_label", "exp_label", "player_level_label", "animated_key_sprite", "key_animation_player", "health_bar", "floor_label")]
+[node name="View" type="CanvasLayer" node_paths=PackedStringArray("main_menu_node", "game_over_node", "level_up_node", "score_label", "exp_label", "player_level_label", "animated_key_sprite", "key_animation_player", "health_bar", "floor_label")]
 script = ExtResource("1_yc6w3")
 main_menu_node = NodePath("MainMenu")
 game_over_node = NodePath("GameOver")
 level_up_node = NodePath("LevelUp")
+<<<<<<< Updated upstream
 health_label = NodePath("PlayerHealth")
+=======
+>>>>>>> Stashed changes
 score_label = NodePath("PlayerScore")
 exp_label = NodePath("PlayerEXP")
 player_level_label = NodePath("PlayerLevel")
