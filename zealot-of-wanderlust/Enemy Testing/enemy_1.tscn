@@ -10,7 +10,7 @@ height = 28.0
 
 [node name="Enemy1" type="CharacterBody2D" node_paths=PackedStringArray("damage_timer")]
 collision_layer = 2
-collision_mask = 15
+collision_mask = 7
 motion_mode = 1
 wall_min_slide_angle = 0.0
 platform_on_leave = 2
