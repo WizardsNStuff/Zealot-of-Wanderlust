@@ -1,16 +1,16 @@
 extends Skill
-class_name FireRateUp
+class_name ProjectileLifeUp
 
 var skill_used := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	skill_name = "Fire Rate Up"
-	description = "Increases Speed of Attacks"
+	skill_name = "Projectile Life Up"
+	description = "Projectiles Will Last Longer Before Disappearing"
+
 
 func add_effect(projectile : Projectile) -> void:
-	# Won't increase fire rate below 0 seconds
 	# Will only be used once
-	if (!skill_used && player.damage_cooldown >= 0.1):
+	if (!skill_used):
 		skill_used = true
-		player.damage_cooldown -= 0.05
+		player.projectile_life_span += 0.05

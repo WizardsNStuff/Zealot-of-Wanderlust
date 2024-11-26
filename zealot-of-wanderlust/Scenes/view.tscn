@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://m28273i40xcl" path="res://Scenes/main_menu.tscn" id="2_v62gn"]
 [ext_resource type="PackedScene" uid="uid://bu75n3pwlpxd4" path="res://Scenes/game_over.tscn" id="3_vdvbm"]
 [ext_resource type="PackedScene" uid="uid://mtmlyb350jdp" path="res://Scenes/healthbar.tscn" id="4_25atk"]
-[ext_resource type="PackedScene" uid="uid://bxk3dqwknh6ue" path="res://Scenes/level_up.tscn" id="4_kx0dy"]
+[ext_resource type="PackedScene" uid="uid://pwn273y2e2kc" path="res://Scenes/level_up.tscn" id="4_kx0dy"]
 [ext_resource type="FontFile" uid="uid://dguq661xgdfvr" path="res://Assets/Geizer.otf" id="4_x16ur"]
 [ext_resource type="Texture2D" uid="uid://c7mr1dlng224o" path="res://Assets/key_32x32_24f.png" id="5_wn1ll"]
 

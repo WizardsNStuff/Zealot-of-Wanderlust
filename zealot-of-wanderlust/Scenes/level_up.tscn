@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bxk3dqwknh6ue"]
+[gd_scene load_steps=7 format=3 uid="uid://pwn273y2e2kc"]
 
 [ext_resource type="Script" path="res://Scripts/level_up.gd" id="1_g7ghp"]
 [ext_resource type="FontFile" uid="uid://dguq661xgdfvr" path="res://Assets/Geizer.otf" id="1_x72ym"]
