@@ -164,6 +164,7 @@ _data = {
 collision_layer = 4
 collision_mask = 7
 motion_mode = 1
+wall_min_slide_angle = 0.0
 floor_constant_speed = true
 platform_on_leave = 2
 platform_floor_layers = 4294967041

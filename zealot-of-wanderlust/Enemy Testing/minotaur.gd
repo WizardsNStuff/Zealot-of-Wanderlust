@@ -11,6 +11,8 @@ class_name Minotaur
 var locked_on_player_timer = 0.0
 var can_charge_again_timer = 3.5
 var rushing = false
+var rush_damage : float
+var rush_speed : float
 var last_known_dir = Vector2(0, 0)
 
 func _ready() -> void:
@@ -20,6 +22,7 @@ func _ready() -> void:
 	
 	# redefining variables inherited from Enemy
 	speed = 50
+	rush_speed = 350
 	attack_range = 20
 	score = 50
 	
@@ -28,6 +31,7 @@ func _ready() -> void:
 	defense = 20
 	main_damage = 50
 	main_damage_cooldown = 2
+	rush_damage = main_damage * 2
 	$HealthBarTimer.connect("timeout", Callable(self, "health_bar_timer_timeout"))
 	#$Timer.connect("timeout", Callable(self, "test"))
 
@@ -62,15 +66,19 @@ func _physics_process(delta: float) -> void:
 	
 	# enter rushing state: move to the last known direction at a fast speed
 	else:
-		velocity = last_known_dir * 300
+		velocity = last_known_dir * rush_speed
 		move_and_slide()
 	
 		var collision
 	
 		for i in range(get_slide_collision_count()):
 			collision = get_slide_collision(i)
-			if collision || locked_on_player_timer >= 2.0:
-				velocity = Vector2i.ZERO
+			if collision && collision.get_collider() is Player:
+				velocity = speed * last_known_dir
+				(collision.get_collider() as Player).damage_taken.emit(rush_damage)
+				break
+			elif collision || locked_on_player_timer >= 2.0:
+				velocity = speed * last_known_dir
 				break
 
 		locked_on_player_timer += delta

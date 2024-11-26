@@ -5,6 +5,7 @@ var speed = 150
 
 var health : float = 200
 var original_health : float
+signal damage_taken(damage: float)
 
 var score : float = 0
 
