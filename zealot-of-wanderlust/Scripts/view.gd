@@ -56,25 +56,19 @@ func quit_game() -> void:
 func level_up() -> void:
 	level_up_node.show()
 
-func init_skill1(name: String, description: String, icon: Resource) -> void:
-	level_up_node.setSkill1Properties(name, description, icon)
-
-func init_skill2(name: String, description: String, icon: Resource) -> void:
-	level_up_node.setSkill2Properties(name, description, icon)
-
-func init_skill3(name: String, description: String, icon: Resource) -> void:
-	level_up_node.setSkill3Properties(name, description, icon)
+func init_skills(skill1 : Skill, skill2 : Skill, skill3 : Skill) -> void:
+	level_up_node.setSkill1Properties(skill1)
+	level_up_node.setSkill2Properties(skill2)
+	level_up_node.setSkill3Properties(skill3)
 
 func skill1_chosen() -> void:
-	#controller.skill1_chosen()
+	controller.add_skill(level_up_node.skill1)
 	level_up_node.hide()
 
 func skill2_chosen() -> void:
-	pass
-	#controller.skill2_chosen()
+	controller.add_skill(level_up_node.skill2)
 	level_up_node.hide()
 
 func skill3_chosen() -> void:
-	pass
-	#controller.skill3_chosen()
+	controller.add_skill(level_up_node.skill3)
 	level_up_node.hide()

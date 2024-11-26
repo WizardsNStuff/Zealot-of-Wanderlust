@@ -953,7 +953,7 @@ func attack(attack_direction: Vector2) -> void:
 		player.animations.play("attack_right")
 	else:
 		player.animations.play("attack_left")
-	#print(attack_direction)
+	
 	# shoot projectile
 	var projectile_scene := load("res://Player Combat/projectile.tscn")
 	var projectile : Projectile = projectile_scene.instantiate()
@@ -961,6 +961,10 @@ func attack(attack_direction: Vector2) -> void:
 	projectile.projectile_life = Time.get_unix_time_from_system() + player.projectile_life_span
 	projectile.velocity = attack_direction * player.projectile_speed
 	projectile.global_position = player.global_position
+	# Add Skill Changes
+	if !player.skill_list.is_empty():
+		for skill in player.skill_list:
+			(skill as Skill).add_effect(projectile)
 	model.add_child(projectile)
 	
 	# stop the attack
@@ -1267,7 +1271,11 @@ func spawn_hearts(amount : int, tiles : Dictionary) -> void:
 func handle_level_up() -> void:
 	# pause the game and allow the user to select a skill
 	get_tree().paused = true
+	view.init_skills(model.skills.pick_random(), model.skills.pick_random(), model.skills.pick_random())
 	view.level_up()
+
+func add_skill(skill : Skill) -> void:
+	pass
 
 func add_player_health(amount) -> void:
 	player.health += amount

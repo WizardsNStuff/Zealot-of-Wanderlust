@@ -5,6 +5,9 @@ class_name LevelUp
 @export var skill1Btn: Button
 @export var skill2Btn: Button
 @export var skill3Btn: Button
+var skill1 : Skill
+var skill2 : Skill
+var skill3 : Skill
 
 
 # Called when the node enters the scene tree for the first time.
@@ -13,17 +16,20 @@ func _ready() -> void:
 	skill1Btn.pressed.connect(view.skill2_chosen)
 	skill2Btn.pressed.connect(view.skill3_chosen)
 
-func setSkill1Properties(name: String, description: String, icon: Resource) -> void:
-	$CenterContainer/MainContainer/Skill1Container/VBoxContainer/Skill1Name.text = name
-	$CenterContainer/MainContainer/Skill1Container/VBoxContainer/Skill1Description.text = description
-	$CenterContainer/MainContainer/Skill1Container/Skill1Icon.texture = icon
+func setSkill1Properties(skill : Skill) -> void:
+	skill1 = skill
+	$CenterContainer/MainContainer/Skill1Container/VBoxContainer/Skill1Name.text = skill.skill_name
+	$CenterContainer/MainContainer/Skill1Container/VBoxContainer/Skill1Description.text = skill.description
+	$CenterContainer/MainContainer/Skill1Container/Skill1Icon.texture = skill.image_reference
 
-func setSkill2Properties(name: String, description: String, icon: Resource) -> void:
-	$CenterContainer/MainContainer/Skill2Container/VBoxContainer/Skill2Name.text = name
-	$CenterContainer/MainContainer/Skill2Container/VBoxContainer/Skill2Description.text = description
-	$CenterContainer/MainContainer/Skill2Container/Skill2Icon.texture = icon
+func setSkill2Properties(skill : Skill) -> void:
+	skill2 = skill
+	$CenterContainer/MainContainer/Skill2Container/VBoxContainer/Skill2Name.text = skill.skill_name
+	$CenterContainer/MainContainer/Skill2Container/VBoxContainer/Skill2Description.text = skill.description
+	$CenterContainer/MainContainer/Skill2Container/Skill2Icon.texture = skill.image_reference
 
-func setSkill3Properties(name: String, description: String, icon: Resource) -> void:
-	$CenterContainer/MainContainer/Skill3Container/VBoxContainer/Skill3Name.text = name
-	$CenterContainer/MainContainer/Skill3Container/VBoxContainer/Skill3Description.text = description
-	$CenterContainer/MainContainer/Skill3Container/Skill3Icon.texture = icon
+func setSkill3Properties(skill : Skill) -> void:
+	skill3 = skill
+	$CenterContainer/MainContainer/Skill3Container/VBoxContainer/Skill3Name.text = skill.skill_name
+	$CenterContainer/MainContainer/Skill3Container/VBoxContainer/Skill3Description.text = skill.description
+	$CenterContainer/MainContainer/Skill3Container/Skill3Icon.texture = skill.image_reference
