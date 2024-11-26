@@ -56,6 +56,7 @@ func _ready() -> void:
 	skill_list = Array([], TYPE_OBJECT, "Node", Skill)
 	level = 1
 	level_up_threshold = 100
+	experience = 0
 	
 
 ##### Player Stats #####
