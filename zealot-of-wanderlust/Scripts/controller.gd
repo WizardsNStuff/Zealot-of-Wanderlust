@@ -1038,15 +1038,11 @@ func quit_game() -> void:
 	get_tree().quit()
 
 func play_again() -> void:
-	player.health = player.original_health
+	player._ready()
 	view.health_bar.init_health(player.health)
 	view.health_label.text = "Health: " + str(player.health)
-	player.score = 0
 	view.score_label.text = "Health: " + str(player.score)
-	player.level = 1
 	view.player_level_label.text = "LVL: " + str(player.level)
-	player.experience = 0
-	player.level_up_threshold = 100
 	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 	proc_gen_data.current_dungeon_floor = 1
 
@@ -1274,10 +1270,15 @@ func handle_level_up() -> void:
 	get_tree().paused = true
 	leveling_up = true
 	view.init_skills(model.skills.pick_random(), model.skills.pick_random(), model.skills.pick_random())
+	player.weapon.current_weapon.visible = false
 	view.level_up()
 
 func add_skill(skill : Skill) -> void:
-	player.skill_list.append(skill)
+	var temp_skill : Skill = skill.duplicate()
+	temp_skill._ready()
+	temp_skill.player = player
+	player.skill_list.append(temp_skill)
+	
 	leveling_up = false
 	get_tree().paused = false
 
@@ -1292,7 +1293,7 @@ func add_player_health(amount) -> void:
 
 func collect_heart(heart) -> void:
 	if player.health < player.original_health:
-		add_player_health(10)
+		add_player_health(25)
 		heart.queue_free()
 
 # handle player movement and player interactions in each frame

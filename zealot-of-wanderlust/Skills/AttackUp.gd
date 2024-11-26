@@ -8,4 +8,4 @@ func _ready() -> void:
 	description = "Increases Damage of Projectiles"
 
 func add_effect(projectile : Projectile) -> void:
-	projectile.damage += 10
+	projectile.damage += 5

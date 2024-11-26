@@ -1,7 +1,7 @@
 extends CharacterBody2D
 class_name Player
 
-var speed = 200
+var speed = 150
 
 var health : float = 200
 var original_health : float
@@ -13,7 +13,7 @@ var iframes := 1.0
 # Projectile Stats
 var damage : float = 25
 var projectile_speed : float = 225
-var projectile_life_span : float = 0.25
+var projectile_life_span : float = 0.35
 var damage_cooldown: float = 1.0
 
 var skill_list := Array([], TYPE_OBJECT, "Node", Skill)
@@ -43,6 +43,20 @@ var is_attacking : bool = false
 
 func _ready() -> void:
 	original_health = health
+	speed = 150
+	health = 200
+	original_health
+	score = 0
+	iframes = 1.0
+	# Projectile Stats
+	damage = 25
+	projectile_speed = 225
+	projectile_life_span = 0.35
+	damage_cooldown = 1.0
+	skill_list = Array([], TYPE_OBJECT, "Node", Skill)
+	level = 1
+	level_up_threshold = 100
+	
 
 ##### Player Stats #####
 # Leviathan

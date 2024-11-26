@@ -21,12 +21,12 @@ func _ready() -> void:
 	# redefining variables inherited from Enemy
 	speed = 50
 	attack_range = 20
-	score = 100
+	score = 50
 	
 	# redefining variables inherited from GameCharacter
 	health = 200
 	defense = 20
-	main_damage = 35
+	main_damage = 50
 	main_damage_cooldown = 2
 	$HealthBarTimer.connect("timeout", Callable(self, "health_bar_timer_timeout"))
 	#$Timer.connect("timeout", Callable(self, "test"))
