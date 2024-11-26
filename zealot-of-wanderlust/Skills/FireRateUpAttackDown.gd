@@ -7,9 +7,10 @@ var skill_used := false
 func _ready() -> void:
 	skill_name = "Corrupted Fire Rate Up"
 	description = "Largely Increases Fire Rate of Projectiles, But Lowers Damage"
+	tier = Skill.Rarity.UNCOMMON
 
 func add_effect(projectile : Projectile) -> void:
-	projectile.damage -= 7.5
+	projectile.damage -= 5.0
 	if (!skill_used && player.damage_cooldown >= 0.1):
 		skill_used = true
 		player.damage_cooldown -= 0.1
