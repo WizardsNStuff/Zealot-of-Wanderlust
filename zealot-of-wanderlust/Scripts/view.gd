@@ -19,6 +19,9 @@ func start_level() -> void:
 	main_menu_node.hide()
 	health_bar.show()
 
+func start_tutorial() -> void:
+	print("start tutorial")
+
 func play_again() -> void:
 	controller.play_again()
 	controller.start_level()
