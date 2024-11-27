@@ -5,6 +5,7 @@ class_name ProjectileSizeUp
 func _ready() -> void:
 	skill_name = "Projectile Size Up"
 	description = "Projectiles Become Larger"
+	image_reference = load("res://Skills/ProjectileSizeUp.png")
 
 
 func add_effect(projectile : Projectile) -> void:

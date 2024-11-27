@@ -7,6 +7,7 @@ var skill_used := false
 func _ready() -> void:
 	skill_name = "Projectile Speed Up"
 	description = "Projectiles Will Move Faster Before Disappearing"
+	image_reference = load("res://Skills/ProjectileSpeedUp.png")
 
 
 func add_effect(projectile : Projectile) -> void:

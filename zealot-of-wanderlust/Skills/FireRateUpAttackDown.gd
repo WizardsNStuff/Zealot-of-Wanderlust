@@ -7,6 +7,7 @@ var skill_used := false
 func _ready() -> void:
 	skill_name = "Corrupted Fire Rate Up"
 	description = "Largely Increases Fire Rate of Projectiles, But Lowers Damage"
+	image_reference = load("res://Skills/FireRateUpAttackDown.png")
 	tier = Skill.Rarity.UNCOMMON
 
 func add_effect(projectile : Projectile) -> void:

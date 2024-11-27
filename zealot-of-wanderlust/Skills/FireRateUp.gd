@@ -7,6 +7,7 @@ var skill_used := false
 func _ready() -> void:
 	skill_name = "Fire Rate Up"
 	description = "Increases Speed of Attacks"
+	image_reference = load("res://Skills/FireRateUp.png")
 
 func add_effect(projectile : Projectile) -> void:
 	# Won't increase fire rate below 0 seconds
