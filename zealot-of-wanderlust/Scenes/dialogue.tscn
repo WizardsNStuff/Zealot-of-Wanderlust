@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://c6utgw5jojb1u"]
+
+[ext_resource type="Script" path="res://Scenes/dialogue.gd" id="1_iq7xl"]
+[ext_resource type="FontFile" uid="uid://dguq661xgdfvr" path="res://Assets/Geizer.otf" id="1_tkpna"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_1xwgf"]
+line_spacing = 5.0
+font = ExtResource("1_tkpna")
+font_size = 20
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 25
+shadow_color = Color(0, 0, 0, 0.352941)
+shadow_offset = Vector2(-1, 0)
+
+[node name="Dialogue" type="Node2D" node_paths=PackedStringArray("next_char_timer", "next_message_timer", "label")]
+script = ExtResource("1_iq7xl")
+next_char_timer = NodePath("NextChar")
+next_message_timer = NodePath("NextMessage")
+label = NodePath("Label")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 200.0
+offset_bottom = 100.0
+label_settings = SubResource("LabelSettings_1xwgf")
+autowrap_mode = 2
+
+[node name="NextChar" type="Timer" parent="."]
+
+[node name="NextMessage" type="Timer" parent="."]

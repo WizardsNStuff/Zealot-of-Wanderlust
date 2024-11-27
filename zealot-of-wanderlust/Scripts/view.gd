@@ -22,6 +22,18 @@ func start_level() -> void:
 func start_tutorial() -> void:
 	controller.start_tutorial()
 	main_menu_node.hide()
+	health_bar.show()
+
+func stop_tutorial() -> void:
+	main_menu_node.show()
+	health_bar.hide()
+	health_bar.hide()
+	exp_label.hide()
+	floor_label.hide()
+	player_level_label.hide()
+	score_label.hide()
+	stop_key_animation()
+	
 
 func play_again() -> void:
 	controller.play_again()
