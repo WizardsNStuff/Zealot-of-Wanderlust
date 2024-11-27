@@ -9,7 +9,7 @@ var enemy_1_tile_position = Vector2i(39, -2)
 var enemy_2_tile_position = Vector2i(39, 1)
 var enemy_3_tile_position = Vector2i(51, 0)
 var enemy_4_tile_position = Vector2i(66, -1)
-var heart_tile_position = Vector2i(81, -1)
+var heart_tile_position = Vector2i(77, -1)
 
 @export var d1 : Node2D
 @export var d2 : Node2D
@@ -34,17 +34,18 @@ func checkpoint_entered(checkpoint) -> void:
 			controller.tutorial_pause(3)
 		"c3":
 			d3.messages = ["killing enemies earns you score and exp", 
+			"the blue exp bar is displayed directly below the health bar",
 			"earn exp to level up your player",
 			"leveling up allows you to learn 1 new skill"
 			]
 			d3.start_dialogue()
-			controller.tutorial_pause(10)
+			controller.tutorial_pause(15)
 		"c4":
 			d4.messages = ["kill all enemies within a room to earn a key", 
 			"keys can be used to unlock doors and progress to the next room"
 			]
 			d4.start_dialogue()
-			controller.tutorial_pause(6)
+			controller.tutorial_pause(7)
 		"c5":
 			d5.messages = ["getting hit by an enemy lowers your health"]
 			d5.start_dialogue()

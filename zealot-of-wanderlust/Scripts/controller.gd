@@ -84,12 +84,10 @@ func start_tutorial() -> void:
 	
 	view.score_label.visible = true
 	view.health_bar.visible = true
-	view.exp_label.visible = true
 	view.player_level_label.visible = true
 	view.floor_label.visible = true
 	view.floor_label.text = "FLOOR: " + str(proc_gen_data.current_dungeon_floor)
 	view.score_label.text = "SCORE: " + str(player.score)
-	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 	
 	var tutorial_scene = load("res://Scenes/tutorial.tscn")
 	var tutorial_instance = tutorial_scene.instantiate()
@@ -155,7 +153,7 @@ func tutorial_damage_section():
 	timer.one_shot = true
 	timer.timeout.connect(tutorial_damage_section_timeout.bind(timer, original_player_damage, original_player_speed))
 	model.tutorial_data.add_child(timer)
-	timer.start(4)
+	timer.start(3)
 
 func tutorial_damage_section_timeout(timer, original_player_damage, original_player_speed) -> void:
 	timer.queue_free()
@@ -259,12 +257,10 @@ func start_level() -> void:
 
 				view.score_label.visible = true
 				view.health_bar.visible = true
-				view.exp_label.visible = true
 				view.player_level_label.visible = true
 				view.floor_label.visible = true
 				view.floor_label.text = "FLOOR: " + str(proc_gen_data.current_dungeon_floor)
 				view.score_label.text = "SCORE: " + str(player.score)
-				view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 
 				# mark the dungeon generation as successful
 				proc_gen_data.dungeon_created = true
@@ -1162,7 +1158,6 @@ func play_again() -> void:
 	view.health_bar.init_health(player.health)
 	view.score_label.text = "Health: " + str(player.score)
 	view.player_level_label.text = "LVL: " + str(player.level)
-	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 	view.health_bar.set_exp(player.experience)
 	view.health_bar.set_max_hp_value(player.level_up_threshold)
 	proc_gen_data.current_dungeon_floor = 1
@@ -1171,7 +1166,6 @@ func update_score(score_amount : float) -> void:
 	player.score += score_amount
 	player.experience += score_amount
 	view.score_label.text = "Score: " + str(player.score)
-	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 	view.health_bar.set_exp(player.experience)
 	view.health_bar.set_max_hp_value(player.level_up_threshold)
 	view.player_level_label.text = "LVL: " + str(player.level)
