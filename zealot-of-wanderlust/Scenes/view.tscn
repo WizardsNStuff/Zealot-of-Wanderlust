@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://dhhruhsbpp7ss"]
+[gd_scene load_steps=39 format=3 uid="uid://dhhruhsbpp7ss"]
 
 [ext_resource type="Script" path="res://Scripts/view.gd" id="1_yc6w3"]
 [ext_resource type="PackedScene" uid="uid://m28273i40xcl" path="res://Scenes/main_menu.tscn" id="2_v62gn"]
@@ -13,17 +13,6 @@ line_spacing = 5.0
 font = ExtResource("4_x16ur")
 font_size = 40
 font_color = Color(0.47451, 0.666667, 0, 1)
-outline_size = 8
-outline_color = Color(0, 0, 0, 1)
-shadow_size = 25
-shadow_color = Color(0, 0, 0, 0.352941)
-shadow_offset = Vector2(-1, 0)
-
-[sub_resource type="LabelSettings" id="LabelSettings_sk2bi"]
-line_spacing = 5.0
-font = ExtResource("4_x16ur")
-font_size = 40
-font_color = Color(0.192157, 0.584314, 0.882353, 1)
 outline_size = 8
 outline_color = Color(0, 0, 0, 1)
 shadow_size = 25
@@ -292,7 +281,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.666667, 1.4, 2),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(640, 360), Vector2(493, 312), Vector2(493, 312), Vector2(43, 318)]
+"values": [Vector2(640, 360), Vector2(493, 312), Vector2(493, 312), Vector2(40, 215)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -313,13 +302,12 @@ _data = {
 "key_display": SubResource("Animation_383ec")
 }
 
-[node name="View" type="CanvasLayer" node_paths=PackedStringArray("main_menu_node", "game_over_node", "level_up_node", "score_label", "exp_label", "player_level_label", "animated_key_sprite", "key_animation_player", "health_bar", "floor_label")]
+[node name="View" type="CanvasLayer" node_paths=PackedStringArray("main_menu_node", "game_over_node", "level_up_node", "score_label", "player_level_label", "animated_key_sprite", "key_animation_player", "health_bar", "floor_label")]
 script = ExtResource("1_yc6w3")
 main_menu_node = NodePath("MainMenu")
 game_over_node = NodePath("GameOver")
 level_up_node = NodePath("LevelUp")
 score_label = NodePath("PlayerScore")
-exp_label = NodePath("PlayerEXP")
 player_level_label = NodePath("PlayerLevel")
 animated_key_sprite = NodePath("Key")
 key_animation_player = NodePath("Key/AnimationPlayer")
@@ -350,21 +338,12 @@ offset_bottom = 140.0
 text = "Score: 0"
 label_settings = SubResource("LabelSettings_i30tg")
 
-[node name="PlayerEXP" type="Label" parent="."]
-visible = false
-offset_left = 12.0
-offset_top = 150.0
-offset_right = 142.0
-offset_bottom = 190.0
-text = "EXP: 0 / 0"
-label_settings = SubResource("LabelSettings_sk2bi")
-
 [node name="PlayerLevel" type="Label" parent="."]
 visible = false
-offset_left = 13.0
-offset_top = 200.0
-offset_right = 130.0
-offset_bottom = 240.0
+offset_left = 11.0
+offset_top = 143.0
+offset_right = 128.0
+offset_bottom = 183.0
 text = "LVL: 1"
 label_settings = SubResource("LabelSettings_th4l4")
 

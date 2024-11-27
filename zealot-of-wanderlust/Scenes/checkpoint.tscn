@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://d0rft1164njgu"]
+
+[ext_resource type="Script" path="res://Scripts/Tutorial/checkpoint_1.gd" id="1_sko52"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_l4t5f"]
+b = Vector2(0, 240)
+
+[node name="checkpoint" type="Area2D"]
+position = Vector2(34, -120)
+collision_mask = 7
+script = ExtResource("1_sko52")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("SegmentShape2D_l4t5f")

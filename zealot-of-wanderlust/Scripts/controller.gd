@@ -79,6 +79,123 @@ class RoomNode:
 		if right != null:
 			right.trim(trim_amount)
 
+func start_tutorial() -> void:
+	model.in_tutorial = true
+	
+	view.score_label.visible = true
+	view.health_bar.visible = true
+	view.player_level_label.visible = true
+	view.floor_label.visible = true
+	view.floor_label.text = "FLOOR: " + str(proc_gen_data.current_dungeon_floor)
+	view.score_label.text = "SCORE: " + str(player.score)
+	
+	var tutorial_scene = load("res://Scenes/tutorial.tscn")
+	var tutorial_instance = tutorial_scene.instantiate()
+	model.tutorial_data = tutorial_instance
+	model.add_child(tutorial_instance)
+	model.move_child(tutorial_instance, 0)
+	
+	model.tutorial_data.controller = self
+	player.position = Vector2i.ZERO
+	
+	var heart = load("res://Scenes/heart.tscn")
+	var heart_instance = heart.instantiate()
+	
+	heart_instance.controller = self
+	heart_instance.position = model.tutorial_data.floor.map_to_local(model.tutorial_data.heart_tile_position)
+	
+	model.tutorial_data.add_child(heart_instance)
+	
+	var enemy_1_scene = load("res://Enemy Testing/enemy_1.tscn")
+	var enemy_2_scene = load("res://Enemy Testing/minotaur.tscn")
+	var enemy_1 = enemy_1_scene.instantiate()
+	var enemy_2 = enemy_1_scene.instantiate()
+	var enemy_3 = enemy_2_scene.instantiate()
+	enemy_1.position = model.tutorial_data.floor.map_to_local(model.tutorial_data.enemy_1_tile_position)
+	enemy_2.position = model.tutorial_data.floor.map_to_local(model.tutorial_data.enemy_2_tile_position)
+	enemy_3.position = model.tutorial_data.floor.map_to_local(model.tutorial_data.enemy_3_tile_position)
+	enemy_1.player = player
+	enemy_2.player = player
+	enemy_3.player = player
+	enemy_1.controller = self
+	enemy_2.controller = self
+	enemy_3.controller = self
+	enemy_1.speed = 0
+	enemy_2.speed = 0
+	enemy_3.speed = 0
+	enemy_1.score = 50
+	enemy_2.score = 50
+	model.enemy_spawner.add_child(enemy_1)
+	model.enemy_spawner.add_child(enemy_2)
+	model.enemy_spawner.add_child(enemy_3)
+	enemy_1.main_damage = 0
+	enemy_2.main_damage = 0
+	enemy_3.main_damage = 0
+	enemy_3.rush_damage = 0
+	model.spawning_enabled = false
+	proc_gen_data.dungeon_created = true
+
+func tutorial_damage_section():
+	var original_player_speed = player.speed
+	player.speed = 0
+	
+	var enemy_4_scene = load("res://Enemy Testing/enemy_1.tscn")
+	var enemy_4 = enemy_4_scene.instantiate()
+	enemy_4.position = model.tutorial_data.floor.map_to_local(model.tutorial_data.enemy_4_tile_position)
+	enemy_4.controller = self
+	enemy_4.player = player
+	var original_player_damage = player.damage
+	player.damage = 1
+	
+	model.enemy_spawner.call_deferred("add_child", enemy_4)
+	
+	var timer = Timer.new()
+	timer.one_shot = true
+	timer.timeout.connect(tutorial_damage_section_timeout.bind(timer, original_player_damage, original_player_speed))
+	model.tutorial_data.add_child(timer)
+	timer.start(3)
+
+func tutorial_damage_section_timeout(timer, original_player_damage, original_player_speed) -> void:
+	timer.queue_free()
+	player.speed = original_player_speed
+	player.damage = original_player_damage
+	clear_enemy_spawner()
+
+func tutorial_pause_timer_timeout(timer, original_player_speed) -> void:
+	timer.queue_free()
+	player.speed = original_player_speed
+
+func clear_enemy_spawner():
+	for child in model.enemy_spawner.get_children():
+		child.queue_free()
+
+func tutorial_pause(time):
+	var original_player_speed = player.speed
+	player.speed = 0
+	
+	var timer = Timer.new()
+	timer.one_shot = true
+	timer.timeout.connect(tutorial_pause_timer_timeout.bind(timer, original_player_speed))
+	model.tutorial_data.add_child(timer)
+	timer.start(time)
+
+func stop_tutorial() -> void:
+	model.call_deferred("remove_child", model.tutorial_data)
+	model.tutorial_data.queue_free()
+	model.tutorial_data = null
+	view.stop_tutorial()
+
+func reset_player() -> void:
+	model.remove_child(player)
+	model.player.queue_free()
+	var player_scene = load("res://Scenes/player.tscn")
+	var new_player = player_scene.instantiate()
+	model.player = new_player
+	player = new_player
+	model.add_child(player)
+	player.level_up.connect(handle_level_up)
+	player.damage_taken.connect(player_take_damage)
+
 # starts the dungeon generation process
 func start_level() -> void:
 	# reset the procedural generation initalization data
@@ -140,12 +257,10 @@ func start_level() -> void:
 
 				view.score_label.visible = true
 				view.health_bar.visible = true
-				view.exp_label.visible = true
 				view.player_level_label.visible = true
 				view.floor_label.visible = true
 				view.floor_label.text = "FLOOR: " + str(proc_gen_data.current_dungeon_floor)
 				view.score_label.text = "SCORE: " + str(player.score)
-				view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 
 				# mark the dungeon generation as successful
 				proc_gen_data.dungeon_created = true
@@ -896,8 +1011,10 @@ func handle_door_collision(collider : Object) -> void:
 
 		view.stop_key_animation()
 
+		if model.in_tutorial:
+			pass
 		# move to next room
-		if (proc_gen_data.current_room.next_room != null):
+		elif (proc_gen_data.current_room.next_room != null):
 			proc_gen_data.current_room = proc_gen_data.current_room.next_room
 			
 			# rebidn the spawn timer to the new room
@@ -1041,7 +1158,6 @@ func play_again() -> void:
 	view.health_bar.init_health(player.health)
 	view.score_label.text = "Health: " + str(player.score)
 	view.player_level_label.text = "LVL: " + str(player.level)
-	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 	view.health_bar.set_exp(player.experience)
 	view.health_bar.set_max_hp_value(player.level_up_threshold)
 	proc_gen_data.current_dungeon_floor = 1
@@ -1050,7 +1166,6 @@ func update_score(score_amount : float) -> void:
 	player.score += score_amount
 	player.experience += score_amount
 	view.score_label.text = "Score: " + str(player.score)
-	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
 	view.health_bar.set_exp(player.experience)
 	view.health_bar.set_max_hp_value(player.level_up_threshold)
 	view.player_level_label.text = "LVL: " + str(player.level)

@@ -7,7 +7,6 @@ class_name View
 @export var game_over_node : GameOver
 @export var level_up_node: LevelUp
 @export var score_label : Label
-@export var exp_label : Label
 @export var player_level_label : Label
 @export var animated_key_sprite : AnimatedSprite2D
 @export var key_animation_player : AnimationPlayer
@@ -15,9 +14,26 @@ class_name View
 @export var floor_label : Label
 
 func start_level() -> void:
+	#controller.reset_player()
+	controller.play_again()
 	controller.start_level()
 	main_menu_node.hide()
 	health_bar.show()
+
+func start_tutorial() -> void:
+	controller.start_tutorial()
+	main_menu_node.hide()
+	health_bar.show()
+
+func stop_tutorial() -> void:
+	main_menu_node.show()
+	health_bar.hide()
+	health_bar.hide()
+	floor_label.hide()
+	player_level_label.hide()
+	score_label.hide()
+	stop_key_animation()
+	
 
 func play_again() -> void:
 	controller.play_again()
@@ -38,7 +54,6 @@ func game_over() -> void:
 	game_over_node.score_label.text = "Score: " + str(controller.player.score)
 	main_menu_node.hide()
 	health_bar.hide()
-	exp_label.hide()
 	floor_label.hide()
 	player_level_label.hide()
 	score_label.hide()

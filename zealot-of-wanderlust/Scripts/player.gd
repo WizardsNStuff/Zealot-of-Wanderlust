@@ -25,6 +25,7 @@ signal level_up
 var experience : int = 0 :
 	set(value):
 		if value >= level_up_threshold:
+			print("level up")
 			level_up.emit()
 			level += 1
 			experience = abs(level_up_threshold - value)

@@ -27,6 +27,10 @@ var spawning_enabled = true
 
 @export var proc_gen_data : ProcGenData
 
+@export var tutorial_data : TutorialData
+
+var in_tutorial = false
+
 # Skills
 var skills := Array([], TYPE_OBJECT, "Node", Skill)
 var skill_weights := PackedFloat32Array()
