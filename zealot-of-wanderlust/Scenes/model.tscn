@@ -21,7 +21,6 @@ proc_gen_data = NodePath("ProcGenData")
 [node name="ProcGenData" parent="." instance=ExtResource("4_te031")]
 
 [node name="Player" parent="." instance=ExtResource("5_lonvu")]
-z_index = 100
 
 [node name="EnemySpawner" type="Node" parent="."]
 

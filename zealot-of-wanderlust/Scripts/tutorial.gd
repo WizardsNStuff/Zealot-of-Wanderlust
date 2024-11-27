@@ -19,31 +19,38 @@ var heart_tile_position = Vector2i(81, -1)
 @export var d6 : Node2D
 @export var d7 : Node2D
 
+@export var temp_wall : TileMapLayer
+var temp_wall_broken = false
+
 func checkpoint_entered(checkpoint) -> void:
 	match checkpoint:
 		"c1":
 			d1.messages = ["use the W, A, S, D keys to move the player"]
 			d1.start_dialogue()
+			controller.tutorial_pause(2)
 		"c2":
 			d2.messages = ["use the arrow keys to fire a projectile at the enemy"]
 			d2.start_dialogue()
+			controller.tutorial_pause(3)
 		"c3":
-			d3.messages = ["killing enemies earns score and exp", 
+			d3.messages = ["killing enemies earns you score and exp", 
 			"earn exp to level up your player",
-			"leveling up allows you to choose 1 new skill"
+			"leveling up allows you to learn 1 new skill"
 			]
 			d3.start_dialogue()
+			controller.tutorial_pause(10)
 		"c4":
 			d4.messages = ["kill all enemies within a room to earn a key", 
 			"keys can be used to unlock doors and progress to the next room"
 			]
 			d4.start_dialogue()
+			controller.tutorial_pause(6)
 		"c5":
 			d5.messages = ["getting hit by an enemy lowers your health"]
 			d5.start_dialogue()
 			controller.tutorial_damage_section()
 		"c6":
-			d6.messages = ["1 heart can be fond on each floor", "hearts give you +10 health"]
+			d6.messages = ["1 heart can be found on each floor", "hearts give you additional health points"]
 			d6.start_dialogue()
 			controller.tutorial_pause(6)
 		"c7":
@@ -59,3 +66,11 @@ func checkpoint_entered(checkpoint) -> void:
 
 func _on_stairs_body_entered(body: Node2D) -> void:
 	controller.stop_tutorial()
+
+func _physics_process(delta: float) -> void:
+	if !temp_wall_broken:
+		if controller.model.enemy_spawner.get_child_count() <= 1:
+			temp_wall_broken = true
+			self.remove_child(temp_wall)
+			temp_wall.queue_free()
+			temp_wall = null

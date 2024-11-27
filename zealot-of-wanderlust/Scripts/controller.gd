@@ -96,7 +96,7 @@ func start_tutorial() -> void:
 	model.move_child(tutorial_instance, 0)
 	
 	model.tutorial_data.controller = self
-	#player.position = model.tutorial_data.floor.map_to_local(Vector2i(59, -1))
+	player.position = Vector2i.ZERO
 	
 	var heart = load("res://Scenes/heart.tscn")
 	var heart_instance = heart.instantiate()
@@ -128,6 +128,10 @@ func start_tutorial() -> void:
 	model.enemy_spawner.add_child(enemy_1)
 	model.enemy_spawner.add_child(enemy_2)
 	model.enemy_spawner.add_child(enemy_3)
+	enemy_1.main_damage = 0
+	enemy_2.main_damage = 0
+	enemy_3.main_damage = 0
+	enemy_3.rush_damage = 0
 	model.spawning_enabled = false
 	proc_gen_data.dungeon_created = true
 
@@ -151,12 +155,19 @@ func tutorial_damage_section():
 	model.tutorial_data.add_child(timer)
 	timer.start(4)
 
-func tutorial_damage_section_timeout(timer, original_player_damage, original_player_speed):
+func tutorial_damage_section_timeout(timer, original_player_damage, original_player_speed) -> void:
 	timer.queue_free()
+	player.speed = original_player_speed
+	player.damage = original_player_damage
+	clear_enemy_spawner()
+
+func tutorial_pause_timer_timeout(timer, original_player_speed) -> void:
+	timer.queue_free()
+	player.speed = original_player_speed
+
+func clear_enemy_spawner():
 	for child in model.enemy_spawner.get_children():
 		child.queue_free()
-	player.damage = original_player_damage
-	player.speed = original_player_speed
 
 func tutorial_pause(time):
 	var original_player_speed = player.speed
@@ -164,15 +175,26 @@ func tutorial_pause(time):
 	
 	var timer = Timer.new()
 	timer.one_shot = true
-	timer.timeout.connect(tutorial_damage_section_timeout.bind(timer, player.damage, original_player_speed))
+	timer.timeout.connect(tutorial_pause_timer_timeout.bind(timer, original_player_speed))
 	model.tutorial_data.add_child(timer)
 	timer.start(time)
 
 func stop_tutorial() -> void:
-	model.remove_child(model.tutorial_data)
+	model.call_deferred("remove_child", model.tutorial_data)
 	model.tutorial_data.queue_free()
 	model.tutorial_data = null
 	view.stop_tutorial()
+
+func reset_player() -> void:
+	model.remove_child(player)
+	model.player.queue_free()
+	var player_scene = load("res://Scenes/player.tscn")
+	var new_player = player_scene.instantiate()
+	model.player = new_player
+	player = new_player
+	model.add_child(player)
+	player.level_up.connect(handle_level_up)
+	player.damage_taken.connect(player_take_damage)
 
 # starts the dungeon generation process
 func start_level() -> void:

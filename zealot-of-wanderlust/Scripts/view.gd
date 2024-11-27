@@ -15,6 +15,8 @@ class_name View
 @export var floor_label : Label
 
 func start_level() -> void:
+	#controller.reset_player()
+	controller.play_again()
 	controller.start_level()
 	main_menu_node.hide()
 	health_bar.show()
