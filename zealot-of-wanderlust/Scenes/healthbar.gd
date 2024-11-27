@@ -36,3 +36,9 @@ func init_health(_health):
 # when the timer timouts make the damage bar the same as health bar
 func _on_timer_timeout():
 	damage_bar.value = health
+
+func set_exp(new_exp):
+	$ExpBar.value = new_exp
+
+func set_max_hp_value(new_max):
+	$ExpBar.max_value = new_max
