@@ -20,7 +20,8 @@ func start_level() -> void:
 	health_bar.show()
 
 func start_tutorial() -> void:
-	print("start tutorial")
+	controller.start_tutorial()
+	main_menu_node.hide()
 
 func play_again() -> void:
 	controller.play_again()

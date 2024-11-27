@@ -77,6 +77,13 @@ class RoomNode:
 		if right != null:
 			right.trim(trim_amount)
 
+func start_tutorial() -> void:
+	print("start tutorial in controller")
+	var tutorial_scene = load("res://Scenes/tutorial.tscn")
+	var tutorial_instance = tutorial_scene.instantiate()
+	model.add_child(tutorial_instance)
+	proc_gen_data.dungeon_created = true
+
 # starts the dungeon generation process
 func start_level() -> void:
 	# reset the procedural generation initalization data
