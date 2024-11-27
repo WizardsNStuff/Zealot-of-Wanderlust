@@ -20,6 +20,8 @@ func _ready() -> void:
 	proc_gen_data = model.proc_gen_data
 	player = model.player
 	view.health_bar.init_health(player.health)
+	view.health_bar.set_exp(player.experience)
+	view.health_bar.set_max_hp_value(player.level_up_threshold)
 	player.level_up.connect(handle_level_up)
 	player.damage_taken.connect(player_take_damage)
 
@@ -1161,6 +1163,8 @@ func play_again() -> void:
 	view.score_label.text = "Health: " + str(player.score)
 	view.player_level_label.text = "LVL: " + str(player.level)
 	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
+	view.health_bar.set_exp(player.experience)
+	view.health_bar.set_max_hp_value(player.level_up_threshold)
 	proc_gen_data.current_dungeon_floor = 1
 
 func update_score(score_amount : float) -> void:
@@ -1168,6 +1172,8 @@ func update_score(score_amount : float) -> void:
 	player.experience += score_amount
 	view.score_label.text = "Score: " + str(player.score)
 	view.exp_label.text = "EXP: " + str(player.experience) + " / " + str(player.level_up_threshold)
+	view.health_bar.set_exp(player.experience)
+	view.health_bar.set_max_hp_value(player.level_up_threshold)
 	view.player_level_label.text = "LVL: " + str(player.level)
 
 func get_random_room_type() -> int:

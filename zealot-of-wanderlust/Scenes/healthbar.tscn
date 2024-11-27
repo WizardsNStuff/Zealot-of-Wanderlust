@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://mtmlyb350jdp"]
+[gd_scene load_steps=9 format=3 uid="uid://mtmlyb350jdp"]
 
 [ext_resource type="Script" path="res://Scenes/healthbar.gd" id="1_tp7b3"]
 [ext_resource type="Texture2D" uid="uid://by3tmq077tc8e" path="res://Assets/HealthBar.png" id="2_crn0b"]
@@ -9,7 +9,7 @@
 bg_color = Color(0.69246, 1.841e-06, 7.70092e-07, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4cadv"]
-bg_color = Color(0, 0, 0, 1)
+bg_color = Color(0.255659, 0.255659, 0.255659, 1)
 expand_margin_left = 1.0
 expand_margin_top = 1.0
 expand_margin_right = 1.0
@@ -19,6 +19,12 @@ shadow_offset = Vector2(0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ji88"]
 bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wd01u"]
+bg_color = Color(0.254902, 0.254902, 0.254902, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uliom"]
+bg_color = Color(2.11775e-06, 0.646666, 0.908648, 1)
 
 [node name="HealthBar" type="ProgressBar"]
 z_index = 1
@@ -59,3 +65,13 @@ offset_top = -49.0
 offset_right = 366.0
 offset_bottom = 87.0
 texture = ExtResource("2_crn0b")
+
+[node name="ExpBar" type="ProgressBar" parent="."]
+layout_mode = 0
+offset_top = 44.0
+offset_right = 301.0
+offset_bottom = 53.0
+theme_override_styles/background = SubResource("StyleBoxFlat_wd01u")
+theme_override_styles/fill = SubResource("StyleBoxFlat_uliom")
+value = 50.0
+show_percentage = false
