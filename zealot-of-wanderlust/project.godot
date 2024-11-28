@@ -21,6 +21,13 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="ignore"
+mouse_cursor/custom_image="res://ZoW_Cursor.png"
+mouse_cursor/custom_image_hotspot=Vector2(3, 3)
+mouse_cursor/tooltip_position_offset=Vector2(26, 7)
+
+[gui]
+
+theme/custom_font="res://Fonts/alagard.ttf"
 
 [input]
 
