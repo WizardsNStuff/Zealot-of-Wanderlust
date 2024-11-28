@@ -63,6 +63,7 @@ func game_over() -> void:
 	player_level_label.hide()
 	score_label.hide()
 	game_over_node.show()
+	game_over_node.play_again_btn.grab_focus()
 
 func quit_game() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

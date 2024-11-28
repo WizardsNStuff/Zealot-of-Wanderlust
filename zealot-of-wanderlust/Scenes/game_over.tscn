@@ -76,12 +76,24 @@ alignment = 2
 
 [node name="PlayBtn" type="Button" parent="CenterContainer/HBoxContainer"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../QuitBtn")
+focus_neighbor_top = NodePath("../QuitBtn")
+focus_neighbor_right = NodePath("../QuitBtn")
+focus_neighbor_bottom = NodePath("../QuitBtn")
+focus_next = NodePath("../QuitBtn")
+focus_previous = NodePath("../QuitBtn")
 theme_override_fonts/font = ExtResource("1_rsv4x")
 theme_override_font_sizes/font_size = 75
 text = "Play Again"
 
 [node name="QuitBtn" type="Button" parent="CenterContainer/HBoxContainer"]
 layout_mode = 2
+focus_neighbor_left = NodePath("../PlayBtn")
+focus_neighbor_top = NodePath("../PlayBtn")
+focus_neighbor_right = NodePath("../PlayBtn")
+focus_neighbor_bottom = NodePath("../PlayBtn")
+focus_next = NodePath("../PlayBtn")
+focus_previous = NodePath("../PlayBtn")
 theme_override_fonts/font = ExtResource("1_rsv4x")
 theme_override_font_sizes/font_size = 75
 text = "Quit"
