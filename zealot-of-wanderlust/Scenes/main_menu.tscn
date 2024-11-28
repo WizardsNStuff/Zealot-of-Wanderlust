@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://m28273i40xcl"]
+[gd_scene load_steps=11 format=3 uid="uid://m28273i40xcl"]
 
 [ext_resource type="Script" path="res://Scripts/main_menu.gd" id="1_gfkys"]
 [ext_resource type="FontFile" uid="uid://deuj413nwfqiv" path="res://Fonts/alagard.ttf" id="2_78p07"]
@@ -16,6 +16,10 @@ shadow_color = Color(0.75855, 0.799605, 0.907602, 0.109804)
 shadow_offset = Vector2(-1, 0)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jq5to"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3cwta"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_x6o3j"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bnkqy"]
 
@@ -84,6 +88,8 @@ theme_override_colors/font_focus_color = Color(0.929412, 0.929412, 0.929412, 1)
 theme_override_colors/font_color = Color(0.345098, 0.454902, 0.443137, 1)
 theme_override_font_sizes/font_size = 50
 theme_override_styles/focus = SubResource("StyleBoxEmpty_jq5to")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_3cwta")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_x6o3j")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_bnkqy")
 text = "Start"
 
@@ -99,6 +105,8 @@ theme_override_colors/font_focus_color = Color(0.929412, 0.929412, 0.929412, 1)
 theme_override_colors/font_color = Color(0.345098, 0.454902, 0.443137, 1)
 theme_override_font_sizes/font_size = 50
 theme_override_styles/focus = SubResource("StyleBoxEmpty_4xge3")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_3cwta")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_x6o3j")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_outi1")
 text = "Tutorial"
 
@@ -114,6 +122,8 @@ theme_override_colors/font_focus_color = Color(0.929412, 0.929412, 0.929412, 1)
 theme_override_colors/font_color = Color(0.345098, 0.454902, 0.443137, 1)
 theme_override_font_sizes/font_size = 50
 theme_override_styles/focus = SubResource("StyleBoxEmpty_jq5to")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_3cwta")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_x6o3j")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_bnkqy")
 text = "Options"
 
@@ -129,5 +139,7 @@ theme_override_colors/font_focus_color = Color(0.929412, 0.929412, 0.929412, 1)
 theme_override_colors/font_color = Color(0.345098, 0.454902, 0.443137, 1)
 theme_override_font_sizes/font_size = 50
 theme_override_styles/focus = SubResource("StyleBoxEmpty_jq5to")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_3cwta")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_x6o3j")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_bnkqy")
 text = "Quit"
