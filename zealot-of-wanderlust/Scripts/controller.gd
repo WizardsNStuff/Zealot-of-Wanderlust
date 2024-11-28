@@ -1161,6 +1161,7 @@ func play_again() -> void:
 	view.health_bar.set_exp(player.experience)
 	view.health_bar.set_max_hp_value(player.level_up_threshold)
 	proc_gen_data.current_dungeon_floor = 1
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 
 func update_score(score_amount : float) -> void:
 	player.score += score_amount
@@ -1385,6 +1386,7 @@ func spawn_hearts(amount : int, tiles : Dictionary) -> void:
 func handle_level_up() -> void:
 	# pause the game and allow the user to select a skill
 	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	leveling_up = true
 	var rng = RandomNumberGenerator.new()
 	var skill1 := model.skills[rng.rand_weighted(model.skill_weights)] as Skill
@@ -1400,6 +1402,7 @@ func add_skill(skill : Skill) -> void:
 	temp_skill.player = player
 	player.skill_list.append(temp_skill)
 	
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	leveling_up = false
 	get_tree().paused = false
 

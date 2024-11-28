@@ -17,15 +17,18 @@ func start_level() -> void:
 	#controller.reset_player()
 	controller.play_again()
 	controller.start_level()
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	main_menu_node.hide()
 	health_bar.show()
 
 func start_tutorial() -> void:
 	controller.start_tutorial()
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	main_menu_node.hide()
 	health_bar.show()
 
 func stop_tutorial() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	main_menu_node.show()
 	health_bar.hide()
 	health_bar.hide()
@@ -36,6 +39,7 @@ func stop_tutorial() -> void:
 	
 
 func play_again() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	controller.play_again()
 	controller.start_level()
 	game_over_node.hide()
@@ -51,6 +55,7 @@ func stop_key_animation() -> void:
 	key_animation_player.stop()
 
 func game_over() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	game_over_node.score_label.text = "Score: " + str(controller.player.score)
 	main_menu_node.hide()
 	health_bar.hide()
@@ -60,6 +65,7 @@ func game_over() -> void:
 	game_over_node.show()
 
 func quit_game() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	controller.quit_game()
 
 

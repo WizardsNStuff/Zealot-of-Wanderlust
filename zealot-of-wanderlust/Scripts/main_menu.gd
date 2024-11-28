@@ -10,3 +10,4 @@ func _ready() -> void:
 	start_btn.pressed.connect(view.start_level)
 	quit_btn.pressed.connect(view.quit_game)
 	tutorial_btn.pressed.connect(view.start_tutorial)
+	start_btn.grab_focus()

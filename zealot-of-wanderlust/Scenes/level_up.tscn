@@ -121,6 +121,12 @@ offset_left = 427.0
 offset_top = 267.0
 offset_right = 855.0
 offset_bottom = 336.0
+focus_neighbor_left = NodePath("../Skill1Btn3")
+focus_neighbor_top = NodePath("../Skill1Btn3")
+focus_neighbor_right = NodePath("../Skill1Btn2")
+focus_neighbor_bottom = NodePath("../Skill1Btn2")
+focus_next = NodePath("../Skill1Btn2")
+focus_previous = NodePath("../Skill1Btn3")
 
 [node name="Skill1Btn2" type="Button" parent="."]
 z_index = -1
@@ -129,6 +135,12 @@ offset_left = 428.0
 offset_top = 351.0
 offset_right = 856.0
 offset_bottom = 420.0
+focus_neighbor_left = NodePath("../Skill1Btn")
+focus_neighbor_top = NodePath("../Skill1Btn")
+focus_neighbor_right = NodePath("../Skill1Btn3")
+focus_neighbor_bottom = NodePath("../Skill1Btn3")
+focus_next = NodePath("../Skill1Btn3")
+focus_previous = NodePath("../Skill1Btn")
 
 [node name="Skill1Btn3" type="Button" parent="."]
 z_index = -1
@@ -137,3 +149,9 @@ offset_left = 429.0
 offset_top = 437.0
 offset_right = 857.0
 offset_bottom = 506.0
+focus_neighbor_left = NodePath("../Skill1Btn2")
+focus_neighbor_top = NodePath("../Skill1Btn2")
+focus_neighbor_right = NodePath("../Skill1Btn")
+focus_neighbor_bottom = NodePath("../Skill1Btn")
+focus_next = NodePath("../Skill1Btn")
+focus_previous = NodePath("../Skill1Btn2")

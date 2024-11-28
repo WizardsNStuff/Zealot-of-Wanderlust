@@ -17,6 +17,7 @@ func _ready() -> void:
 	skill3Btn.pressed.connect(view.skill3_chosen)
 
 func setSkill1Properties(skill : Skill) -> void:
+	skill1Btn.grab_focus()
 	skill1 = skill
 	$CenterContainer/MainContainer/Skill1Container/VBoxContainer/Skill1Name.text = skill.skill_name
 	$CenterContainer/MainContainer/Skill1Container/VBoxContainer/Skill1Description.text = skill.description
