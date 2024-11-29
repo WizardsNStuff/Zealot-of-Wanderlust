@@ -48,3 +48,6 @@ offset_top = -18.0
 offset_right = 139.0
 offset_bottom = -3.0
 scale = Vector2(0.15, 0.15)
+
+[node name="DamageNumbersOrigin" type="Node2D" parent="."]
+position = Vector2(0, -15)

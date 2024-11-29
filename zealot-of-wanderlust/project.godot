@@ -15,6 +15,10 @@ run/main_scene="res://Scenes/wizard_game.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://ZoW_Logo.png"
 
+[autoload]
+
+DamageNumbers="*res://Scripts/DamageNumbers.gd"
+
 [display]
 
 window/size/viewport_width=1280
