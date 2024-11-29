@@ -10,6 +10,7 @@ var score = 15
 @export var controller : Controller
 @onready var sprite : Sprite2D = $MainSprite
 @export var damage_timer : Timer
+@onready var damage_number_origin = $DamageNumberOrigin
 
 func _ready() -> void:
 	### Declaring attributes from GameCharacterScript ###
@@ -30,6 +31,8 @@ func _physics_process(delta: float) -> void:
 
 func take_damage(damage_amount : float) -> void:
 	health -= damage_amount
+	DamageNumbers.display_number(damage_amount, damage_number_origin.global_position, false)
+	print(damage_amount)
 	if health <= 0:
 		controller.update_score(score)
 		if controller.check_key_status():

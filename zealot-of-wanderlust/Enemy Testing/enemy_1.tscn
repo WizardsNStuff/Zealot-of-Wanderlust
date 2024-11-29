@@ -42,4 +42,7 @@ scale = Vector2(0.15, 0.15)
 [node name="DamageFlashTimer" type="Timer" parent="."]
 wait_time = 0.25
 
+[node name="DamageNumberOrigin" type="Node2D" parent="."]
+position = Vector2(0, -15)
+
 [connection signal="timeout" from="DamageFlashTimer" to="." method="_on_timer_timeout"]

@@ -8,6 +8,7 @@ var score = 10
 
 @export var player : Player
 @export var controller : Controller
+@onready var damage_numbers_origin = $DamageNumbersOrigin
 
 func _ready() -> void:
 	### Declaring attributes from GameCharacterScript ###
@@ -29,6 +30,7 @@ func _physics_process(delta: float) -> void:
 
 func take_damage(damage_amount : float) -> void:
 	health -= damage_amount
+	DamageNumbers.display_number(damage_amount, damage_numbers_origin.global_position, false)
 	
 	# show/hide certain nodes when damage is taken
 	$HealthBar.show()

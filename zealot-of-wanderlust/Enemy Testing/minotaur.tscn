@@ -50,4 +50,6 @@ wait_time = 0.1
 [node name="DamageFlashTimer" type="Timer" parent="."]
 wait_time = 0.25
 
+[node name="DamageNumberOrigin" type="Node2D" parent="."]
+
 [connection signal="timeout" from="DamageFlashTimer" to="." method="_on_timer_timeout"]
