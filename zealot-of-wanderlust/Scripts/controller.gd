@@ -1062,11 +1062,13 @@ func handle_input(delta: float) -> void:
 		# attack
 		attack_direction.x = Input.get_action_strength("attack_right")- Input.get_action_strength("attack_left")
 		attack_direction.y = Input.get_action_strength("attack_down") - Input.get_action_strength("attack_up")
-		attack_direction = input_direction.normalized()
+		attack_direction = attack_direction.normalized()
 		if attack_direction != Vector2.ZERO && !player.is_attacking:
 			# Player can't attack while moving
 			player.velocity = Vector2.ZERO
 			attack(attack_direction)
+		else:
+			attack_direction = Vector2.ZERO
 			
 		handle_animations(input_direction, attack_direction)
 
@@ -1092,16 +1094,19 @@ func attack(attack_direction: Vector2) -> void:
 	model.add_child(projectile)
 
 func handle_animations(walk_dir, attack_dir) -> void:
-	if attack_dir != Vector2.ZERO:
+	var state_machine = player.animations["parameters/playback"]
+	
+	if attack_dir != Vector2.ZERO && player.is_attacking:
+		player.animations.set("parameters/Idle/blend_position", attack_dir)
 		player.animations.set("parameters/Attack/blend_position", attack_dir)
-		player.animations.travel("Attack")
+		state_machine.travel("Idle")
+		state_machine.travel("Attack")
 	elif walk_dir != Vector2.ZERO:
 		player.animations.set("parameters/Idle/blend_position", walk_dir)
 		player.animations.set("parameters/Walk/blend_position", walk_dir)
-		player.animations.travel("Walk")
+		state_machine.travel("Walk")
 	else:
-		player.animations.travel("Idle")
-		player.velocity
+		state_machine.travel("Idle")
 
 func get_random_tile_in_room(room_node : RoomNode) -> Vector2i:
 	randomize()
@@ -1112,7 +1117,7 @@ func player_take_damage(damage_amount : float) -> void:
 	player_can_be_damaged = false
 	player_iframes = Time.get_unix_time_from_system() + player.iframes
 	# flashes the player sprite on damage
-	player.sprite.modulate = Color.RED
+	player.sprite.modulate = Color.SKY_BLUE
 	player.damage_flash_timer.start()
 
 	if player.health <= 0:
@@ -1387,7 +1392,6 @@ func handle_level_up() -> void:
 	var skill2 := model.skills[rng.rand_weighted(model.skill_weights)] as Skill
 	var skill3 := model.skills[rng.rand_weighted(model.skill_weights)] as Skill
 	view.init_skills(skill1, skill2, skill3)
-	player.weapon.current_weapon.visible = false
 	view.level_up()
 
 func add_skill(skill : Skill) -> void:
