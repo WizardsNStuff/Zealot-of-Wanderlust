@@ -120,14 +120,15 @@ func start_tutorial() -> void:
 	enemy_1.controller = self
 	enemy_2.controller = self
 	enemy_3.controller = self
-	enemy_1.speed = 0
-	enemy_2.speed = 0
-	enemy_3.speed = 0
-	enemy_1.score = 50
-	enemy_2.score = 50
 	model.enemy_spawner.add_child(enemy_1)
 	model.enemy_spawner.add_child(enemy_2)
 	model.enemy_spawner.add_child(enemy_3)
+	enemy_1.score = 50
+	enemy_2.score = 50
+	enemy_1.speed = 0
+	enemy_2.speed = 0
+	enemy_3.speed = 0
+	enemy_3.rush_speed = 0
 	enemy_1.main_damage = 0
 	enemy_2.main_damage = 0
 	enemy_3.main_damage = 0
@@ -183,6 +184,7 @@ func stop_tutorial() -> void:
 	model.call_deferred("remove_child", model.tutorial_data)
 	model.tutorial_data.queue_free()
 	model.tutorial_data = null
+	model.in_tutorial = false
 	view.stop_tutorial()
 
 func reset_player() -> void:
