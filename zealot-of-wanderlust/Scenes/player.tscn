@@ -375,7 +375,7 @@ states/Walk/node = SubResource("AnimationNodeBlendSpace2D_mj5ng")
 states/Walk/position = Vector2(502, 100)
 transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_jqy20"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_oue76"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_mpwkn")]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations", "weapon")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations")]
 z_index = 100
 collision_layer = 4
 collision_mask = 3
@@ -385,15 +385,13 @@ floor_constant_speed = true
 platform_on_leave = 2
 platform_floor_layers = 4294967041
 script = ExtResource("1_up7rm")
-animations = NodePath("")
-weapon = NodePath("")
+animations = NodePath("AnimationTree")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_s31vg")
 flip_h = true
 hframes = 8
 vframes = 9
-frame = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
