@@ -41,12 +41,12 @@ func _physics_process(delta: float) -> void:
 	
 	# normal state: enemy is pathfinding and moving normally in this code block
 	if not rushing:
-		var direction = to_local(nav_agent.get_next_path_position()).normalized()
-		last_known_dir = direction
-		$RayCast2D.rotation = direction.angle()
+		makepath()
+		var direction = global_position.direction_to(nav_agent.get_next_path_position())
+		last_known_dir = to_local(player.global_position).normalized()
+		$RayCast2D.rotation = last_known_dir.angle()
 		$RayCast2D.force_raycast_update()
 		velocity = direction * speed
-		makepath()
 		move_and_slide()
 		
 		# decrease charge cooldown timer

@@ -1,7 +1,8 @@
 extends CharacterBody2D
 class_name Player
 
-var speed = 150
+var speed := 150
+var acceleration := 500
 
 var health : float = 200
 var original_health : float
@@ -33,11 +34,9 @@ var experience : int = 0 :
 		else:
 			experience = value
 
-@export var animations : AnimationPlayer
+@export var animations : AnimationTree
 @onready var sprite : Sprite2D = $Sprite2D
 @onready var damage_flash_timer : Timer = $DamageFlashTimer
-
-@export var weapon : Weapon
 
 var last_animation_direction : String = "down"
 

@@ -5,7 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://bflc4dyyluhbu" path="res://Scenes/enemy_healthbar.tscn" id="4_a3i3c"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e2n7k"]
-height = 26.0
+radius = 9.0
+height = 24.0
 
 [node name="Minotaur" type="CharacterBody2D" node_paths=PackedStringArray("damage_timer")]
 collision_layer = 2
@@ -26,6 +27,8 @@ region_rect = Rect2(227.806, 224.011, 26.9925, 30.7317)
 shape = SubResource("CapsuleShape2D_e2n7k")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 0.1
+path_postprocessing = 1
 debug_enabled = true
 
 [node name="RayCast2D" type="RayCast2D" parent="."]

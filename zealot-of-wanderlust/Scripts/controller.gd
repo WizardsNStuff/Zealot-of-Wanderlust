@@ -1042,72 +1042,71 @@ func enemy_spawning_finished() -> void:
 	model.spawn_timer.stop()
 	model.spawning_enabled = false
 
-func handle_input() -> void:
+func handle_input(delta: float) -> void:
 	# get the input direction for movement
-	var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	var input_direction = Vector2.ZERO
+	var attack_direction = Vector2.ZERO
+	
+	input_direction.x = Input.get_action_strength("ui_right")- Input.get_action_strength("ui_left")
+	input_direction.y = Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
+	
+	input_direction = input_direction.normalized()
 	
 	if Input.is_action_just_pressed("ui_cancel") && !leveling_up:
 		# Switch the pause state
 		get_tree().paused = !get_tree().paused
 	elif !get_tree().paused:
 		# set the player's velocity
-		player.velocity = input_direction * player.speed
+		player.velocity = player.velocity.move_toward(input_direction * player.speed, delta * player.acceleration)
 		
-		var attack_direction = Input.get_vector("attack_left", "attack_right", "attack_up", "attack_down")
+		# attack
+		attack_direction.x = Input.get_action_strength("attack_right")- Input.get_action_strength("attack_left")
+		attack_direction.y = Input.get_action_strength("attack_down") - Input.get_action_strength("attack_up")
+		attack_direction = attack_direction.normalized()
 		if attack_direction != Vector2.ZERO && !player.is_attacking:
+			# Player can't attack while moving
+			player.velocity = Vector2.ZERO
 			attack(attack_direction)
+		else:
+			attack_direction = Vector2.ZERO
+			
+		handle_animations(input_direction, attack_direction)
 
 func attack(attack_direction: Vector2) -> void:
 	# start the attack
 	player_cooldown = Time.get_unix_time_from_system() + player.damage_cooldown
 	player.is_attacking = true
-	player.weapon.current_weapon.visible = true
-	player.weapon.current_weapon.hitbox.disabled = false
 	
-	if attack_direction.x == 0 && attack_direction.y > 0:
-		player.animations.play("attack_down")
-	elif attack_direction.x == 0 && attack_direction.y < 0:
-		player.animations.play("attack_up")
-	elif attack_direction.x > 0 && attack_direction.y == 0:
-		player.animations.play("attack_right")
-	else:
-		player.animations.play("attack_left")
-	
-	# shoot projectile
+	# spawn projectile
 	var projectile_scene := load("res://Player Combat/projectile.tscn")
 	var projectile : Projectile = projectile_scene.instantiate()
 	projectile.damage = player.damage
 	projectile.projectile_life = Time.get_unix_time_from_system() + player.projectile_life_span
 	projectile.velocity = attack_direction * player.projectile_speed
 	projectile.global_position = player.global_position
-	# Add Skill Changes
+	
+	# add Skill Changes
 	if !player.skill_list.is_empty():
 		for skill in player.skill_list:
 			(skill as Skill).add_effect(projectile)
-	model.add_child(projectile)
 	
-	# stop the attack
-	await player.animations.animation_finished
-	player.weapon.current_weapon.visible = false
-	player.weapon.current_weapon.hitbox.disabled = true
+	# fire
+	model.add_child(projectile)
 
-func update_animation() -> void:
-	if player.is_attacking: 
-		return
-
-	if player.velocity == Vector2.ZERO:
-		if player.animations.is_playing():
-			player.animations.stop()
+func handle_animations(walk_dir, attack_dir) -> void:
+	var state_machine = player.animations["parameters/playback"]
+	
+	if attack_dir != Vector2.ZERO && player.is_attacking:
+		player.animations.set("parameters/Idle/blend_position", attack_dir)
+		player.animations.set("parameters/Attack/blend_position", attack_dir)
+		state_machine.travel("Idle")
+		state_machine.travel("Attack")
+	elif walk_dir != Vector2.ZERO:
+		player.animations.set("parameters/Idle/blend_position", walk_dir)
+		player.animations.set("parameters/Walk/blend_position", walk_dir)
+		state_machine.travel("Walk")
 	else:
-
-		var direction : String = "down"
-
-		if player.velocity.x < 0: direction = "left"
-		elif player.velocity.x > 0: direction = "right"
-		elif player.velocity.y < 0: direction = "up"
-
-		#player.animations.play("walk_" + direction)
-		player.last_animation_direction = direction
+		state_machine.travel("Idle")
 
 func get_random_tile_in_room(room_node : RoomNode) -> Vector2i:
 	randomize()
@@ -1118,7 +1117,7 @@ func player_take_damage(damage_amount : float) -> void:
 	player_can_be_damaged = false
 	player_iframes = Time.get_unix_time_from_system() + player.iframes
 	# flashes the player sprite on damage
-	player.sprite.modulate = Color.RED
+	player.sprite.modulate = Color.SKY_BLUE
 	player.damage_flash_timer.start()
 
 	if player.health <= 0:
@@ -1393,7 +1392,6 @@ func handle_level_up() -> void:
 	var skill2 := model.skills[rng.rand_weighted(model.skill_weights)] as Skill
 	var skill3 := model.skills[rng.rand_weighted(model.skill_weights)] as Skill
 	view.init_skills(skill1, skill2, skill3)
-	player.weapon.current_weapon.visible = false
 	view.level_up()
 
 func add_skill(skill : Skill) -> void:
@@ -1422,7 +1420,7 @@ func collect_heart(heart) -> void:
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
 	if proc_gen_data.dungeon_created:
-		handle_input()
+		handle_input(delta)
 		
 		# don't process anything if paused
 		if get_tree().paused: return
@@ -1432,8 +1430,6 @@ func _physics_process(delta: float) -> void:
 
 		# move the player and retrieve if any collisions occured
 		var player_collision = player.move_and_slide()
-
-		update_animation()
 
 		# if a collision occurred during movement, process each collision
 		if (player_collision):
