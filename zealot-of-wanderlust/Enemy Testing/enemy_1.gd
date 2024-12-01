@@ -6,7 +6,8 @@ var attack_range = 28
 var cooldown = 0
 var score = 15
 
-@export var player : Player
+# if player is set to CharacterBody2D change it back to player (I change it when testing new enemies)
+@export var player : CharacterBody2D
 @export var controller : Controller
 @onready var sprite : Sprite2D = $MainSprite
 @export var damage_timer : Timer
@@ -34,9 +35,9 @@ func take_damage(damage_amount : float) -> void:
 	DamageNumbers.display_number(damage_amount, damage_number_origin.global_position, false)
 	print(damage_amount)
 	if health <= 0:
-		controller.update_score(score)
-		if controller.check_key_status():
-			controller.give_player_key()
+		#controller.update_score(score)
+		#if controller.check_key_status():
+			#controller.give_player_key()
 		self.queue_free()
 	
 	# show/hide certain nodes when damage is taken
