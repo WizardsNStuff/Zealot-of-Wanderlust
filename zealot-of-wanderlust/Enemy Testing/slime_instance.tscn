@@ -1,3 +1,7 @@
-[gd_scene format=3 uid="uid://dowo2k82x4rgo"]
+[gd_scene load_steps=2 format=3 uid="uid://dowo2k82x4rgo"]
+
+[ext_resource type="PackedScene" uid="uid://biu52fnxyjl0p" path="res://Enemy Testing/slime.tscn" id="1_pcgbu"]
 
 [node name="SlimeInstance" type="Node2D"]
+
+[node name="Slime" parent="." instance=ExtResource("1_pcgbu")]
