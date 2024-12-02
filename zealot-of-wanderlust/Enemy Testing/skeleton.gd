@@ -1,21 +1,17 @@
-extends GameCharacter
+extends Enemy
 class_name Skeleton
 
-var speed = 75
-var attack_range = 28
-var cooldown = 0
-var score = 10
-
-@export var player : Player
-@export var controller : Controller
 @onready var damage_numbers_origin = $DamageNumbersOrigin
 
 func _ready() -> void:
-	### Declaring attributes from GameCharacterScript ###
+	speed = 75
+	attack_range = 28
+	cooldown = 0
+	score = 15
 	health = 75
 	defense = 20
 	main_damage = 15
-	main_damage_cooldown = 1.5
+	main_damage_cooldown = 0.0
 	$HealthBar.init_health(health)
 	$DamagedSpriteTimer.connect("timeout", Callable(self, "damaged_sprite_timer_timeout"))
 	$HealthBarTimer.connect("timeout", Callable(self, "health_bar_timer_timeout"))

@@ -36,6 +36,7 @@ var experience : int = 0 :
 
 @export var animations : AnimationTree
 @onready var sprite : Sprite2D = $Sprite2D
+@onready var hitbox : CollisionShape2D = $CollisionShape2D
 @onready var damage_flash_timer : Timer = $DamageFlashTimer
 
 var last_animation_direction : String = "down"

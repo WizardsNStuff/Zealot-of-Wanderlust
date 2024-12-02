@@ -30,7 +30,7 @@ func _ready() -> void:
 	health = 200
 	defense = 20
 	main_damage = 50
-	main_damage_cooldown = 2
+	main_damage_cooldown = 0
 	rush_damage = main_damage * 1.5
 	$HealthBarTimer.connect("timeout", Callable(self, "health_bar_timer_timeout"))
 	#$Timer.connect("timeout", Callable(self, "test"))
