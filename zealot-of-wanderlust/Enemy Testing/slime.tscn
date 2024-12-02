@@ -1,0 +1,47 @@
+[gd_scene load_steps=5 format=3 uid="uid://biu52fnxyjl0p"]
+
+[ext_resource type="Texture2D" uid="uid://ubj5y2wlu8ln" path="res://Assets/monsters.png" id="1_dt4ed"]
+[ext_resource type="Script" path="res://Enemy Testing/slime.gd" id="1_iemim"]
+[ext_resource type="PackedScene" uid="uid://bflc4dyyluhbu" path="res://Scenes/enemy_healthbar.tscn" id="3_sgfte"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ev4sw"]
+radius = 8.0
+
+[node name="Slime" type="CharacterBody2D" node_paths=PackedStringArray("damage_timer")]
+collision_layer = 2
+collision_mask = 7
+motion_mode = 1
+script = ExtResource("1_iemim")
+damage_timer = NodePath("DamageFlashTimer")
+
+[node name="MainSprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_dt4ed")
+region_enabled = true
+region_rect = Rect2(35.6423, 77.704, 24.1992, 17.8224)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ev4sw")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_postprocessing = 1
+
+[node name="HealthBarTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="HealthBar" parent="." instance=ExtResource("3_sgfte")]
+visible = false
+offset_left = -15.0
+offset_top = -13.0
+offset_right = 28.0
+offset_bottom = -9.0
+
+[node name="DamageFlashTimer" type="Timer" parent="."]
+wait_time = 0.25
+
+[node name="DamageNumberOrigin" type="Node2D" parent="."]
+position = Vector2(7, -5)
+
+[node name="DmgTestingTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true

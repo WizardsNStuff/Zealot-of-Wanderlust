@@ -6,6 +6,7 @@ var attack_range = 28
 var cooldown = 0
 var score = 15
 
+# if player is set to CharacterBody2D change it back to player (I change it when testing new enemies)
 @export var player : Player
 @export var controller : Controller
 @onready var sprite : Sprite2D = $MainSprite
