@@ -53,7 +53,6 @@ func _physics_process(delta: float) -> void:
 			velocity = Vector2(0, 0)
 			move_and_slide()
 			locked_on_player_timer += delta
-			print("minatour is charging!")
 		else:
 			makepath()
 			var direction = global_position.direction_to(nav_agent.get_next_path_position())
