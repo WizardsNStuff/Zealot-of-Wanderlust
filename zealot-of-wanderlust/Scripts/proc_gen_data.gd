@@ -62,7 +62,7 @@ var exit_location : Vector2i = Vector2i()
 
 var has_key : bool = false
 
-enum ROOM_TYPE {SKELETONS, SKELETONS_AND_MINOTAURS, MINOTAURS_AND_SKELETONS, MINOTAURS}
+enum ROOM_TYPE {SKELETONS, SKELETONS_AND_MINOTAURS, SKELETONS_AND_SLIMES, MINOTAURS}
 
 var current_dungeon_floor : int = 1
 

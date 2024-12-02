@@ -1190,6 +1190,7 @@ func give_room_enemies(room_node : RoomNode) -> void:
 	
 	var skeleton_count : int
 	var minotaur_count : int
+	var slime_count : int
 	
 	match room_type_name:
 		"SKELETONS":
@@ -1206,12 +1207,12 @@ func give_room_enemies(room_node : RoomNode) -> void:
 			for i in range(minotaur_count):
 				room_node.add_enemy(model.minotaur_enemy)
 
-		"MINOTAURS_AND_SKELETONS":
-			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1 * 0.5)
-			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6)
+		"SKELETONS_AND_SLIMES":
+			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1 * 0.3)
+			slime_count = floor((proc_gen_data.current_dungeon_floor + 1) * 2)
 
-			for i in range(minotaur_count):
-				room_node.add_enemy(model.minotaur_enemy)
+			for i in range(slime_count):
+				room_node.add_enemy(model.slime_enemy)
 
 			for i in range(skeleton_count):
 				room_node.add_enemy(model.skeleton_enemy)
@@ -1298,7 +1299,7 @@ func paint_room_specific_tiles(room_nodes : Array[RoomNode], corridor_exclusive_
 				objects[proc_gen_data.object_tilemap_layer.red_tall_grass_object_tile_atlas_position] = 5
 				objects[proc_gen_data.object_tilemap_layer.small_pink_flowers_object_tile_atlas_position] = 5
 				objects[proc_gen_data.object_tilemap_layer.leaf_pile_1_object_tile_atlas_position] = 5
-			"MINOTAURS_AND_SKELETONS":
+			"SKELETONS_AND_SLIMES":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.light_brown_floor_tile_atlas_position
 				wall_tile_pos = proc_gen_data.wall_tilemap_layer.sponge_wall_tile_atlas_position
 				objects[proc_gen_data.object_tilemap_layer.red_bush_object_tile_atlas_position] = 5

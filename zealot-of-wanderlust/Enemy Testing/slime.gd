@@ -39,7 +39,8 @@ func makepath() -> void:
 
 # TODO: Make a function that makes sure slimes don't spawn in/beyond walls (Adam will implement this (hopefully))
 func split_into_two(little_slime: CharacterBody2D, spawn_side: int) -> void:
-	little_slime.player = $"../Player"
+	little_slime.player = player
+	little_slime.controller = controller
 	little_slime.get_node("MainSprite").scale = Vector2(0.65, 0.65)
 	little_slime.get_node("CollisionShape2D").scale = Vector2(0.65, 0.65)
 	#little_slime.get_node("Healthbar").scale = Vector2(0.65, 0.65)

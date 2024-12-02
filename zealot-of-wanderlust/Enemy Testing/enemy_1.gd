@@ -36,7 +36,7 @@ func take_damage(damage_amount : float) -> void:
 	print(damage_amount)
 	if health <= 0:
 		controller.update_score(score)
-		if controller.check_key_status():
+		if controller.check_key_status() && (self is not Slime):
 			controller.give_player_key()
 		self.queue_free()
 	
