@@ -1059,8 +1059,10 @@ func handle_input(delta: float) -> void:
 		get_tree().paused = !get_tree().paused
 	elif !get_tree().paused:
 		# set the player's velocity
-		player.velocity = player.velocity.move_toward(input_direction * player.speed, delta * player.acceleration)
-		
+		if (input_direction != Vector2.ZERO):
+			player.velocity = player.velocity.move_toward(input_direction * player.speed, delta * player.acceleration)
+		else:
+			player.velocity = player.velocity.move_toward(input_direction * player.speed, delta * 1000)
 		# attack
 		attack_direction.x = Input.get_action_strength("attack_right")- Input.get_action_strength("attack_left")
 		attack_direction.y = Input.get_action_strength("attack_down") - Input.get_action_strength("attack_up")
@@ -1082,6 +1084,7 @@ func attack(attack_direction: Vector2) -> void:
 	# spawn projectile
 	var projectile_scene := load("res://Player Combat/projectile.tscn")
 	var projectile : Projectile = projectile_scene.instantiate()
+	projectile.rotation = attack_direction.angle()
 	projectile.damage = player.damage
 	projectile.projectile_life = Time.get_unix_time_from_system() + player.projectile_life_span
 	projectile.velocity = attack_direction * player.projectile_speed
