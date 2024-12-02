@@ -41,13 +41,6 @@ func _physics_process(delta: float) -> void:
 	
 	# normal state: enemy is pathfinding and moving normally in this code block
 	if not rushing:
-		makepath()
-		var direction = global_position.direction_to(nav_agent.get_next_path_position())
-		last_known_dir = to_local(player.global_position).normalized()
-		$RayCast2D.rotation = last_known_dir.angle()
-		$RayCast2D.force_raycast_update()
-		velocity = direction * speed
-		move_and_slide()
 		
 		# decrease charge cooldown timer
 		if can_charge_again_timer > 0:
@@ -57,9 +50,20 @@ func _physics_process(delta: float) -> void:
 		# you could check if the raycast collider is player but it should be fine with just collision
 		# mask layers (both raycast and player are on collision layer 3 so it works fine) 
 		if ($RayCast2D.is_colliding() and can_charge_again_timer <= 0):
+			velocity = Vector2(0, 0)
+			move_and_slide()
 			locked_on_player_timer += delta
+			print("minatour is charging!")
+		else:
+			makepath()
+			var direction = global_position.direction_to(nav_agent.get_next_path_position())
+			last_known_dir = to_local(player.global_position).normalized()
+			$RayCast2D.rotation = last_known_dir.angle()
+			$RayCast2D.force_raycast_update()
+			velocity = direction * speed
+			move_and_slide()
 		
-		if locked_on_player_timer >= 0.2:
+		if locked_on_player_timer >= 1.0:
 			rushing = true
 			locked_on_player_timer = 0.0
 	
