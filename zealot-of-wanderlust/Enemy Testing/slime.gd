@@ -9,7 +9,7 @@ var splitting = false
 
 func _ready() -> void:
 	# redefining variables inherited from Enemy
-	speed = 29
+	speed = 30
 	attack_range = 20
 	score = 10
 	
@@ -23,7 +23,7 @@ func _ready() -> void:
 	$HealthBar.init_health(health)
 	
 	$HealthBarTimer.connect("timeout", Callable(self, "health_bar_timer_timeout"))
-	$DmgTestingTimer.connect("timeout", Callable(self, "testing_timer_timeout"))
+	#$DmgTestingTimer.connect("timeout", Callable(self, "testing_timer_timeout"))
 	$DamageFlashTimer.connect("timeout", Callable(self, "_on_timer_timeout"))
 
 func _physics_process(delta: float) -> void:
@@ -37,6 +37,7 @@ func _physics_process(delta: float) -> void:
 func makepath() -> void:
 	nav_agent.target_position = player.global_position
 
+# TODO: Make a function that makes sure slimes don't spawn in/beyond walls (Adam will implement this (hopefully))
 func split_into_two(little_slime: CharacterBody2D, spawn_side: int) -> void:
 	little_slime.player = $"../Player"
 	little_slime.get_node("MainSprite").scale = Vector2(0.65, 0.65)
@@ -62,9 +63,9 @@ func take_damage(damage_amount : float) -> void:
 	DamageNumbers.display_number(damage_amount, damage_number_origin.global_position, false)
 	print(damage_amount)
 	if health <= 0:
-		#controller.update_score(score)
-		#if controller.check_key_status():
-			#controller.give_player_key()
+		controller.update_score(score)
+		if controller.check_key_status():
+			controller.give_player_key()
 	
 		# only split into two if the current slime instance is the original slime
 		if self.name == "Slime":
@@ -79,6 +80,6 @@ func take_damage(damage_amount : float) -> void:
 	sprite.modulate = Color.RED
 	damage_timer.start()
 
-func testing_timer_timeout():
-	print("damage taken")
-	self.take_damage(25)
+#func testing_timer_timeout():
+	#print("damage taken")
+	#self.take_damage(25)
