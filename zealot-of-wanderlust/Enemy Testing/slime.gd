@@ -5,7 +5,7 @@ class_name Slime
 @onready var nav_agent := $NavigationAgent2D as NavigationAgent2D
 @onready var littleSlime1 = preload("res://Enemy Testing/slime.tscn")
 @onready var littleSlime2 = preload("res://Enemy Testing/slime.tscn")
-var splitting = false
+var splitting = true
 
 func _ready() -> void:
 	# redefining variables inherited from Enemy
@@ -39,7 +39,9 @@ func makepath() -> void:
 
 # TODO: Make a function that makes sure slimes don't spawn in/beyond walls (Adam will implement this (hopefully))
 func split_into_two(little_slime: CharacterBody2D, spawn_side: int) -> void:
-	little_slime.player = $"../Player"
+	little_slime.player = player
+	little_slime.controller = controller
+	little_slime.splitting = false
 	little_slime.get_node("MainSprite").scale = Vector2(0.65, 0.65)
 	little_slime.get_node("CollisionShape2D").scale = Vector2(0.65, 0.65)
 	#little_slime.get_node("Healthbar").scale = Vector2(0.65, 0.65)
@@ -61,14 +63,14 @@ func slime_spawn_pos_solver(slime: CharacterBody2D) -> void:
 func take_damage(damage_amount : float) -> void:
 	health -= damage_amount
 	DamageNumbers.display_number(damage_amount, damage_number_origin.global_position, false)
-	print(damage_amount)
+	#print(damage_amount)
 	if health <= 0:
 		controller.update_score(score)
 		if controller.check_key_status():
 			controller.give_player_key()
 	
 		# only split into two if the current slime instance is the original slime
-		if self.name == "Slime":
+		if splitting:
 			split_into_two(littleSlime1.instantiate(), 0)
 			split_into_two(littleSlime2.instantiate(), 1)
 		self.queue_free()

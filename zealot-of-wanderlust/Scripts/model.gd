@@ -6,6 +6,7 @@ class_name Model
 
 @export var skeleton_enemy : PackedScene
 @export var minotaur_enemy : PackedScene
+@export var slime_enemy : PackedScene
 
 @export var enemy_spawner : Node
 
