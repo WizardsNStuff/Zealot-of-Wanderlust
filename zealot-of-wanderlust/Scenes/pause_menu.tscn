@@ -148,16 +148,6 @@ offset_bottom = 705.0
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 
-[node name="Skill1" type="Label" parent="ScrollContainer/SkillContainer"]
-layout_mode = 2
-text = "Skill 1"
-horizontal_alignment = 1
-
-[node name="Skill2" type="Label" parent="ScrollContainer/SkillContainer"]
-layout_mode = 2
-text = "Skill 1"
-horizontal_alignment = 1
-
 [node name="ColorRect2" type="ColorRect" parent="."]
 layout_mode = 0
 offset_left = 342.0
