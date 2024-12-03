@@ -100,8 +100,10 @@ func skill3_chosen() -> void:
 
 func game_paused() -> void:
 	pause_menu_node.show()
+	pause_menu_node.unpause_button.grab_focus()
 
 func unpause_game() -> void:
+	controller.unpause_game()
 	pause_menu_node.hide()
 
 func exit_to_main_menu() -> void:

@@ -1044,6 +1044,9 @@ func enemy_spawning_finished() -> void:
 	model.spawn_timer.stop()
 	model.spawning_enabled = false
 
+func unpause_game() -> void:
+	get_tree().paused = false
+
 func handle_input(delta: float) -> void:
 	# get the input direction for movement
 	var input_direction = Vector2.ZERO
@@ -1057,7 +1060,10 @@ func handle_input(delta: float) -> void:
 	if Input.is_action_just_pressed("ui_cancel") && !leveling_up:
 		# Switch the pause state
 		get_tree().paused = !get_tree().paused
+		view.game_paused()
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	elif !get_tree().paused:
+		view.pause_menu_node.hide()
 		# set the player's velocity
 		if (input_direction != Vector2.ZERO):
 			player.velocity = player.velocity.move_toward(input_direction * player.speed, delta * player.acceleration)
