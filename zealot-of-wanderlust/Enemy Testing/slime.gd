@@ -19,6 +19,11 @@ func _ready() -> void:
 	main_damage = 10
 	main_damage_cooldown = 2
 	
+	# change certain attributes if current instance is a child slime
+	if splitting == false:
+		speed = 125
+		health = 5
+	
 	# delete this line when this enemy is ready to be pushed
 	$HealthBar.init_health(health)
 	
@@ -37,7 +42,6 @@ func _physics_process(delta: float) -> void:
 func makepath() -> void:
 	nav_agent.target_position = player.global_position
 
-# TODO: Make a function that makes sure slimes don't spawn in/beyond walls (Adam will implement this (hopefully))
 func split_into_two(little_slime: CharacterBody2D, spawn_side: int) -> void:
 	little_slime.player = player
 	little_slime.controller = controller
@@ -49,13 +53,34 @@ func split_into_two(little_slime: CharacterBody2D, spawn_side: int) -> void:
 	match spawn_side:
 		0:
 			little_slime.position = self.global_position - Vector2(15, 0)
+			slime_spawn_pos_solver(little_slime)
 		1:
 			little_slime.position = self.global_position - Vector2(-15, 0)
+			slime_spawn_pos_solver(little_slime)
 	get_parent().add_child(little_slime)
 
-
+# function that makes sure slimes don't spawn in walls
 func slime_spawn_pos_solver(slime: CharacterBody2D) -> void:
-	pass
+	var attempts = 0
+	var max_attempts = 0
+	while attempts < max_attempts:
+		var space_state = get_world_2d().direct_space_state
+		
+		# create a query to check if the slime's position is colliding with any walls
+		var query = PhysicsPointQueryParameters2D.new()
+		query.position = slime.global_position
+		query.collision_mask = slime.collision_layer
+		
+		# perform the intersection query to see if the position is valid (not in an obstacle)
+		var result = space_state.intersect_point(query)
+		if result.is_empty():
+			# position is not in a wall
+			break
+		else:
+			# adjust position slightly if intersecting (brute force approach)
+			var adjustment = Vector2(randf_range(-30, 30), randf_range(-30, 30))
+			slime.position += adjustment
+		attempts += 1
 
 
 # this may mostly be the same as the take_damage from the enemy script, but I needed to put
@@ -63,7 +88,6 @@ func slime_spawn_pos_solver(slime: CharacterBody2D) -> void:
 func take_damage(damage_amount : float) -> void:
 	health -= damage_amount
 	DamageNumbers.display_number(damage_amount, damage_number_origin.global_position, false)
-	#print(damage_amount)
 	if health <= 0:
 		controller.update_score(score)
 		if controller.check_key_status():
