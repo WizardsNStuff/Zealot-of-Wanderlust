@@ -101,5 +101,16 @@ func skill3_chosen() -> void:
 func game_paused() -> void:
 	pause_menu_node.show()
 
+func unpause_game() -> void:
+	pause_menu_node.hide()
+
+func exit_to_main_menu() -> void:
+	main_menu_node.show()
+	health_bar.hide()
+	score_label.hide()
+	floor_label.hide()
+	player_level_label.hide()
+	# controller method would go here (controller.exit_to_main_menu) or something
+
 func add_skill_to_pause_screen(skill1: Skill) -> void:
 	pause_menu_node.append_skill_to_container(skill1.skill_name)

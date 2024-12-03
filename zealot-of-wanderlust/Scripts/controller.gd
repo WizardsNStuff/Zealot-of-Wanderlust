@@ -1405,6 +1405,7 @@ func add_skill(skill : Skill) -> void:
 	temp_skill._ready()
 	temp_skill.player = player
 	player.skill_list.append(temp_skill)
+	view.add_skill_to_pause_screen(temp_skill)
 	
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	leveling_up = false
