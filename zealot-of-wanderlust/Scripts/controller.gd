@@ -154,7 +154,7 @@ func tutorial_damage_section():
 	timer.one_shot = true
 	timer.timeout.connect(tutorial_damage_section_timeout.bind(timer, original_player_damage, original_player_speed))
 	model.tutorial_data.add_child(timer)
-	timer.start(3)
+	timer.start(0.5)
 
 func tutorial_damage_section_timeout(timer, original_player_damage, original_player_speed) -> void:
 	timer.queue_free()
@@ -1058,10 +1058,13 @@ func handle_input(delta: float) -> void:
 	input_direction = input_direction.normalized()
 	
 	if Input.is_action_just_pressed("ui_cancel") && !leveling_up:
-		# Switch the pause state
+		# Flip the pause state
 		get_tree().paused = !get_tree().paused
 		view.game_paused()
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		if get_tree().paused:
+			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		else:
+			Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	elif !get_tree().paused:
 		view.pause_menu_node.hide()
 		# set the player's velocity

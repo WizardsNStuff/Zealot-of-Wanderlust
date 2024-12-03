@@ -20,6 +20,7 @@ autoplay = true
 [node name="Model" parent="." instance=ExtResource("2_4gxgj")]
 process_mode = 1
 
-[node name="View" parent="." node_paths=PackedStringArray("controller") instance=ExtResource("3_eky8r")]
-process_mode = 1
+[node name="View" parent="." node_paths=PackedStringArray("controller", "model") instance=ExtResource("3_eky8r")]
+process_mode = 3
 controller = NodePath("..")
+model = NodePath("../Model")

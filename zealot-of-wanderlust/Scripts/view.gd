@@ -2,6 +2,7 @@ extends CanvasLayer
 class_name View
 
 @export var controller : Controller
+@export var model : Model
 
 @export var main_menu_node : MainMenu
 @export var game_over_node : GameOver
@@ -15,7 +16,7 @@ class_name View
 @export var floor_label : Label
 
 func start_level() -> void:
-	#controller.reset_player()
+	get_tree().paused = false
 	controller.play_again()
 	controller.start_level()
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
@@ -23,6 +24,7 @@ func start_level() -> void:
 	health_bar.show()
 
 func start_tutorial() -> void:
+	get_tree().paused = false
 	controller.start_tutorial()
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	main_menu_node.hide()
@@ -30,14 +32,13 @@ func start_tutorial() -> void:
 
 func stop_tutorial() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	model.in_tutorial = false
 	main_menu_node.show()
-	health_bar.hide()
 	health_bar.hide()
 	floor_label.hide()
 	player_level_label.hide()
 	score_label.hide()
 	stop_key_animation()
-	
 
 func play_again() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
@@ -99,20 +100,26 @@ func skill3_chosen() -> void:
 ### vvv                              vvv ###
 
 func game_paused() -> void:
-	pause_menu_node.show()
-	pause_menu_node.unpause_button.grab_focus()
+	pause_menu_node.visible = !pause_menu_node.visible
+	if pause_menu_node.visible:
+		pause_menu_node.unpause_button.grab_focus()
 
 func unpause_game() -> void:
 	controller.unpause_game()
+	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 	pause_menu_node.hide()
 
 func exit_to_main_menu() -> void:
+	controller.unpause_game()
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	pause_menu_node.hide()
 	main_menu_node.show()
+	main_menu_node.start_btn.grab_focus()
 	health_bar.hide()
-	score_label.hide()
 	floor_label.hide()
 	player_level_label.hide()
-	# controller method would go here (controller.exit_to_main_menu) or something
+	score_label.hide()
+	stop_key_animation()
 
 func add_skill_to_pause_screen(skill1: Skill) -> void:
 	pause_menu_node.append_skill_to_container(skill1.skill_name)
