@@ -1,0 +1,190 @@
+[gd_scene load_steps=27 format=3 uid="uid://caj70j3aaqfo3"]
+
+[ext_resource type="Script" path="res://Scripts/pause_menu.gd" id="1_c1ftk"]
+[ext_resource type="FontFile" uid="uid://deuj413nwfqiv" path="res://Fonts/alagard.ttf" id="1_rhkd6"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_jsq6q"]
+font = ExtResource("1_rhkd6")
+font_size = 100
+outline_size = 8
+outline_color = Color(0.345098, 0.454902, 0.443137, 1)
+shadow_size = 25
+shadow_color = Color(0.756863, 0.8, 0.905882, 0.109804)
+shadow_offset = Vector2(-1, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yhkf1"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wh8yu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3p883"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fdwlb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_sf7qo"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ymonq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_nfxbi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_diset"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bb0m7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cn5d7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gebtm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jyqxh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_tuo3c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hdk32"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xwxpt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ub8t2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_us7u5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fsd5p"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r50jp"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rk2wq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ko415"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e7mgj"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_hqh74"]
+font = ExtResource("1_rhkd6")
+font_size = 32
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[node name="PauseMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_c1ftk")
+
+[node name="Paused" type="Label" parent="."]
+layout_mode = 0
+offset_top = 18.0
+offset_right = 1280.0
+offset_bottom = 719.0
+text = "PAUSED"
+label_settings = SubResource("LabelSettings_jsq6q")
+horizontal_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 0
+offset_right = 1284.0
+offset_bottom = 723.0
+
+[node name="ColorRect" type="ColorRect" parent="CenterContainer"]
+custom_minimum_size = Vector2(600, 125)
+layout_mode = 2
+color = Color(0.14902, 0.14902, 0.14902, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+layout_mode = 2
+
+[node name="BtnContainer" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 100
+
+[node name="UnpauseBtn" type="Button" parent="CenterContainer/VBoxContainer/BtnContainer"]
+layout_mode = 2
+focus_neighbor_right = NodePath("../ExitBtn")
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.345098, 0.454902, 0.443137, 1)
+theme_override_fonts/font = ExtResource("1_rhkd6")
+theme_override_font_sizes/font_size = 35
+theme_override_styles/focus = SubResource("StyleBoxEmpty_yhkf1")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_wh8yu")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_3p883")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_fdwlb")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_sf7qo")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_ymonq")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_nfxbi")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_diset")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_bb0m7")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_cn5d7")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_gebtm")
+text = "Unpause"
+
+[node name="ExitBtn" type="Button" parent="CenterContainer/VBoxContainer/BtnContainer"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../UnpauseBtn")
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.345098, 0.454902, 0.443137, 1)
+theme_override_fonts/font = ExtResource("1_rhkd6")
+theme_override_font_sizes/font_size = 35
+theme_override_styles/focus = SubResource("StyleBoxEmpty_jyqxh")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_tuo3c")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_hdk32")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_xwxpt")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ub8t2")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_us7u5")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_fsd5p")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_r50jp")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_rk2wq")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_ko415")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_e7mgj")
+text = "Exit to Main Menu"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = 342.0
+offset_top = 508.0
+offset_right = 939.0
+offset_bottom = 705.0
+
+[node name="SkillContainer" type="VBoxContainer" parent="ScrollContainer"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="Skill1" type="Label" parent="ScrollContainer/SkillContainer"]
+layout_mode = 2
+text = "Skill 1"
+horizontal_alignment = 1
+
+[node name="Skill2" type="Label" parent="ScrollContainer/SkillContainer"]
+layout_mode = 2
+text = "Skill 1"
+horizontal_alignment = 1
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+layout_mode = 0
+offset_left = 342.0
+offset_top = 441.0
+offset_right = 942.0
+offset_bottom = 501.0
+color = Color(0.345098, 0.454902, 0.443137, 1)
+
+[node name="ColorRect" type="ColorRect" parent="."]
+z_index = -1
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 0
+offset_left = 342.0
+offset_top = 441.0
+offset_right = 942.0
+offset_bottom = 705.0
+mouse_filter = 2
+mouse_force_pass_scroll_events = false
+color = Color(0.442911, 0.442911, 0.442911, 1)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 342.0
+offset_top = 441.0
+offset_right = 942.0
+offset_bottom = 501.0
+text = "SKILLS YOU HAVE CHOSEN"
+label_settings = SubResource("LabelSettings_hqh74")
+horizontal_alignment = 1
+vertical_alignment = 1
