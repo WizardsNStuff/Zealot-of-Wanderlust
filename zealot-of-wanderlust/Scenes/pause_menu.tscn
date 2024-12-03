@@ -62,7 +62,7 @@ font_size = 32
 outline_size = 8
 outline_color = Color(0, 0, 0, 1)
 
-[node name="PauseMenu" type="Control"]
+[node name="PauseMenu" type="Control" node_paths=PackedStringArray("unpause_button", "exit_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -70,6 +70,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_c1ftk")
+unpause_button = NodePath("CenterContainer/VBoxContainer/BtnContainer/UnpauseBtn")
+exit_button = NodePath("CenterContainer/VBoxContainer/BtnContainer/ExitBtn")
 
 [node name="Paused" type="Label" parent="."]
 layout_mode = 0
@@ -147,16 +149,6 @@ offset_bottom = 705.0
 [node name="SkillContainer" type="VBoxContainer" parent="ScrollContainer"]
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
-
-[node name="Skill1" type="Label" parent="ScrollContainer/SkillContainer"]
-layout_mode = 2
-text = "Skill 1"
-horizontal_alignment = 1
-
-[node name="Skill2" type="Label" parent="ScrollContainer/SkillContainer"]
-layout_mode = 2
-text = "Skill 1"
-horizontal_alignment = 1
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 layout_mode = 0

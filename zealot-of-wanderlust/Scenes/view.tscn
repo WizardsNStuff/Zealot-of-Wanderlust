@@ -327,8 +327,10 @@ view = NodePath("..")
 visible = false
 view = NodePath("..")
 
-[node name="PauseMenu" parent="." instance=ExtResource("5_qsckk")]
+[node name="PauseMenu" parent="." node_paths=PackedStringArray("view") instance=ExtResource("5_qsckk")]
+process_mode = 3
 visible = false
+view = NodePath("..")
 
 [node name="HealthBar" parent="." instance=ExtResource("4_25atk")]
 visible = false
