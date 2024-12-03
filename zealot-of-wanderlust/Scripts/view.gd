@@ -6,6 +6,7 @@ class_name View
 @export var main_menu_node : MainMenu
 @export var game_over_node : GameOver
 @export var level_up_node: LevelUp
+@export var pause_menu_node: PauseMenu
 @export var score_label : Label
 @export var player_level_label : Label
 @export var animated_key_sprite : AnimatedSprite2D
@@ -92,3 +93,13 @@ func skill2_chosen() -> void:
 func skill3_chosen() -> void:
 	controller.add_skill(level_up_node.skill3)
 	level_up_node.hide()
+
+
+### ||| PAUSE MENU RELATED FUNCTIONS ||| ###
+### vvv                              vvv ###
+
+func game_paused() -> void:
+	pause_menu_node.show()
+
+func add_skill_to_pause_screen(skill1: Skill) -> void:
+	pause_menu_node.append_skill_to_container(skill1.skill_name)

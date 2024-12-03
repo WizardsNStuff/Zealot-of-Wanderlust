@@ -91,6 +91,7 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="StartBtn" type="Button" parent="MarginContainer/VBoxContainer"]
+process_mode = 3
 layout_mode = 2
 focus_neighbor_left = NodePath("../StartBtn3")
 focus_neighbor_top = NodePath("../StartBtn3")
