@@ -59,14 +59,12 @@ func checkpoint_entered(checkpoint) -> void:
 			"the staircase can be acessed by using a key", 
 			"the staircase takes you up to the next floor where enemies get stronger"
 			]
+			controller.tutorial_key_timer()
 			d7.start_dialogue()
 			controller.tutorial_pause(12)
-		"c8":
-			controller.give_player_key()
-
 
 func _on_stairs_body_entered(body: Node2D) -> void:
-	controller.stop_tutorial()
+	controller.tutorial_complete()
 
 func _physics_process(delta: float) -> void:
 	if !temp_wall_broken:

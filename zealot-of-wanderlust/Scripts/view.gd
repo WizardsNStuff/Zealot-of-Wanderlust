@@ -25,6 +25,8 @@ func start_level() -> void:
 	health_bar.show()
 
 func start_tutorial() -> void:
+	controller.load_game()
+	controller.load_tutorial()
 	get_tree().paused = false
 	controller.start_tutorial()
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
@@ -112,6 +114,8 @@ func unpause_game() -> void:
 
 func exit_to_main_menu() -> void:
 	controller.unload_game()
+	if model.in_tutorial:
+		controller.stop_tutorial()
 	controller.unpause_game()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	pause_menu_node.hide()

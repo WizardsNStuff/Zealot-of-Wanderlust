@@ -77,6 +77,13 @@ class RoomNode:
 		if right != null:
 			right.trim(trim_amount)
 
+func load_tutorial() -> void:
+	var tutorial_scene = load("res://Scenes/tutorial.tscn")
+	var tutorial_instance = tutorial_scene.instantiate()
+	model.tutorial_data = tutorial_instance
+	model.add_child(tutorial_instance)
+	model.move_child(tutorial_instance, 0)
+
 func start_tutorial() -> void:
 	model.in_tutorial = true
 	
@@ -86,12 +93,6 @@ func start_tutorial() -> void:
 	view.floor_label.visible = true
 	view.floor_label.text = "FLOOR: " + str(proc_gen_data.current_dungeon_floor)
 	view.score_label.text = "SCORE: " + str(player.score)
-	
-	var tutorial_scene = load("res://Scenes/tutorial.tscn")
-	var tutorial_instance = tutorial_scene.instantiate()
-	model.tutorial_data = tutorial_instance
-	model.add_child(tutorial_instance)
-	model.move_child(tutorial_instance, 0)
 	
 	model.tutorial_data.controller = self
 	player.position = Vector2i.ZERO
@@ -152,7 +153,7 @@ func tutorial_damage_section():
 	timer.one_shot = true
 	timer.timeout.connect(tutorial_damage_section_timeout.bind(timer, original_player_damage, original_player_speed))
 	model.tutorial_data.add_child(timer)
-	timer.start(0.5)
+	timer.start(2.5)
 
 func tutorial_damage_section_timeout(timer, original_player_damage, original_player_speed) -> void:
 	timer.queue_free()
@@ -163,6 +164,17 @@ func tutorial_damage_section_timeout(timer, original_player_damage, original_pla
 func tutorial_pause_timer_timeout(timer, original_player_speed) -> void:
 	timer.queue_free()
 	player.speed = original_player_speed
+
+func tutorial_key_timer() -> void:
+	var timer = Timer.new()
+	timer.one_shot = true
+	timer.timeout.connect(key_timer_timeout.bind(timer))
+	model.tutorial_data.add_child(timer)
+	timer.start(6)
+
+func key_timer_timeout(timer) -> void:
+	timer.queue_free()
+	give_player_key()
 
 func clear_enemy_spawner():
 	for child in model.enemy_spawner.get_children():
@@ -177,6 +189,9 @@ func tutorial_pause(time):
 	timer.timeout.connect(tutorial_pause_timer_timeout.bind(timer, original_player_speed))
 	model.tutorial_data.add_child(timer)
 	timer.start(time)
+
+func tutorial_complete() -> void:
+	view.exit_to_main_menu()
 
 func stop_tutorial() -> void:
 	model.call_deferred("remove_child", model.tutorial_data)
