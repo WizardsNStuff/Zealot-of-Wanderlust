@@ -35,6 +35,7 @@ var experience : int = 0 :
 			experience = value
 
 @export var animations : AnimationTree
+@export var audio : AudioStreamPlayer
 @onready var sprite : Sprite2D = $Sprite2D
 @onready var hitbox : CollisionShape2D = $CollisionShape2D
 @onready var damage_flash_timer : Timer = $DamageFlashTimer

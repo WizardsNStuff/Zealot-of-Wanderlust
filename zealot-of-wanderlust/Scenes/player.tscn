@@ -1,7 +1,8 @@
-[gd_scene load_steps=33 format=3 uid="uid://bh27mhrshrtua"]
+[gd_scene load_steps=34 format=3 uid="uid://bh27mhrshrtua"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_up7rm"]
 [ext_resource type="Texture2D" uid="uid://ddr57b2wswkfo" path="res://Assets/Player.png" id="2_s31vg"]
+[ext_resource type="AudioStream" uid="uid://n07rbll8564c" path="res://walking.mp3" id="3_vmyus"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_plb76"]
 radius = 6.0
@@ -395,7 +396,7 @@ states/Walk/node = SubResource("AnimationNodeBlendSpace2D_mj5ng")
 states/Walk/position = Vector2(502, 100)
 transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_jqy20"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_oue76"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_mpwkn"), "Idle", "Attack", SubResource("AnimationNodeStateMachineTransition_yyanm"), "Attack", "Idle", SubResource("AnimationNodeStateMachineTransition_lqnwt")]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations", "audio")]
 z_index = 100
 collision_layer = 4
 collision_mask = 3
@@ -405,12 +406,14 @@ platform_on_leave = 2
 platform_floor_layers = 4294967041
 script = ExtResource("1_up7rm")
 animations = NodePath("AnimationTree")
+audio = NodePath("AudioStreamPlayer")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_s31vg")
 flip_h = true
 hframes = 8
 vframes = 9
+frame = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
@@ -421,6 +424,11 @@ zoom = Vector2(2, 2)
 
 [node name="DamageFlashTimer" type="Timer" parent="."]
 wait_time = 0.25
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_vmyus")
+volume_db = -15.0
+pitch_scale = 3.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
