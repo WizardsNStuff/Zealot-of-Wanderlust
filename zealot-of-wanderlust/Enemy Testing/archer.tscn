@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://dw6l7tf1g00ky"]
+
+[ext_resource type="Texture2D" uid="uid://ubj5y2wlu8ln" path="res://Assets/monsters.png" id="1_1uyew"]
+[ext_resource type="Script" path="res://Enemy Testing/archer.gd" id="1_74dmh"]
+[ext_resource type="PackedScene" uid="uid://bflc4dyyluhbu" path="res://Scenes/enemy_healthbar.tscn" id="2_71qx4"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bscj1"]
+radius = 8.0
+height = 24.0
+
+[node name="Archer" type="CharacterBody2D"]
+script = ExtResource("1_74dmh")
+
+[node name="MainSprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_1uyew")
+region_enabled = true
+region_rect = Rect2(36.5973, 129.295, 22.4158, 30.4681)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 0)
+shape = SubResource("CapsuleShape2D_bscj1")
+
+[node name="HealthBar" parent="." instance=ExtResource("2_71qx4")]
+offset_left = -15.0
+offset_top = -19.0
+offset_right = 28.0
+offset_bottom = -15.0
+
+[node name="HealthBarTimer" type="Timer" parent="."]
+
+[node name="DamageFlashTimer" type="Timer" parent="."]
+
+[node name="DamageNumberOrigin" type="Node2D" parent="."]
+position = Vector2(0, -15)
