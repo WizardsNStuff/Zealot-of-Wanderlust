@@ -15,6 +15,8 @@ var player_cooldown : float
 var player_iframes : float
 var player_can_be_damaged : bool = true
 var leveling_up := false
+var enemy_collision_detected = false
+var wall_collision_detected = false
 
 func _ready() -> void:
 	proc_gen_data = model.proc_gen_data
@@ -1473,6 +1475,7 @@ func _physics_process(delta: float) -> void:
 				var collider_name = collider.name
 
 				if (collider is Enemy):
+					enemy_collision_detected = true
 					if (player_can_be_damaged):
 						player_take_damage(collider.main_damage)
 					# check if iFrames are over
@@ -1486,3 +1489,21 @@ func _physics_process(delta: float) -> void:
 				# check if collision is with a staircase
 				if (collider_name.contains("Staircase")):
 					handle_stair_collision(collider)
+				
+				if (collider_name.contains("Wall")):
+					wall_collision_detected = true
+			
+			# Player collision layer is 0, mask layers are 1, 2
+			# Walls are physics layer 0 (mask 1 for the player)
+			# Enemies are physics layer 2, masks 1, 2, 3
+			if enemy_collision_detected and wall_collision_detected:
+				# temporarily disable certain physics/mask layers of the player
+				player.set_collision_layer_value(3, false)
+				player.set_collision_mask_value(2, false)
+				
+				# re-enable those layers after 0.5 secs to let the player get unstuck
+				await get_tree().create_timer(0.5).timeout
+				player.set_collision_mask_value(2, true)
+				player.set_collision_layer_value(3, true)
+				enemy_collision_detected = false
+				wall_collision_detected = false
