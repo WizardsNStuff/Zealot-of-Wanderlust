@@ -21,7 +21,7 @@ func _ready() -> void:
 	
 	# change certain attributes if current instance is a child slime
 	if splitting == false:
-		speed = 125
+		speed = 60
 		health = 5
 	
 	# delete this line when this enemy is ready to be pushed
@@ -97,7 +97,9 @@ func take_damage(damage_amount : float) -> void:
 		if splitting:
 			split_into_two(littleSlime1.instantiate(), 0)
 			split_into_two(littleSlime2.instantiate(), 1)
+		controller.player_enemy_hit_sfx(true)
 		self.queue_free()
+	controller.player_enemy_hit_sfx(false)
 	
 	# show/hide certain nodes when damage is taken
 	$HealthBar.show()

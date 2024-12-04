@@ -6,9 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://biu52fnxyjl0p" path="res://Enemy Testing/slime.tscn" id="4_2p8vk"]
 [ext_resource type="PackedScene" uid="uid://m34g63rl82k3" path="res://Scenes/heart.tscn" id="4_ge8sr"]
 
-[node name="Model" type="Node2D" node_paths=PackedStringArray("player", "enemy_spawner", "consumables_node", "timers", "proc_gen_data")]
+[node name="Model" type="Node2D" node_paths=PackedStringArray("enemy_spawner", "consumables_node", "timers")]
 script = ExtResource("1_0ovum")
-player = NodePath("")
 skeleton_enemy = ExtResource("2_klknc")
 minotaur_enemy = ExtResource("3_70y1r")
 slime_enemy = ExtResource("4_2p8vk")
@@ -16,7 +15,6 @@ enemy_spawner = NodePath("EnemySpawner")
 heart = ExtResource("4_ge8sr")
 consumables_node = NodePath("Consumables")
 timers = NodePath("Timers")
-proc_gen_data = NodePath("")
 
 [node name="EnemySpawner" type="Node" parent="."]
 

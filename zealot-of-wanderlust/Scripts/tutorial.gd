@@ -51,7 +51,7 @@ func checkpoint_entered(checkpoint) -> void:
 			d5.start_dialogue()
 			controller.tutorial_damage_section()
 		"c6":
-			d6.messages = ["1 heart can be found on each floor", "hearts give you additional health points"]
+			d6.messages = ["hearts can be found on each floor", "hearts give you additional health points"]
 			d6.start_dialogue()
 			controller.tutorial_pause(6)
 		"c7":

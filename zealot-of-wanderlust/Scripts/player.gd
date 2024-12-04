@@ -40,6 +40,9 @@ var experience : int = 0 :
 @export var door_unlock_sfx : AudioStreamPlayer
 @export var key_sfx : AudioStreamPlayer
 @export var player_damaged_sfx : AudioStreamPlayer
+@export var heart_collect_sfx : AudioStreamPlayer
+@export var enemy_hit_sfx : AudioStreamPlayer
+@export var enemy_death_sfx : AudioStreamPlayer
 @onready var sprite : Sprite2D = $Sprite2D
 @onready var hitbox : CollisionShape2D = $CollisionShape2D
 @onready var damage_flash_timer : Timer = $DamageFlashTimer
