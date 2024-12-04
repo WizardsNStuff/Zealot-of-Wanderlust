@@ -14,6 +14,7 @@ class_name View
 @export var key_animation_player : AnimationPlayer
 @export var health_bar : HealthBar
 @export var floor_label : Label
+@export var arrow : Sprite2D
 
 func start_level() -> void:
 	controller.load_game()
@@ -99,6 +100,9 @@ func skill3_chosen() -> void:
 	controller.add_skill(level_up_node.skill3)
 	level_up_node.hide()
 
+
+func toggle_arrow(status) -> void:
+	arrow.visible = status
 
 ### ||| PAUSE MENU RELATED FUNCTIONS ||| ###
 ### vvv                              vvv ###

@@ -7,6 +7,8 @@ var enemies : Array[Enemy]
 
 var game_loaded = false
 
+var showing_arrow = false
+
 @export var view : View
 
 # holds the procedural generation settings, node references, and data
@@ -55,6 +57,9 @@ class RoomNode:
 
 	func get_room_tiles() -> Dictionary:
 		return self.room_tiles
+
+	func get_outgoing_corridor() -> Array:
+		return outgoing_corridor
 
 	# returns true if the room has an outgoing corridor (used for connecting rooms)
 	func has_outgoing_corridor():
@@ -1013,6 +1018,20 @@ func give_player_key():
 	proc_gen_data.has_key = true
 	view.play_key_animation()
 	player.key_sfx.play()
+	show_arrow()
+
+func show_arrow() -> void:
+	var door_position = find_door()
+	proc_gen_data.next_door_position = door_position
+	showing_arrow = true
+
+func find_door() -> Vector2i:
+	var corridor_with_door = proc_gen_data.current_room.get_outgoing_corridor()
+	for tilemaplayer in proc_gen_data.doors_root_node.get_children():
+		var door_position = tilemaplayer.get_used_cells()[0]
+		if (corridor_with_door.has(door_position)):
+			return tilemaplayer.map_to_local(door_position)
+	return Vector2i.ZERO
 
 func player_has_key() -> bool:
 	return proc_gen_data.has_key || proc_gen_data.permanent_key
@@ -1516,17 +1535,38 @@ func player_enemy_hit_sfx(enemy_dead) -> void:
 	else:
 		player.enemy_hit_sfx.play()
 
+func update_arrow() -> void:
+	var player_pos = player.global_position
+	player_pos = Vector2(player_pos.x, player_pos.y * -1)
+	var door_pos = proc_gen_data.next_door_position
+	door_pos = Vector2(door_pos.x, door_pos.y * -1)
+	print("player pos ", player_pos)
+	print("door pos ", door_pos)
+	var direction_to_door = player_pos.direction_to(door_pos)
+	
+	var angle_to_door = rad_to_deg(direction_to_door.angle()) * -1 + 90
+	
+	print("direction to target ", direction_to_door)
+	print("angle to target ", angle_to_door)
+	
+	view.arrow.rotation = deg_to_rad(angle_to_door)
+
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
 	if game_loaded && proc_gen_data.dungeon_created:
 		handle_input(delta)
 		
+		player.damage = 2000
 		# don't process anything if paused
 		if get_tree().paused: return
 		
 		if Time.get_unix_time_from_system() >= player_cooldown:
 			player.is_attacking = false
+
+		if showing_arrow:
+			view.toggle_arrow(true)
+			update_arrow()
 
 		# move the player and retrieve if any collisions occured
 		var player_collision = player.move_and_slide()
@@ -1556,6 +1596,8 @@ func _physics_process(delta: float) -> void:
 
 				# check if the collision is with a door
 				if (collider_name.contains("Door")):
+					view.toggle_arrow(false)
+					showing_arrow = false
 					handle_door_collision(collider)
 
 				# check if collision is with a staircase
