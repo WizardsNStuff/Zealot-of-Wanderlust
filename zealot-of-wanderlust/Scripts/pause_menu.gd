@@ -19,3 +19,8 @@ func append_skill_to_container(Skill: String) -> void:
 	
 	# add the label to the VBox
 	skill_container.add_child(skill_label)
+
+func clear_skills() -> void:
+	for skill in skill_container.get_children():
+		skill_container.remove_child(skill)
+		skill.queue_free()

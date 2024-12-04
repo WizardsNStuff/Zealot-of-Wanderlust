@@ -5,6 +5,8 @@ class_name Controller
 
 var enemies : Array[Enemy]
 
+var game_loaded = false
+
 @export var view : View
 
 # holds the procedural generation settings, node references, and data
@@ -19,13 +21,7 @@ var enemy_collision_detected = false
 var wall_collision_detected = false
 
 func _ready() -> void:
-	proc_gen_data = model.proc_gen_data
-	player = model.player
-	view.health_bar.init_health(player.health)
-	view.health_bar.set_exp(player.experience)
-	view.health_bar.set_max_hp_value(player.level_up_threshold)
-	player.level_up.connect(handle_level_up)
-	player.damage_taken.connect(player_take_damage)
+	pass
 
 # class representing a room node in a dungeon
 class RoomNode:
@@ -81,6 +77,13 @@ class RoomNode:
 		if right != null:
 			right.trim(trim_amount)
 
+func load_tutorial() -> void:
+	var tutorial_scene = load("res://Scenes/tutorial.tscn")
+	var tutorial_instance = tutorial_scene.instantiate()
+	model.tutorial_data = tutorial_instance
+	model.add_child(tutorial_instance)
+	model.move_child(tutorial_instance, 0)
+
 func start_tutorial() -> void:
 	model.in_tutorial = true
 	
@@ -90,12 +93,6 @@ func start_tutorial() -> void:
 	view.floor_label.visible = true
 	view.floor_label.text = "FLOOR: " + str(proc_gen_data.current_dungeon_floor)
 	view.score_label.text = "SCORE: " + str(player.score)
-	
-	var tutorial_scene = load("res://Scenes/tutorial.tscn")
-	var tutorial_instance = tutorial_scene.instantiate()
-	model.tutorial_data = tutorial_instance
-	model.add_child(tutorial_instance)
-	model.move_child(tutorial_instance, 0)
 	
 	model.tutorial_data.controller = self
 	player.position = Vector2i.ZERO
@@ -156,7 +153,7 @@ func tutorial_damage_section():
 	timer.one_shot = true
 	timer.timeout.connect(tutorial_damage_section_timeout.bind(timer, original_player_damage, original_player_speed))
 	model.tutorial_data.add_child(timer)
-	timer.start(0.5)
+	timer.start(2.5)
 
 func tutorial_damage_section_timeout(timer, original_player_damage, original_player_speed) -> void:
 	timer.queue_free()
@@ -167,6 +164,17 @@ func tutorial_damage_section_timeout(timer, original_player_damage, original_pla
 func tutorial_pause_timer_timeout(timer, original_player_speed) -> void:
 	timer.queue_free()
 	player.speed = original_player_speed
+
+func tutorial_key_timer() -> void:
+	var timer = Timer.new()
+	timer.one_shot = true
+	timer.timeout.connect(key_timer_timeout.bind(timer))
+	model.tutorial_data.add_child(timer)
+	timer.start(6)
+
+func key_timer_timeout(timer) -> void:
+	timer.queue_free()
+	give_player_key()
 
 func clear_enemy_spawner():
 	for child in model.enemy_spawner.get_children():
@@ -181,6 +189,9 @@ func tutorial_pause(time):
 	timer.timeout.connect(tutorial_pause_timer_timeout.bind(timer, original_player_speed))
 	model.tutorial_data.add_child(timer)
 	timer.start(time)
+
+func tutorial_complete() -> void:
+	view.exit_to_main_menu()
 
 func stop_tutorial() -> void:
 	model.call_deferred("remove_child", model.tutorial_data)
@@ -1444,10 +1455,63 @@ func collect_heart(heart) -> void:
 		add_player_health(25)
 		heart.queue_free()
 
+func load_game() -> void:
+	var proc_gen_scene = load("res://Scenes/proc_gen_data.tscn")
+	var proc_gen_instance = proc_gen_scene.instantiate()
+	model.add_child(proc_gen_instance)
+	model.move_child(proc_gen_instance, 0)
+	
+	model.proc_gen_data = proc_gen_instance
+	
+	var player_scene = load("res://Scenes/player.tscn")
+	var player_instance = player_scene.instantiate()
+	model.add_child(player_instance)
+	model.move_child(player_instance, 1)
+	
+	model.player = player_instance
+	
+	proc_gen_data = model.proc_gen_data
+	player = model.player
+	view.health_bar.init_health(player.health)
+	view.health_bar.set_exp(player.experience)
+	view.health_bar.set_max_hp_value(player.level_up_threshold)
+	player.level_up.connect(handle_level_up)
+	player.damage_taken.connect(player_take_damage)
+	
+	game_loaded = true
+
+func unload_game() -> void:
+	var proc_gen_instance = model.proc_gen_data
+	model.remove_child(proc_gen_instance)
+	model.proc_gen_data = null
+	proc_gen_instance.queue_free()
+	
+	var player_instance = model.player
+	model.remove_child(player_instance)
+	model.player = null
+	player_instance.queue_free()
+	
+	var enemy_spawner_node = model.enemy_spawner
+	for enemy in enemy_spawner_node.get_children():
+		enemy_spawner_node.remove_child(enemy)
+		enemy.queue_free()
+	
+	var timer_node = model.timers
+	for timer in timer_node.get_children():
+		timer_node.remove_child(timer)
+		timer.queue_free()
+
+	var consumables_node = model.consumables_node
+	for item in consumables_node.get_children():
+		consumables_node.remove_child(item)
+		item.queue_free()
+
+	game_loaded = false
+
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
-	if proc_gen_data.dungeon_created:
+	if game_loaded && proc_gen_data.dungeon_created:
 		handle_input(delta)
 		
 		# don't process anything if paused
