@@ -5,6 +5,8 @@ class_name Controller
 
 var enemies : Array[Enemy]
 
+var game_loaded = false
+
 @export var view : View
 
 # holds the procedural generation settings, node references, and data
@@ -19,13 +21,7 @@ var enemy_collision_detected = false
 var wall_collision_detected = false
 
 func _ready() -> void:
-	proc_gen_data = model.proc_gen_data
-	player = model.player
-	view.health_bar.init_health(player.health)
-	view.health_bar.set_exp(player.experience)
-	view.health_bar.set_max_hp_value(player.level_up_threshold)
-	player.level_up.connect(handle_level_up)
-	player.damage_taken.connect(player_take_damage)
+	pass
 
 # class representing a room node in a dungeon
 class RoomNode:
@@ -1444,10 +1440,35 @@ func collect_heart(heart) -> void:
 		add_player_health(25)
 		heart.queue_free()
 
+func load_game() -> void:
+	var proc_gen_scene = load("res://Scenes/proc_gen_data.tscn")
+	var proc_gen_instance = proc_gen_scene.instantiate()
+	model.add_child(proc_gen_instance)
+	model.move_child(proc_gen_instance, 0)
+	
+	model.proc_gen_data = proc_gen_instance
+	
+	var player_scene = load("res://Scenes/player.tscn")
+	var player_instance = player_scene.instantiate()
+	model.add_child(player_instance)
+	model.move_child(player_instance, 1)
+	
+	model.player = player_instance
+	
+	proc_gen_data = model.proc_gen_data
+	player = model.player
+	view.health_bar.init_health(player.health)
+	view.health_bar.set_exp(player.experience)
+	view.health_bar.set_max_hp_value(player.level_up_threshold)
+	player.level_up.connect(handle_level_up)
+	player.damage_taken.connect(player_take_damage)
+	
+	game_loaded = true
+
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
-	if proc_gen_data.dungeon_created:
+	if game_loaded && proc_gen_data.dungeon_created:
 		handle_input(delta)
 		
 		# don't process anything if paused

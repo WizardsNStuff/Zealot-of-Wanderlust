@@ -16,6 +16,7 @@ class_name View
 @export var floor_label : Label
 
 func start_level() -> void:
+	controller.load_game()
 	get_tree().paused = false
 	controller.play_again()
 	controller.start_level()
