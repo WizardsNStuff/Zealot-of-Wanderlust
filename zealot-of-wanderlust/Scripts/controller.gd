@@ -998,6 +998,7 @@ func give_player_key():
 	# set the key flag to true in the proc gen data
 	proc_gen_data.has_key = true
 	view.play_key_animation()
+	player.key_sfx.play()
 
 func player_has_key() -> bool:
 	return proc_gen_data.has_key || proc_gen_data.permanent_key
@@ -1008,6 +1009,9 @@ func handle_door_collision(collider : Object) -> void:
 	if player_has_key():
 		# unlock the door and remove it from the scene
 		collider.queue_free()
+		
+		player.door_unlock_sfx.play()
+		
 		# set key flag to false after use
 		proc_gen_data.has_key = false
 
@@ -1113,11 +1117,15 @@ func handle_animations(walk_dir, attack_dir) -> void:
 	if attack_dir != Vector2.ZERO && player.is_attacking:
 		player.animations.set("parameters/Idle/blend_position", attack_dir)
 		player.animations.set("parameters/Attack/blend_position", attack_dir)
+		if !player.shooting_sfx.playing:
+			player.shooting_sfx.play()
 		state_machine.travel("Idle")
 		state_machine.travel("Attack")
 	elif walk_dir != Vector2.ZERO:
 		player.animations.set("parameters/Idle/blend_position", walk_dir)
 		player.animations.set("parameters/Walk/blend_position", walk_dir)
+		if !player.walking_sfx.playing:
+			player.walking_sfx.play()
 		state_machine.travel("Walk")
 	else:
 		state_machine.travel("Idle")
@@ -1128,6 +1136,8 @@ func get_random_tile_in_room(room_node : RoomNode) -> Vector2i:
 
 func player_take_damage(damage_amount : float) -> void:
 	player.health -= damage_amount
+	
+	player.player_damaged_sfx.play()
 	player_can_be_damaged = false
 	player_iframes = Time.get_unix_time_from_system() + player.iframes
 	# flashes the player sprite on damage
