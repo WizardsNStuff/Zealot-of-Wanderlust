@@ -111,6 +111,7 @@ func unpause_game() -> void:
 	pause_menu_node.hide()
 
 func exit_to_main_menu() -> void:
+	controller.unload_game()
 	controller.unpause_game()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	pause_menu_node.hide()

@@ -1465,6 +1465,34 @@ func load_game() -> void:
 	
 	game_loaded = true
 
+func unload_game() -> void:
+	var proc_gen_instance = model.proc_gen_data
+	model.remove_child(proc_gen_instance)
+	model.proc_gen_data = null
+	proc_gen_instance.queue_free()
+	
+	var player_instance = model.player
+	model.remove_child(player_instance)
+	model.player = null
+	player_instance.queue_free()
+	
+	var enemy_spawner_node = model.enemy_spawner
+	for enemy in enemy_spawner_node.get_children():
+		enemy_spawner_node.remove_child(enemy)
+		enemy.queue_free()
+	
+	var timer_node = model.timers
+	for timer in timer_node.get_children():
+		timer_node.remove_child(timer)
+		timer.queue_free()
+
+	var consumables_node = model.consumables_node
+	for item in consumables_node.get_children():
+		consumables_node.remove_child(item)
+		item.queue_free()
+
+	game_loaded = false
+
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
