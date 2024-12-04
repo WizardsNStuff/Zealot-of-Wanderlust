@@ -1,8 +1,12 @@
-[gd_scene load_steps=34 format=3 uid="uid://bh27mhrshrtua"]
+[gd_scene load_steps=38 format=3 uid="uid://bh27mhrshrtua"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_up7rm"]
 [ext_resource type="Texture2D" uid="uid://ddr57b2wswkfo" path="res://Assets/Player.png" id="2_s31vg"]
 [ext_resource type="AudioStream" uid="uid://n07rbll8564c" path="res://walking.mp3" id="3_vmyus"]
+[ext_resource type="AudioStream" uid="uid://b76bxooaqjx74" path="res://shoot.mp3" id="3_xpgps"]
+[ext_resource type="AudioStream" uid="uid://be10rwiesfsqw" path="res://door_unlock.mp3" id="5_cfasm"]
+[ext_resource type="AudioStream" uid="uid://dx5c4x44dqjkh" path="res://key.mp3" id="6_fvf55"]
+[ext_resource type="AudioStream" uid="uid://ic2sdm1krte8" path="res://player_damaged.ogg" id="7_xoqkf"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_plb76"]
 radius = 6.0
@@ -396,7 +400,7 @@ states/Walk/node = SubResource("AnimationNodeBlendSpace2D_mj5ng")
 states/Walk/position = Vector2(502, 100)
 transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_jqy20"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_oue76"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_mpwkn"), "Idle", "Attack", SubResource("AnimationNodeStateMachineTransition_yyanm"), "Attack", "Idle", SubResource("AnimationNodeStateMachineTransition_lqnwt")]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations", "audio")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations", "walking_sfx", "shooting_sfx", "door_unlock_sfx", "key_sfx", "player_damaged_sfx")]
 z_index = 100
 collision_layer = 4
 collision_mask = 3
@@ -406,14 +410,17 @@ platform_on_leave = 2
 platform_floor_layers = 4294967041
 script = ExtResource("1_up7rm")
 animations = NodePath("AnimationTree")
-audio = NodePath("AudioStreamPlayer")
+walking_sfx = NodePath("WalkingSFX")
+shooting_sfx = NodePath("ShootingSFX")
+door_unlock_sfx = NodePath("DoorUnlockSFX")
+key_sfx = NodePath("KeySFX")
+player_damaged_sfx = NodePath("PlayerDamagedSFX")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_s31vg")
 flip_h = true
 hframes = 8
 vframes = 9
-frame = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
@@ -425,7 +432,11 @@ zoom = Vector2(2, 2)
 [node name="DamageFlashTimer" type="Timer" parent="."]
 wait_time = 0.25
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="ShootingSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_xpgps")
+volume_db = -15.0
+
+[node name="WalkingSFX" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_vmyus")
 volume_db = -15.0
 pitch_scale = 3.0
@@ -442,5 +453,19 @@ anim_player = NodePath("../AnimationPlayer")
 parameters/Attack/blend_position = Vector2(0.337043, -0.504425)
 parameters/Idle/blend_position = Vector2(-0.368839, -0.433628)
 parameters/Walk/blend_position = Vector2(-0.241653, 0.079646)
+
+[node name="DoorUnlockSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_cfasm")
+volume_db = 5.0
+pitch_scale = 2.0
+
+[node name="KeySFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_fvf55")
+volume_db = -30.0
+pitch_scale = 2.0
+
+[node name="PlayerDamagedSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_xoqkf")
+volume_db = -20.0
 
 [connection signal="timeout" from="DamageFlashTimer" to="." method="_on_timer_timeout"]
