@@ -65,6 +65,7 @@ func game_over() -> void:
 	main_menu_node.hide()
 	health_bar.hide()
 	floor_label.hide()
+	clear_skills()
 	player_level_label.hide()
 	score_label.hide()
 	game_over_node.show()
@@ -119,6 +120,7 @@ func exit_to_main_menu() -> void:
 	controller.unpause_game()
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	pause_menu_node.hide()
+	clear_skills()
 	main_menu_node.show()
 	main_menu_node.start_btn.grab_focus()
 	health_bar.hide()
@@ -126,6 +128,9 @@ func exit_to_main_menu() -> void:
 	player_level_label.hide()
 	score_label.hide()
 	stop_key_animation()
+
+func clear_skills() -> void:
+	pause_menu_node.clear_skills()
 
 func add_skill_to_pause_screen(skill1: Skill) -> void:
 	pause_menu_node.append_skill_to_container(skill1.skill_name)
