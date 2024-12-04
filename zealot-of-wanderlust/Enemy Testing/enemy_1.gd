@@ -37,8 +37,9 @@ func take_damage(damage_amount : float) -> void:
 		controller.update_score(score)
 		if controller.check_key_status() && (self is not Slime):
 			controller.give_player_key()
+		controller.player_enemy_hit_sfx(true)
 		self.queue_free()
-	
+	controller.player_enemy_hit_sfx(false)
 	# show/hide certain nodes when damage is taken
 	$HealthBar.show()
 	$HealthBarTimer.start()

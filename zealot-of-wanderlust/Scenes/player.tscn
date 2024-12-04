@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://bh27mhrshrtua"]
+[gd_scene load_steps=41 format=3 uid="uid://bh27mhrshrtua"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_up7rm"]
 [ext_resource type="Texture2D" uid="uid://ddr57b2wswkfo" path="res://Assets/Player.png" id="2_s31vg"]
@@ -7,6 +7,9 @@
 [ext_resource type="AudioStream" uid="uid://be10rwiesfsqw" path="res://door_unlock.mp3" id="5_cfasm"]
 [ext_resource type="AudioStream" uid="uid://dx5c4x44dqjkh" path="res://key.mp3" id="6_fvf55"]
 [ext_resource type="AudioStream" uid="uid://ic2sdm1krte8" path="res://player_damaged.ogg" id="7_xoqkf"]
+[ext_resource type="AudioStream" uid="uid://dluplel20b66u" path="res://heart_collect.mp3" id="8_ci5sc"]
+[ext_resource type="AudioStream" uid="uid://dbsbar87q58am" path="res://enemy_hit.mp3" id="9_wqlde"]
+[ext_resource type="AudioStream" uid="uid://bqbgfv7u2giaj" path="res://enemy_death.mp3" id="10_1plfc"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_plb76"]
 radius = 6.0
@@ -400,7 +403,7 @@ states/Walk/node = SubResource("AnimationNodeBlendSpace2D_mj5ng")
 states/Walk/position = Vector2(502, 100)
 transitions = ["Start", "Idle", SubResource("AnimationNodeStateMachineTransition_jqy20"), "Idle", "Walk", SubResource("AnimationNodeStateMachineTransition_oue76"), "Walk", "Idle", SubResource("AnimationNodeStateMachineTransition_mpwkn"), "Idle", "Attack", SubResource("AnimationNodeStateMachineTransition_yyanm"), "Attack", "Idle", SubResource("AnimationNodeStateMachineTransition_lqnwt")]
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations", "walking_sfx", "shooting_sfx", "door_unlock_sfx", "key_sfx", "player_damaged_sfx")]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("animations", "walking_sfx", "shooting_sfx", "door_unlock_sfx", "key_sfx", "player_damaged_sfx", "heart_collect_sfx", "enemy_hit_sfx", "enemy_death_sfx")]
 z_index = 100
 collision_layer = 4
 collision_mask = 3
@@ -415,6 +418,9 @@ shooting_sfx = NodePath("ShootingSFX")
 door_unlock_sfx = NodePath("DoorUnlockSFX")
 key_sfx = NodePath("KeySFX")
 player_damaged_sfx = NodePath("PlayerDamagedSFX")
+heart_collect_sfx = NodePath("HeartCollectSFX")
+enemy_hit_sfx = NodePath("EnemyHitSFX")
+enemy_death_sfx = NodePath("EnemyDeathSFX")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_s31vg")
@@ -467,5 +473,17 @@ pitch_scale = 2.0
 [node name="PlayerDamagedSFX" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("7_xoqkf")
 volume_db = -20.0
+
+[node name="HeartCollectSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_ci5sc")
+volume_db = -20.0
+
+[node name="EnemyHitSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_wqlde")
+volume_db = -10.0
+
+[node name="EnemyDeathSFX" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_1plfc")
+volume_db = -15.0
 
 [connection signal="timeout" from="DamageFlashTimer" to="." method="_on_timer_timeout"]

@@ -341,7 +341,8 @@ func room_first_gen(room_nodes : Array[RoomNode]) -> bool:
 	for room_node in room_nodes:
 		all_room_tiles.merge(room_node.get_room_tiles())
 
-	spawn_hearts(1, all_room_tiles)
+	var heart_amount = randi_range(3, 6)
+	spawn_hearts(heart_amount, all_room_tiles)
 
 	var corridor_exclusive_tiles : Array = []
 	# add doors to each corridor
@@ -1405,10 +1406,10 @@ func check_key_status() -> bool:
 	return false
 
 func spawn_hearts(amount : int, tiles : Dictionary) -> void:
-	var heart = model.heart.instantiate()
-	heart.controller = self
-
 	for i in range(amount):
+		var heart = model.heart.instantiate()
+		heart.controller = self
+		
 		randomize()
 		var random_tile_pos : Vector2i = tiles.keys().pick_random()
 
@@ -1453,6 +1454,7 @@ func add_player_health(amount) -> void:
 func collect_heart(heart) -> void:
 	if player.health < player.original_health:
 		add_player_health(25)
+		player.heart_collect_sfx.play()
 		heart.queue_free()
 
 func load_game() -> void:
@@ -1507,6 +1509,12 @@ func unload_game() -> void:
 		item.queue_free()
 
 	game_loaded = false
+
+func player_enemy_hit_sfx(enemy_dead) -> void:
+	if enemy_dead:
+		player.enemy_death_sfx.play()
+	else:
+		player.enemy_hit_sfx.play()
 
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
