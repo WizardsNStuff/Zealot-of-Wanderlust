@@ -90,7 +90,7 @@ func take_damage(damage_amount : float) -> void:
 	DamageNumbers.display_number(damage_amount, damage_number_origin.global_position, false)
 	if health <= 0:
 		controller.update_score(score)
-		if controller.check_key_status():
+		if !splitting && controller.check_key_status():
 			controller.give_player_key()
 	
 		# only split into two if the current slime instance is the original slime
