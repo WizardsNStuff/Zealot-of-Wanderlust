@@ -34,6 +34,7 @@ func _ready() -> void:
 	rush_damage = main_damage * 1.5
 	$HealthBarTimer.connect("timeout", Callable(self, "health_bar_timer_timeout"))
 	#$Timer.connect("timeout", Callable(self, "test"))
+	$ChargingHitbox.disabled = true
 
 
 
@@ -78,6 +79,7 @@ func _physics_process(delta: float) -> void:
 	# enter rushing state: move to the last known direction at a fast speed
 	else:
 		$MainSprite.play("Charging")
+		$ChargingHitbox.disabled = false
 		velocity = last_known_dir * rush_speed
 		move_and_slide()
 	
@@ -89,10 +91,12 @@ func _physics_process(delta: float) -> void:
 				velocity = speed * last_known_dir
 				(collision.get_collider() as Player).damage_taken.emit(rush_damage)
 				$MainSprite.play("default")
+				$ChargingHitbox.disabled = true
 				break
 			elif collision || locked_on_player_timer >= 2.0:
 				velocity = speed * last_known_dir
 				$MainSprite.play("default")
+				$ChargingHitbox.disabled = true
 				break
 
 		locked_on_player_timer += delta
