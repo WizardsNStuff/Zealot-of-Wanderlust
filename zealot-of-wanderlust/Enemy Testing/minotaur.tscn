@@ -125,7 +125,7 @@ damage_timer = NodePath("DamageFlashTimer")
 [node name="MainSprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_m1c32")
 autoplay = "default"
-frame_progress = 0.678832
+frame_progress = 0.363291
 
 [node name="HitBox" type="CollisionShape2D" parent="."]
 position = Vector2(0, -6)
