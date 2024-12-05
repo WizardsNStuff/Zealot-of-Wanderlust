@@ -77,6 +77,7 @@ func _physics_process(delta: float) -> void:
 	
 	# enter rushing state: move to the last known direction at a fast speed
 	else:
+		$MainSprite.play("Charging")
 		velocity = last_known_dir * rush_speed
 		move_and_slide()
 	
@@ -87,9 +88,11 @@ func _physics_process(delta: float) -> void:
 			if collision && collision.get_collider() is Player:
 				velocity = speed * last_known_dir
 				(collision.get_collider() as Player).damage_taken.emit(rush_damage)
+				$MainSprite.play("default")
 				break
 			elif collision || locked_on_player_timer >= 2.0:
 				velocity = speed * last_known_dir
+				$MainSprite.play("default")
 				break
 
 		locked_on_player_timer += delta
