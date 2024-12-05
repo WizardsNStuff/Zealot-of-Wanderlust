@@ -189,9 +189,9 @@ one_shot = true
 [node name="HealthBar" parent="." instance=ExtResource("4_a3i3c")]
 visible = false
 offset_left = -11.0
-offset_top = -18.0
+offset_top = -29.0
 offset_right = 139.0
-offset_bottom = -3.0
+offset_bottom = -14.0
 scale = Vector2(0.15, 0.15)
 
 [node name="Timer" type="Timer" parent="."]
