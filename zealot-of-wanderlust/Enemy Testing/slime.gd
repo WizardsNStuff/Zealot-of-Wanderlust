@@ -21,7 +21,7 @@ func _ready() -> void:
 	
 	# change certain attributes if current instance is a child slime
 	if splitting == false:
-		speed = 60
+		speed = 145
 		health = 5
 	
 	# delete this line when this enemy is ready to be pushed
