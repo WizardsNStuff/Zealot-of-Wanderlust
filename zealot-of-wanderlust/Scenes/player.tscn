@@ -13,7 +13,7 @@
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_plb76"]
 radius = 6.0
-height = 22.0
+height = 26.0
 
 [sub_resource type="Animation" id="Animation_gbqg1"]
 resource_name = "Attack_Left"
@@ -429,7 +429,7 @@ hframes = 8
 vframes = 9
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 4)
+position = Vector2(0, 2)
 shape = SubResource("CapsuleShape2D_plb76")
 
 [node name="Camera2D" type="Camera2D" parent="."]
