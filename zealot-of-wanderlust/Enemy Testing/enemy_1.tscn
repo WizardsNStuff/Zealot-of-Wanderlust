@@ -1,12 +1,76 @@
-[gd_scene load_steps=5 format=3 uid="uid://opphymwy0yh3"]
+[gd_scene load_steps=14 format=3 uid="uid://opphymwy0yh3"]
 
-[ext_resource type="Texture2D" uid="uid://ubj5y2wlu8ln" path="res://Assets/monsters.png" id="1_fwdy1"]
 [ext_resource type="Script" path="res://Enemy Testing/enemy_1.gd" id="1_n3po6"]
+[ext_resource type="Texture2D" uid="uid://bs54li7g8mqqv" path="res://Assets/Ratfolk Axe Sprite Sheet.png" id="2_io0g6"]
 [ext_resource type="PackedScene" uid="uid://bflc4dyyluhbu" path="res://Scenes/enemy_healthbar.tscn" id="3_tq68h"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_rwctf"]
+atlas = ExtResource("2_io0g6")
+region = Rect2(0, 32, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qlnqa"]
+atlas = ExtResource("2_io0g6")
+region = Rect2(64, 32, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hnrjm"]
+atlas = ExtResource("2_io0g6")
+region = Rect2(128, 32, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qx484"]
+atlas = ExtResource("2_io0g6")
+region = Rect2(192, 32, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_t212t"]
+atlas = ExtResource("2_io0g6")
+region = Rect2(256, 32, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pq2ss"]
+atlas = ExtResource("2_io0g6")
+region = Rect2(320, 32, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x5a02"]
+atlas = ExtResource("2_io0g6")
+region = Rect2(384, 32, 64, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_udbon"]
+atlas = ExtResource("2_io0g6")
+region = Rect2(448, 32, 64, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_byxjd"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rwctf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qlnqa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hnrjm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qx484")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_t212t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pq2ss")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x5a02")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_udbon")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_w0us2"]
-radius = 9.0
-height = 28.0
+radius = 6.0
+height = 20.0
 
 [node name="Enemy1" type="CharacterBody2D" node_paths=PackedStringArray("damage_timer")]
 collision_layer = 2
@@ -18,13 +82,15 @@ platform_floor_layers = 4294967041
 script = ExtResource("1_n3po6")
 damage_timer = NodePath("DamageFlashTimer")
 
-[node name="MainSprite" type="Sprite2D" parent="."]
-texture = ExtResource("1_fwdy1")
-region_enabled = true
-region_rect = Rect2(0, 129.354, 26.9761, 29.713)
+[node name="RatSprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(1, -11)
+scale = Vector2(1.5, 1.5)
+sprite_frames = SubResource("SpriteFrames_byxjd")
+autoplay = "default"
+frame_progress = 0.985278
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
-position = Vector2(1, 1)
+position = Vector2(0, 2)
 shape = SubResource("CapsuleShape2D_w0us2")
 
 [node name="HealthBarTimer" type="Timer" parent="."]

@@ -9,7 +9,7 @@ var score = 15
 # if player is set to CharacterBody2D change it back to player (I change it when testing new enemies)
 @export var player : Player
 @export var controller : Controller
-@onready var sprite : Sprite2D = $MainSprite
+@onready var sprite : AnimatedSprite2D = $RatSprite
 @export var damage_timer : Timer
 @onready var damage_number_origin = $DamageNumberOrigin
 
@@ -25,6 +25,11 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# move towards player with normalized direction
 	var direction_to_player = (player.position - self.position).normalized()
+	
+	if (direction_to_player.x < 0):
+		sprite.flip_h = true
+	else:
+		sprite.flip_h = false
 	
 	self.velocity = direction_to_player * speed
 	
