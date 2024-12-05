@@ -1,12 +1,116 @@
-[gd_scene load_steps=5 format=3 uid="uid://bwv3arxa4rs65"]
+[gd_scene load_steps=19 format=3 uid="uid://bwv3arxa4rs65"]
 
-[ext_resource type="Texture2D" uid="uid://ubj5y2wlu8ln" path="res://Assets/monsters.png" id="1_kw7yk"]
 [ext_resource type="Script" path="res://Enemy Testing/minotaur.gd" id="1_x02qx"]
+[ext_resource type="Texture2D" uid="uid://boigkxval3a4s" path="res://Assets/Minotaur - Sprite Sheet.png" id="2_42hcq"]
 [ext_resource type="PackedScene" uid="uid://bflc4dyyluhbu" path="res://Scenes/enemy_healthbar.tscn" id="4_a3i3c"]
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_twna6"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(0, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2jih6"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(96, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_otox8"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(192, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_un0qi"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(288, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g5jts"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(384, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n4d30"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(0, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c2am1"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(96, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_chjxp"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(192, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ks2ir"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(288, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vy06a"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(384, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_31kve"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(480, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u6swb"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(576, 96, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p8ei3"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(672, 96, 96, 96)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_m1c32"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_twna6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2jih6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_otox8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_un0qi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g5jts")
+}],
+"loop": true,
+"name": &"Charge_Ready",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n4d30")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c2am1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_chjxp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ks2ir")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vy06a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_31kve")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u6swb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p8ei3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e2n7k"]
-radius = 9.0
-height = 24.0
+radius = 13.0
+height = 38.0
 
 [node name="Minotaur" type="CharacterBody2D" node_paths=PackedStringArray("damage_timer")]
 collision_layer = 2
@@ -18,12 +122,13 @@ platform_floor_layers = 4294967041
 script = ExtResource("1_x02qx")
 damage_timer = NodePath("DamageFlashTimer")
 
-[node name="MainSprite" type="Sprite2D" parent="."]
-texture = ExtResource("1_kw7yk")
-region_enabled = true
-region_rect = Rect2(227.806, 224.011, 26.9925, 30.7317)
+[node name="MainSprite" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_m1c32")
+autoplay = "default"
+frame_progress = 0.363291
 
 [node name="HitBox" type="CollisionShape2D" parent="."]
+position = Vector2(0, -6)
 shape = SubResource("CapsuleShape2D_e2n7k")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
