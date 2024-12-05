@@ -1271,12 +1271,12 @@ func give_room_enemies(room_node : RoomNode) -> void:
 	
 	match room_type_name:
 		"SKELETONS":
-			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1)
+			skeleton_count = floor(pow((proc_gen_data.current_dungeon_floor + 2), 1.5))
 			for i in range(skeleton_count):
 				room_node.add_enemy(model.skeleton_enemy)
 		"SKELETONS_AND_MINOTAURS":
-			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1 * 0.5)
-			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6)
+			skeleton_count = floor(pow((proc_gen_data.current_dungeon_floor + 2), 1.2))
+			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 2) * 0.6)
 
 			for i in range(skeleton_count):
 				room_node.add_enemy(model.skeleton_enemy)
@@ -1285,8 +1285,8 @@ func give_room_enemies(room_node : RoomNode) -> void:
 				room_node.add_enemy(model.minotaur_enemy)
 
 		"SKELETONS_AND_SLIMES":
-			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 1.1 * 0.3)
-			slime_count = floor((proc_gen_data.current_dungeon_floor + 1) * 2)
+			skeleton_count = floor((proc_gen_data.current_dungeon_floor + 3) * 0.5)
+			slime_count = floor((proc_gen_data.current_dungeon_floor + 1) * 3)
 
 			for i in range(slime_count):
 				room_node.add_enemy(model.slime_enemy)
@@ -1295,7 +1295,7 @@ func give_room_enemies(room_node : RoomNode) -> void:
 				room_node.add_enemy(model.skeleton_enemy)
 
 		"MINOTAURS":
-			minotaur_count = floor((proc_gen_data.current_dungeon_floor + 1) * 0.6)
+			minotaur_count = proc_gen_data.current_dungeon_floor * 2
 			for i in range(minotaur_count):
 				room_node.add_enemy(model.minotaur_enemy)
 

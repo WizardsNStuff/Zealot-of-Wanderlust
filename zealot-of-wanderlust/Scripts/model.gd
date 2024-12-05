@@ -11,7 +11,7 @@ class_name Model
 @export var enemy_spawner : Node
 
 var spawn_duration : float = 10.0
-var spawn_interval : float = 1.0
+var spawn_interval : float = 2.0
 var spawn_timer : Timer
 var stop_timer : Timer
 
