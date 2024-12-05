@@ -22,7 +22,7 @@ func _ready() -> void:
 	
 	# redefining variables inherited from Enemy
 	speed = 50
-	rush_speed = 350
+	rush_speed = 450
 	attack_range = 20
 	score = 50
 	
@@ -41,7 +41,7 @@ func _physics_process(delta: float) -> void:
 	# normal state: enemy is pathfinding and moving normally in this code block
 	if not rushing:
 		# flips sprite depending on player location
-		if (velocity.x < 0):
+		if (last_known_dir.x < 0):
 			sprite.flip_h = true
 		else:
 			sprite.flip_h = false
@@ -55,6 +55,7 @@ func _physics_process(delta: float) -> void:
 		# mask layers (both raycast and player are on collision layer 3 so it works fine) 
 		if ($RayCast2D.is_colliding() and can_charge_again_timer <= 0):
 			velocity = Vector2(0, 0)
+			$MainSprite.play("Charge_Ready")
 			move_and_slide()
 			locked_on_player_timer += delta
 		else:
@@ -69,6 +70,7 @@ func _physics_process(delta: float) -> void:
 			move_and_slide()
 		
 		if locked_on_player_timer >= 1.0:
+			$MainSprite.play("default")
 			rushing = true
 			locked_on_player_timer = 0.0
 	
