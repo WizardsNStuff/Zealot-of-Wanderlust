@@ -168,8 +168,13 @@ theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_e1ux2")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_jvgt1")
 text = "Quit"
 
-[node name="ColorRect" type="ColorRect" parent="CenterContainer"]
+[node name="ColorRect2" type="ColorRect" parent="."]
 z_index = -1
 custom_minimum_size = Vector2(600, 100)
 layout_mode = 2
+offset_left = 341.0
+offset_top = 311.0
+offset_right = 941.0
+offset_bottom = 411.0
+mouse_filter = 2
 color = Color(0.14902, 0.14902, 0.14902, 1)
