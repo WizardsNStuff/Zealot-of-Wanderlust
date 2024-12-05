@@ -1,7 +1,7 @@
 extends GameCharacter
 class_name Enemy
 
-var speed = 75
+var speed = 125
 var attack_range = 28
 var cooldown = 0
 var score = 15
