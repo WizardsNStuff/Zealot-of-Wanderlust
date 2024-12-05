@@ -21,8 +21,8 @@ func _ready() -> void:
 	self.max_slides = 1
 	
 	# redefining variables inherited from Enemy
-	speed = 50
-	rush_speed = 450
+	speed = 100
+	rush_speed = 500
 	attack_range = 20
 	score = 50
 	
