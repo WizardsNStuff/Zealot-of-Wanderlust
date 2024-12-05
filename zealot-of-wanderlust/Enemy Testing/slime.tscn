@@ -82,7 +82,7 @@ damage_timer = NodePath("DamageFlashTimer")
 scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_cmufk")
 autoplay = "default"
-frame_progress = 0.964645
+frame_progress = 0.031693
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ev4sw")

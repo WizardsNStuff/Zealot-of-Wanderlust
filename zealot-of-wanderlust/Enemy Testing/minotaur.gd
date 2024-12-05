@@ -38,7 +38,10 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	
+	if (velocity.x < 0):
+		sprite.flip_h = true
+	else:
+		sprite.flip_h = false
 	# normal state: enemy is pathfinding and moving normally in this code block
 	if not rushing:
 		
