@@ -1,11 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://bu75n3pwlpxd4"]
+[gd_scene load_steps=27 format=3 uid="uid://bu75n3pwlpxd4"]
 
-[ext_resource type="FontFile" uid="uid://dguq661xgdfvr" path="res://Assets/Geizer.otf" id="1_rsv4x"]
 [ext_resource type="Script" path="res://Scripts/game_over.gd" id="1_w51cq"]
+[ext_resource type="FontFile" uid="uid://deuj413nwfqiv" path="res://Fonts/alagard.ttf" id="2_2372x"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_y4g0n"]
 line_spacing = 5.0
-font = ExtResource("1_rsv4x")
+font = ExtResource("2_2372x")
 font_size = 125
 font_color = Color(0.47451, 0, 0, 1)
 outline_size = 8
@@ -16,7 +16,7 @@ shadow_offset = Vector2(-1, 0)
 
 [sub_resource type="LabelSettings" id="LabelSettings_aesu1"]
 line_spacing = 5.0
-font = ExtResource("1_rsv4x")
+font = ExtResource("2_2372x")
 font_size = 60
 font_color = Color(0.47451, 0.666667, 0, 1)
 outline_size = 8
@@ -24,6 +24,50 @@ outline_color = Color(0, 0, 0, 1)
 shadow_size = 25
 shadow_color = Color(0, 0, 0, 0.352941)
 shadow_offset = Vector2(-1, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_n7ywk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e47ks"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jltsy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xkit5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_cvyqf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pim5b"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pd0pd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_r75v4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o60f6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xsgm0"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_fr148"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_aedc4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gqe1y"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_s666k"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w0avl"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7tx17"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5jukx"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kajmq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bu8oq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5nh3g"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e1ux2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jvgt1"]
 
 [node name="GameOver" type="Control" node_paths=PackedStringArray("play_again_btn", "quit_btn", "score_label")]
 layout_mode = 3
@@ -50,7 +94,7 @@ offset_left = 1.0
 offset_top = 9.0
 offset_right = 1276.0
 offset_bottom = 117.0
-text = "GAME over"
+text = "GAME OVER"
 label_settings = SubResource("LabelSettings_y4g0n")
 horizontal_alignment = 1
 
@@ -82,8 +126,21 @@ focus_neighbor_right = NodePath("../QuitBtn")
 focus_neighbor_bottom = NodePath("../QuitBtn")
 focus_next = NodePath("../QuitBtn")
 focus_previous = NodePath("../QuitBtn")
-theme_override_fonts/font = ExtResource("1_rsv4x")
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.345098, 0.454902, 0.443137, 1)
+theme_override_fonts/font = ExtResource("2_2372x")
 theme_override_font_sizes/font_size = 75
+theme_override_styles/focus = SubResource("StyleBoxEmpty_n7ywk")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_e47ks")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_jltsy")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_xkit5")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_cvyqf")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_pim5b")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_pd0pd")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_r75v4")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_o60f6")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_xsgm0")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_fr148")
 text = "Play Again"
 
 [node name="QuitBtn" type="Button" parent="CenterContainer/HBoxContainer"]
@@ -94,6 +151,25 @@ focus_neighbor_right = NodePath("../PlayBtn")
 focus_neighbor_bottom = NodePath("../PlayBtn")
 focus_next = NodePath("../PlayBtn")
 focus_previous = NodePath("../PlayBtn")
-theme_override_fonts/font = ExtResource("1_rsv4x")
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.345098, 0.454902, 0.443137, 1)
+theme_override_fonts/font = ExtResource("2_2372x")
 theme_override_font_sizes/font_size = 75
+theme_override_styles/focus = SubResource("StyleBoxEmpty_aedc4")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_gqe1y")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_s666k")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_w0avl")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_7tx17")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_5jukx")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_kajmq")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxEmpty_bu8oq")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_5nh3g")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_e1ux2")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_jvgt1")
 text = "Quit"
+
+[node name="ColorRect" type="ColorRect" parent="CenterContainer"]
+z_index = -1
+custom_minimum_size = Vector2(600, 100)
+layout_mode = 2
+color = Color(0.14902, 0.14902, 0.14902, 1)
