@@ -380,6 +380,7 @@ libraries = {
 }
 
 [node name="Arrow" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(640, 300)
 texture = ExtResource("9_wj48b")
 offset = Vector2(0, -16)

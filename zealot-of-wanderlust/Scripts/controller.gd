@@ -1018,7 +1018,8 @@ func give_player_key():
 	proc_gen_data.has_key = true
 	view.play_key_animation()
 	player.key_sfx.play()
-	show_arrow()
+	if !model.in_tutorial:
+		show_arrow()
 
 func show_arrow() -> void:
 	var door_position = find_door()
@@ -1027,10 +1028,14 @@ func show_arrow() -> void:
 
 func find_door() -> Vector2i:
 	var corridor_with_door = proc_gen_data.current_room.get_outgoing_corridor()
-	for tilemaplayer in proc_gen_data.doors_root_node.get_children():
-		var door_position = tilemaplayer.get_used_cells()[0]
-		if (corridor_with_door.has(door_position)):
-			return tilemaplayer.map_to_local(door_position)
+	if corridor_with_door.size() != 0:
+		for tilemaplayer in proc_gen_data.doors_root_node.get_children():
+			var door_position = tilemaplayer.get_used_cells()[0]
+			if (corridor_with_door.has(door_position)):
+				return tilemaplayer.map_to_local(door_position)
+	else:
+		var door_position = proc_gen_data.staircase_tilemap_layer.get_used_cells()[0]
+		return proc_gen_data.staircase_tilemap_layer.map_to_local(door_position)
 	return Vector2i.ZERO
 
 func player_has_key() -> bool:
@@ -1540,14 +1545,10 @@ func update_arrow() -> void:
 	player_pos = Vector2(player_pos.x, player_pos.y * -1)
 	var door_pos = proc_gen_data.next_door_position
 	door_pos = Vector2(door_pos.x, door_pos.y * -1)
-	print("player pos ", player_pos)
-	print("door pos ", door_pos)
+	
 	var direction_to_door = player_pos.direction_to(door_pos)
 	
 	var angle_to_door = rad_to_deg(direction_to_door.angle()) * -1 + 90
-	
-	print("direction to target ", direction_to_door)
-	print("angle to target ", angle_to_door)
 	
 	view.arrow.rotation = deg_to_rad(angle_to_door)
 
@@ -1602,6 +1603,8 @@ func _physics_process(delta: float) -> void:
 
 				# check if collision is with a staircase
 				if (collider_name.contains("Staircase")):
+					view.toggle_arrow(false)
+					showing_arrow = false
 					handle_stair_collision(collider)
 				
 				if (collider_name.contains("Wall")):
