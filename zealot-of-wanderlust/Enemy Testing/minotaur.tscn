@@ -142,7 +142,7 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e2n7k"]
-height = 24.0
+radius = 14.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_we62o"]
 radius = 9.0
@@ -165,7 +165,7 @@ autoplay = "default"
 frame_progress = 0.699167
 
 [node name="HitBox" type="CollisionShape2D" parent="."]
-position = Vector2(0, -5)
+position = Vector2(0, -6)
 shape = SubResource("CapsuleShape2D_e2n7k")
 
 [node name="ChargingHitbox" type="CollisionShape2D" parent="."]

@@ -1064,12 +1064,28 @@ func handle_door_collision(collider : Object) -> void:
 		elif (proc_gen_data.current_room.next_room != null):
 			proc_gen_data.current_room = proc_gen_data.current_room.next_room
 			
-			# rebidn the spawn timer to the new room
+			# rebind the spawn timer to the new room
 			model.spawn_timer.stop()
 			model.spawn_timer.disconnect("timeout", spawn_enemy)
 			model.spawn_timer.timeout.connect(spawn_enemy.bind(proc_gen_data.current_room))
-			model.spawning_enabled = true
-			model.spawn_timer.start()
+			
+			spawn_pause(2)
+
+func spawn_pause(amount) -> void:
+	var timer = Timer.new()
+	timer.one_shot = true
+	timer.timeout.connect(spawn_pause_timer_timeout.bind(timer))
+	model.timers.add_child(timer)
+	timer.start(amount)
+
+func spawn_pause_timer_timeout(timer) -> void:
+	model.timers.remove_child(timer)
+	timer.queue_free()
+	start_enemy_spawning()
+
+func start_enemy_spawning() -> void:
+	model.spawning_enabled = true
+	model.spawn_timer.start()
 
 # handle player collision with a stair
 func handle_stair_collision(collider : Object) -> void:
