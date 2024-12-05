@@ -14,6 +14,7 @@ class_name View
 @export var key_animation_player : AnimationPlayer
 @export var health_bar : HealthBar
 @export var floor_label : Label
+@export var arrow : Sprite2D
 
 func start_level() -> void:
 	controller.load_game()
@@ -100,6 +101,9 @@ func skill3_chosen() -> void:
 	level_up_node.hide()
 
 
+func toggle_arrow(status) -> void:
+	arrow.visible = status
+
 ### ||| PAUSE MENU RELATED FUNCTIONS ||| ###
 ### vvv                              vvv ###
 
@@ -114,6 +118,8 @@ func unpause_game() -> void:
 	pause_menu_node.hide()
 
 func exit_to_main_menu() -> void:
+	toggle_arrow(false)
+	controller.showing_arrow = false
 	controller.unload_game()
 	if model.in_tutorial:
 		controller.stop_tutorial()

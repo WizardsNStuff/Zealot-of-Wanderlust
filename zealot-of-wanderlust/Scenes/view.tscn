@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://dhhruhsbpp7ss"]
+[gd_scene load_steps=41 format=3 uid="uid://dhhruhsbpp7ss"]
 
 [ext_resource type="Script" path="res://Scripts/view.gd" id="1_yc6w3"]
 [ext_resource type="PackedScene" uid="uid://m28273i40xcl" path="res://Scenes/main_menu.tscn" id="2_v62gn"]
@@ -8,6 +8,7 @@
 [ext_resource type="FontFile" uid="uid://dguq661xgdfvr" path="res://Assets/Geizer.otf" id="4_x16ur"]
 [ext_resource type="PackedScene" uid="uid://caj70j3aaqfo3" path="res://Scenes/pause_menu.tscn" id="5_qsckk"]
 [ext_resource type="Texture2D" uid="uid://c7mr1dlng224o" path="res://Assets/key_32x32_24f.png" id="5_wn1ll"]
+[ext_resource type="Texture2D" uid="uid://bytv33k256i83" path="res://Assets/arrow.png" id="9_wj48b"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_i30tg"]
 line_spacing = 5.0
@@ -303,7 +304,7 @@ _data = {
 "key_display": SubResource("Animation_383ec")
 }
 
-[node name="View" type="CanvasLayer" node_paths=PackedStringArray("main_menu_node", "game_over_node", "level_up_node", "pause_menu_node", "score_label", "player_level_label", "animated_key_sprite", "key_animation_player", "health_bar", "floor_label")]
+[node name="View" type="CanvasLayer" node_paths=PackedStringArray("main_menu_node", "game_over_node", "level_up_node", "pause_menu_node", "score_label", "player_level_label", "animated_key_sprite", "key_animation_player", "health_bar", "floor_label", "arrow")]
 script = ExtResource("1_yc6w3")
 main_menu_node = NodePath("MainMenu")
 game_over_node = NodePath("GameOver")
@@ -315,6 +316,7 @@ animated_key_sprite = NodePath("Key")
 key_animation_player = NodePath("Key/AnimationPlayer")
 health_bar = NodePath("HealthBar")
 floor_label = NodePath("FloorLevel")
+arrow = NodePath("Arrow")
 
 [node name="MainMenu" parent="." node_paths=PackedStringArray("view") instance=ExtResource("2_v62gn")]
 view = NodePath("..")
@@ -376,3 +378,9 @@ frame_progress = 0.193043
 libraries = {
 "": SubResource("AnimationLibrary_psqwl")
 }
+
+[node name="Arrow" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(640, 300)
+texture = ExtResource("9_wj48b")
+offset = Vector2(0, -16)

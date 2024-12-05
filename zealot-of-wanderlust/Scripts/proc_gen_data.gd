@@ -58,6 +58,8 @@ var generated_rooms : Array = []
 
 var current_room
 
+var next_door_position
+
 var exit_location : Vector2i = Vector2i()
 
 var has_key : bool = false

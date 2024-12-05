@@ -7,6 +7,8 @@ var enemies : Array[Enemy]
 
 var game_loaded = false
 
+var showing_arrow = false
+
 @export var view : View
 
 # holds the procedural generation settings, node references, and data
@@ -55,6 +57,9 @@ class RoomNode:
 
 	func get_room_tiles() -> Dictionary:
 		return self.room_tiles
+
+	func get_outgoing_corridor() -> Array:
+		return outgoing_corridor
 
 	# returns true if the room has an outgoing corridor (used for connecting rooms)
 	func has_outgoing_corridor():
@@ -1013,6 +1018,25 @@ func give_player_key():
 	proc_gen_data.has_key = true
 	view.play_key_animation()
 	player.key_sfx.play()
+	if !model.in_tutorial:
+		show_arrow()
+
+func show_arrow() -> void:
+	var door_position = find_door()
+	proc_gen_data.next_door_position = door_position
+	showing_arrow = true
+
+func find_door() -> Vector2i:
+	var corridor_with_door = proc_gen_data.current_room.get_outgoing_corridor()
+	if corridor_with_door.size() != 0:
+		for tilemaplayer in proc_gen_data.doors_root_node.get_children():
+			var door_position = tilemaplayer.get_used_cells()[0]
+			if (corridor_with_door.has(door_position)):
+				return tilemaplayer.map_to_local(door_position)
+	else:
+		var door_position = proc_gen_data.staircase_tilemap_layer.get_used_cells()[0]
+		return proc_gen_data.staircase_tilemap_layer.map_to_local(door_position)
+	return Vector2i.ZERO
 
 func player_has_key() -> bool:
 	return proc_gen_data.has_key || proc_gen_data.permanent_key
@@ -1286,39 +1310,6 @@ func paint_room_specific_tiles(room_nodes : Array[RoomNode], corridor_exclusive_
 
 		var objects : Dictionary = {}
 
-		#closed_chest_object_tile_atlas_position: 0,
-		#open_chest_object_tile_atlas_position: 0,
-		#closed_pot_object_tile_atlas_position: 0,
-		#open_pot_object_tile_atlas_position: 0,
-		#barrel_object_tile_atlas_position: 0,
-		#sack_object_tile_atlas_position: 0,
-		#log_object_tile_atlas_position: 0,
-		#blue_rock_object_tile_atlas_position: 0,
-		#tan_rock_object_tile_atlas_position: 0,
-		#
-		#white_grass_1_object_tile_atlas_position: 0,
-		#white_grass_2_object_tile_atlas_position: 0,
-		#red_tall_grass_object_tile_atlas_position: 0,
-		#leaf_pile_1_object_tile_atlas_position: 0,
-		#leaf_pile_2_object_tile_atlas_position: 0,
-		#tall_grass_object_tile_atlas_position: 0,
-		#white_tall_grass_object_tile_atlas_position: 0,
-		#wheat_object_tile_atlas_position: 0,
-		#corn_object_tile_atlas_position: 0,
-		#roses_object_tile_atlas_position: 0,
-		#red_bush_object_tile_atlas_position : 0,
-		#small_red_grass_object_tile_atlas_position : 0,
-		#tulips_object_tile_atlas_position : 0,
-		#small_orange_grass_object_tile_atlas_position : 0,
-		#small_white_sapling_object_tile_atlas_position : 0,
-		#small_pink_flowers_object_tile_atlas_position : 0,
-		#small_red_mushrooms_object_tile_atlas_position: 0,
-		#big_red_mushroom_object_tile_atlas_position: 0,
-		#bone_pile_1_object_tile_atlas_position: 0,
-		#bone_pile_2_object_tile_atlas_position: 0,
-		#blood_spill_1_object_tile_atlas_position: 0,
-		#blood_spill_2_object_tile_atlas_position: 0
-
 		match room_type:
 			"SKELETONS":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.green_floor_tile_atlas_position
@@ -1516,6 +1507,22 @@ func player_enemy_hit_sfx(enemy_dead) -> void:
 	else:
 		player.enemy_hit_sfx.play()
 
+func update_arrow() -> void:
+	var player_pos = player.global_position
+	player_pos = Vector2(player_pos.x, player_pos.y * -1)
+	var door_pos = proc_gen_data.next_door_position
+	if door_pos == null:
+		view.toggle_arrow(false)
+		showing_arrow = false
+		return
+	door_pos = Vector2(door_pos.x, door_pos.y * -1)
+	
+	var direction_to_door = player_pos.direction_to(door_pos)
+	
+	var angle_to_door = rad_to_deg(direction_to_door.angle()) * -1 + 90
+	
+	view.arrow.rotation = deg_to_rad(angle_to_door)
+
 # handle player movement and player interactions in each frame
 func _physics_process(delta: float) -> void:
 	# check if the dungeon has been created before allowing interactions
@@ -1527,6 +1534,10 @@ func _physics_process(delta: float) -> void:
 		
 		if Time.get_unix_time_from_system() >= player_cooldown:
 			player.is_attacking = false
+
+		if showing_arrow:
+			view.toggle_arrow(true)
+			update_arrow()
 
 		# move the player and retrieve if any collisions occured
 		var player_collision = player.move_and_slide()
@@ -1556,10 +1567,14 @@ func _physics_process(delta: float) -> void:
 
 				# check if the collision is with a door
 				if (collider_name.contains("Door")):
+					view.toggle_arrow(false)
+					showing_arrow = false
 					handle_door_collision(collider)
 
 				# check if collision is with a staircase
 				if (collider_name.contains("Staircase")):
+					view.toggle_arrow(false)
+					showing_arrow = false
 					handle_stair_collision(collider)
 				
 				if (collider_name.contains("Wall")):
