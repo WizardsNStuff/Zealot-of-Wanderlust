@@ -35,6 +35,10 @@ func _physics_process(delta: float) -> void:
 	makepath()
 	var direction = global_position.direction_to(nav_agent.get_next_path_position())
 	velocity = direction * speed
+	if (velocity.x < 0):
+		sprite.flip_h = true
+	else:
+		sprite.flip_h = false
 	move_and_slide()
 
 
