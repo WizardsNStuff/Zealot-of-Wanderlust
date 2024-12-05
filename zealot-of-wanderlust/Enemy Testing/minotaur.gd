@@ -55,6 +55,7 @@ func _physics_process(delta: float) -> void:
 		# mask layers (both raycast and player are on collision layer 3 so it works fine) 
 		if ($RayCast2D.is_colliding() and can_charge_again_timer <= 0):
 			velocity = Vector2(0, 0)
+			$MainSprite.play("Charge_Ready")
 			move_and_slide()
 			locked_on_player_timer += delta
 		else:
@@ -69,6 +70,7 @@ func _physics_process(delta: float) -> void:
 			move_and_slide()
 		
 		if locked_on_player_timer >= 1.0:
+			$MainSprite.play("default")
 			rushing = true
 			locked_on_player_timer = 0.0
 	
