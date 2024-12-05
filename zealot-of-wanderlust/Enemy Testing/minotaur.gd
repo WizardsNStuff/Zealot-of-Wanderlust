@@ -22,7 +22,7 @@ func _ready() -> void:
 	
 	# redefining variables inherited from Enemy
 	speed = 50
-	rush_speed = 350
+	rush_speed = 450
 	attack_range = 20
 	score = 50
 	
