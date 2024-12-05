@@ -129,10 +129,13 @@ func start_tutorial() -> void:
 	model.enemy_spawner.add_child(enemy_3)
 	enemy_1.score = 50
 	enemy_2.score = 50
+	enemy_1.health = 50
+	enemy_2.health = 50
 	enemy_1.speed = 0
 	enemy_2.speed = 0
 	enemy_3.speed = 0
 	enemy_3.rush_speed = 0
+	enemy_3.health = 50
 	enemy_1.main_damage = 0
 	enemy_2.main_damage = 0
 	enemy_3.main_damage = 0
@@ -175,7 +178,7 @@ func tutorial_key_timer() -> void:
 	timer.one_shot = true
 	timer.timeout.connect(key_timer_timeout.bind(timer))
 	model.tutorial_data.add_child(timer)
-	timer.start(6)
+	timer.start(0.1)
 
 func key_timer_timeout(timer) -> void:
 	timer.queue_free()

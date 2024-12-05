@@ -27,11 +27,11 @@ func checkpoint_entered(checkpoint) -> void:
 		"c1":
 			d1.messages = ["use the W, A, S, D keys to move the player"]
 			d1.start_dialogue()
-			controller.tutorial_pause(2)
+			#controller.tutorial_pause(2)
 		"c2":
 			d2.messages = ["use the arrow keys to fire a projectile at the enemy"]
 			d2.start_dialogue()
-			controller.tutorial_pause(3)
+			#controller.tutorial_pause(3)
 		"c3":
 			d3.messages = ["killing enemies earns you score and exp", 
 			"the blue exp bar is displayed directly below the health bar",
@@ -39,13 +39,13 @@ func checkpoint_entered(checkpoint) -> void:
 			"leveling up allows you to learn 1 new skill"
 			]
 			d3.start_dialogue()
-			controller.tutorial_pause(15)
+			#controller.tutorial_pause(15)
 		"c4":
 			d4.messages = ["kill all enemies within a room to earn a key", 
 			"keys can be used to unlock doors and progress to the next room"
 			]
 			d4.start_dialogue()
-			controller.tutorial_pause(7)
+			#controller.tutorial_pause(7)
 		"c5":
 			d5.messages = ["getting hit by an enemy lowers your health"]
 			d5.start_dialogue()
@@ -53,7 +53,7 @@ func checkpoint_entered(checkpoint) -> void:
 		"c6":
 			d6.messages = ["hearts can be found on each floor", "hearts give you additional health points"]
 			d6.start_dialogue()
-			controller.tutorial_pause(6)
+			#controller.tutorial_pause(6)
 		"c7":
 			d7.messages = ["the last room in each floor contains a staircase", 
 			"the staircase can be acessed by using a key", 
@@ -61,7 +61,7 @@ func checkpoint_entered(checkpoint) -> void:
 			]
 			controller.tutorial_key_timer()
 			d7.start_dialogue()
-			controller.tutorial_pause(12)
+			#controller.tutorial_pause(12)
 
 func _on_stairs_body_entered(body: Node2D) -> void:
 	controller.tutorial_complete()
