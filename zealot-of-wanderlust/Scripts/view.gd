@@ -118,6 +118,8 @@ func unpause_game() -> void:
 	pause_menu_node.hide()
 
 func exit_to_main_menu() -> void:
+	toggle_arrow(false)
+	controller.showing_arrow = false
 	controller.unload_game()
 	if model.in_tutorial:
 		controller.stop_tutorial()

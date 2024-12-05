@@ -55,6 +55,8 @@ func _physics_process(delta: float) -> void:
 			locked_on_player_timer += delta
 		else:
 			makepath()
+			if !NavigationServer2D.map_get_iteration_id(nav_agent.get_navigation_map()):
+				return
 			var direction = global_position.direction_to(nav_agent.get_next_path_position())
 			last_known_dir = to_local(player.global_position).normalized()
 			$RayCast2D.rotation = last_known_dir.angle()

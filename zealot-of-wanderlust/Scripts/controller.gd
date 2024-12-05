@@ -1310,39 +1310,6 @@ func paint_room_specific_tiles(room_nodes : Array[RoomNode], corridor_exclusive_
 
 		var objects : Dictionary = {}
 
-		#closed_chest_object_tile_atlas_position: 0,
-		#open_chest_object_tile_atlas_position: 0,
-		#closed_pot_object_tile_atlas_position: 0,
-		#open_pot_object_tile_atlas_position: 0,
-		#barrel_object_tile_atlas_position: 0,
-		#sack_object_tile_atlas_position: 0,
-		#log_object_tile_atlas_position: 0,
-		#blue_rock_object_tile_atlas_position: 0,
-		#tan_rock_object_tile_atlas_position: 0,
-		#
-		#white_grass_1_object_tile_atlas_position: 0,
-		#white_grass_2_object_tile_atlas_position: 0,
-		#red_tall_grass_object_tile_atlas_position: 0,
-		#leaf_pile_1_object_tile_atlas_position: 0,
-		#leaf_pile_2_object_tile_atlas_position: 0,
-		#tall_grass_object_tile_atlas_position: 0,
-		#white_tall_grass_object_tile_atlas_position: 0,
-		#wheat_object_tile_atlas_position: 0,
-		#corn_object_tile_atlas_position: 0,
-		#roses_object_tile_atlas_position: 0,
-		#red_bush_object_tile_atlas_position : 0,
-		#small_red_grass_object_tile_atlas_position : 0,
-		#tulips_object_tile_atlas_position : 0,
-		#small_orange_grass_object_tile_atlas_position : 0,
-		#small_white_sapling_object_tile_atlas_position : 0,
-		#small_pink_flowers_object_tile_atlas_position : 0,
-		#small_red_mushrooms_object_tile_atlas_position: 0,
-		#big_red_mushroom_object_tile_atlas_position: 0,
-		#bone_pile_1_object_tile_atlas_position: 0,
-		#bone_pile_2_object_tile_atlas_position: 0,
-		#blood_spill_1_object_tile_atlas_position: 0,
-		#blood_spill_2_object_tile_atlas_position: 0
-
 		match room_type:
 			"SKELETONS":
 				floor_tile_pos = proc_gen_data.floor_tilemap_layer.green_floor_tile_atlas_position
@@ -1544,6 +1511,10 @@ func update_arrow() -> void:
 	var player_pos = player.global_position
 	player_pos = Vector2(player_pos.x, player_pos.y * -1)
 	var door_pos = proc_gen_data.next_door_position
+	if door_pos == null:
+		view.toggle_arrow(false)
+		showing_arrow = false
+		return
 	door_pos = Vector2(door_pos.x, door_pos.y * -1)
 	
 	var direction_to_door = player_pos.direction_to(door_pos)
@@ -1558,7 +1529,6 @@ func _physics_process(delta: float) -> void:
 	if game_loaded && proc_gen_data.dungeon_created:
 		handle_input(delta)
 		
-		player.damage = 2000
 		# don't process anything if paused
 		if get_tree().paused: return
 		
