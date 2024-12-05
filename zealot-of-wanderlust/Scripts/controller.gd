@@ -1138,8 +1138,9 @@ func handle_animations(walk_dir, attack_dir) -> void:
 	elif walk_dir != Vector2.ZERO:
 		player.animations.set("parameters/Idle/blend_position", walk_dir)
 		player.animations.set("parameters/Walk/blend_position", walk_dir)
-		if !player.walking_sfx.playing:
-			player.walking_sfx.play()
+		# Walking SFX
+		#if !player.walking_sfx.playing:
+			#player.walking_sfx.play()
 		state_machine.travel("Walk")
 	else:
 		state_machine.travel("Idle")

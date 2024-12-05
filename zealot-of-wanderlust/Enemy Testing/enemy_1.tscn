@@ -82,12 +82,12 @@ platform_floor_layers = 4294967041
 script = ExtResource("1_n3po6")
 damage_timer = NodePath("DamageFlashTimer")
 
-[node name="RatSprite" type="AnimatedSprite2D" parent="."]
+[node name="MainSprite" type="AnimatedSprite2D" parent="."]
 position = Vector2(1, -11)
 scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_byxjd")
 autoplay = "default"
-frame_progress = 0.985278
+frame_progress = 0.251854
 
 [node name="Hitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, 2)

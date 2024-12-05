@@ -9,7 +9,7 @@ var score = 15
 # if player is set to CharacterBody2D change it back to player (I change it when testing new enemies)
 @export var player : Player
 @export var controller : Controller
-@onready var sprite : AnimatedSprite2D = $RatSprite
+@onready var sprite = $MainSprite
 @export var damage_timer : Timer
 @onready var damage_number_origin = $DamageNumberOrigin
 
