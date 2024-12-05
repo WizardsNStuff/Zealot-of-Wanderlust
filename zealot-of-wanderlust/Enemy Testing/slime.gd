@@ -9,7 +9,7 @@ var splitting = true
 
 func _ready() -> void:
 	# redefining variables inherited from Enemy
-	speed = 30
+	speed = 100
 	attack_range = 20
 	score = 10
 	

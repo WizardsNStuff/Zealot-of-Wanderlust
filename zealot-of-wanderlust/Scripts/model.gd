@@ -44,6 +44,7 @@ func _ready() -> void:
 	skills.append(ProjectileSizeUp.new())
 	skills.append(AttackUpFireRateDown.new())
 	skills.append(FireRateUpAttackDown.new())
+	skills.append(MoveSpeedUp.new())
 	# array representing the Weights of each skill
 	for skill in skills:
 		(skill as Skill)._ready()
