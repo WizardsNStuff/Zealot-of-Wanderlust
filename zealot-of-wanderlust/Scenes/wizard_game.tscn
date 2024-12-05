@@ -14,7 +14,7 @@ view = NodePath("View")
 [node name="Music" type="AudioStreamPlayer" parent="."]
 process_mode = 3
 stream = ExtResource("10_3fdig")
-volume_db = -15.0
+volume_db = -25.0
 autoplay = true
 
 [node name="Model" parent="." instance=ExtResource("2_4gxgj")]

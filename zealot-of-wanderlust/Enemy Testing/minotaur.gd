@@ -41,7 +41,7 @@ func _physics_process(delta: float) -> void:
 	# normal state: enemy is pathfinding and moving normally in this code block
 	if not rushing:
 		# flips sprite depending on player location
-		if (velocity.x < 0):
+		if (last_known_dir.x < 0):
 			sprite.flip_h = true
 		else:
 			sprite.flip_h = false
