@@ -55,7 +55,7 @@ func _ready() -> void:
 	original_health = health
 	speed = 150
 	health = 200
-	original_health
+	original_health = health
 	score = 0
 	iframes = 1.0
 	# Projectile Stats
