@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bwv3arxa4rs65"]
+[gd_scene load_steps=23 format=3 uid="uid://bwv3arxa4rs65"]
 
 [ext_resource type="Script" path="res://Enemy Testing/minotaur.gd" id="1_x02qx"]
 [ext_resource type="Texture2D" uid="uid://boigkxval3a4s" path="res://Assets/Minotaur - Sprite Sheet.png" id="2_42hcq"]
@@ -23,6 +23,22 @@ region = Rect2(288, 192, 96, 96)
 [sub_resource type="AtlasTexture" id="AtlasTexture_g5jts"]
 atlas = ExtResource("2_42hcq")
 region = Rect2(384, 192, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iql2y"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(288, 576, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hfnff"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(384, 576, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_njjoi"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(384, 1536, 96, 96)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o64fe"]
+atlas = ExtResource("2_42hcq")
+region = Rect2(480, 576, 96, 96)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_n4d30"]
 atlas = ExtResource("2_42hcq")
@@ -80,6 +96,23 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_iql2y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hfnff")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_njjoi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o64fe")
+}],
+"loop": true,
+"name": &"Charging",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_n4d30")
 }, {
 "duration": 1.0,
@@ -124,8 +157,9 @@ damage_timer = NodePath("DamageFlashTimer")
 
 [node name="MainSprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_m1c32")
+animation = &"Charging"
 autoplay = "default"
-frame_progress = 0.363291
+frame_progress = 0.699167
 
 [node name="HitBox" type="CollisionShape2D" parent="."]
 position = Vector2(0, -6)
