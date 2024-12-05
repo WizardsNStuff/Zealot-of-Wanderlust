@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://m28273i40xcl"]
+[gd_scene load_steps=19 format=3 uid="uid://m28273i40xcl"]
 
 [ext_resource type="Script" path="res://Scripts/main_menu.gd" id="1_gfkys"]
 [ext_resource type="FontFile" uid="uid://deuj413nwfqiv" path="res://Fonts/alagard.ttf" id="2_78p07"]
@@ -40,6 +40,11 @@ shadow_offset = Vector2(-1, 0)
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4xge3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_outi1"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mfo8w"]
+font = ExtResource("2_78p07")
+font_size = 30
+font_color = Color(1, 1, 1, 0.356863)
 
 [node name="MainMenu" type="Control" node_paths=PackedStringArray("start_btn", "quit_btn", "tutorial_btn")]
 layout_mode = 3
@@ -156,3 +161,14 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_x6o3j")
 theme_override_styles/normal_mirrored = SubResource("StyleBoxEmpty_tbhxq")
 theme_override_styles/normal = SubResource("StyleBoxEmpty_bnkqy")
 text = "Quit"
+
+[node name="Credits" type="Label" parent="."]
+layout_mode = 0
+offset_left = -1.0
+offset_top = 686.0
+offset_right = 1279.0
+offset_bottom = 715.0
+text = "Made by: Adam, Dev, Ethan, Jamon"
+label_settings = SubResource("LabelSettings_mfo8w")
+horizontal_alignment = 1
+vertical_alignment = 1
