@@ -142,6 +142,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_outi1")
 text = "Tutorial"
 
 [node name="StartBtn3" type="Button" parent="MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 focus_neighbor_right = NodePath("../StartBtn")
 focus_neighbor_bottom = NodePath("../StartBtn")
