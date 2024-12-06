@@ -8,7 +8,7 @@ func _ready() -> void:
 	skill_name = "Move Speed Up"
 	description = "Walk Faster"
 	image_reference = load("res://Skills/MoveSpeedUp.png")
-	tier = Skill.Rarity.UNCOMMON
+	tier = Skill.Rarity.RARE
 
 func add_effect(projectile : Projectile) -> void:
 	# Will only be used once
