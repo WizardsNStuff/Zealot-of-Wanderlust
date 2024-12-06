@@ -2,7 +2,7 @@ extends CharacterBody2D
 class_name Player
 
 var speed := 130
-var acceleration := 800
+var acceleration := 600
 
 var health : float = 200
 var original_health : float
